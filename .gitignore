@@ -29,3 +29,6 @@
 
 # Vagrant
 .vagrant/
+
+# Other
+.DS_Store
