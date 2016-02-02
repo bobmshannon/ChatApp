@@ -30,7 +30,7 @@ using namespace std;
 
 /**
 * main function
-*
+* S
 * @param  argc Number of arguments
 * @param  argv The argument list
 * @return 0 EXIT_SUCCESS

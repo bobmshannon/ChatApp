@@ -1,0 +1,905 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "/**\n* @rshannon_assignment1\n* @author  Robert Shannon <rshannon@buffalo.edu>\n* @version 1.0\n*\n* @section LICENSE\n*\n* This program is free software; you can redistribute it and/or\n* modify it under the terms of the GNU General Public License as\n* published by the Free Software Foundation; either version 2 of\n* the License, or (at your option) any later version.\n*\n* This program is distributed in the hope that it will be useful, but\n* WITHOUT ANY WARRANTY; without even the implied warranty of\n* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU\n* General Public License for more details at\n* http://www.gnu.org/copyleft/gpl.html\n*\n* @section DESCRIPTION\n*\n* This contains the main function. Add further description here....\n*/\n#include <iostream>\n#include <stdio.h>\n\n#include \"../include/global.h\"\n#include \"../include/logger.h\"\n\nusing namespace std;\n\n/**\n* main function\n* S\n* @param  argc Number of arguments\n* @param  argv The argument list\n* @return 0 EXIT_SUCCESS\n*/\nint main(int argc, char** argv) {\n    /*Init. Logger*/\n    cse4589_init_log(argv[2]);\n\n    /* Clear LOGFILE*/\n    fclose(fopen(LOGFILE, \"w\"));\n\n    cout << \"Hello\";\n    /*Start Here*/\n\n    return 0;\n}",
+			"file": "rshannon/src/rshannon_assignment1.cpp",
+			"file_size": 1188,
+			"file_write_time": 130988481890000000,
+			"settings":
+			{
+				"buffer_size": 1190,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 1554,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Package Control Messages\n========================\n\nSublimeLinter-cppcheck\n----------------------\n\n  SublimeLinter-cppcheck\n  -------------------------------\n  This linter plugin for SublimeLinter provides an interface to cppcheck.\n  \n  ** IMPORTANT! **\n  \n  Before this plugin will activate, you *must*\n  follow the installation instructions here:\n  \n  https://github.com/SublimeLinter/SublimeLinter-cppcheck\n\n\nSublimeLinter-contrib-clang\n---------------------------\n\n  SublimeLinter-clang\n  -------------------------------\n  This linter plugin for SublimeLinter provides an interface to clang.\n  \n  ** IMPORTANT! **\n  \n  Before this plugin will activate, you *must*\n  follow the installation instructions here:\n  \n  https://github.com/nirm03/SublimeLinter-clang\n",
+			"settings":
+			{
+				"buffer_size": 763,
+				"line_ending": "Unix",
+				"name": "Package Control Messages",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+			"settings":
+			{
+				"buffer_size": 100,
+				"line_ending": "Unix",
+				"name": "untitled.sublime-build"
+			}
+		},
+		{
+			"file": "rshannon/src/logger.cpp",
+			"settings":
+			{
+				"buffer_size": 3159,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "rshannon/include/global.h",
+			"settings":
+			{
+				"buffer_size": 91,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "rshannon/include/logger.h",
+			"settings":
+			{
+				"buffer_size": 227,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					""
+				],
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "syntax",
+		"selected_items":
+		[
+			[
+				"syntax",
+				"Set Syntax: C++"
+			],
+			[
+				"gdb",
+				"Set Syntax: GDB"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"clang",
+				"Clang Format: Format Selection"
+			],
+			[
+				"lint",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"prettify",
+				"HTMLPrettify"
+			],
+			[
+				"htmlbeautify",
+				"HTMLBeautify"
+			],
+			[
+				"beauti",
+				"HTMLBeautify"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"packages",
+				"Package Control: List Packages"
+			],
+			[
+				"",
+				"Package Control: List Packages"
+			],
+			[
+				"htmlprettify",
+				"HTMLPrettify: Set Plugin Options"
+			],
+			[
+				"prett",
+				"HTMLPrettify"
+			],
+			[
+				"Sass",
+				"SassBeautify"
+			],
+			[
+				"sass",
+				"SassBeautify"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"install",
+			"Install",
+			"import urllib2, os; pf = ‘Package Control.sublime-package'; ipp = sublime.installed_packages_path (); os.makedirs (ipp) if not os.path.exists (ipp) else None; open (os.path.join (ipp, pf), ‘wb’). write (urllib2.urlopen (‘http://sublime.wbond.net/’ + pf.replace (”, ‘% 20′)). read ())",
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+		"/Users/Bobby/Desktop/Robert.SH/_config.yml",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/head.html",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/header.html",
+		"/Users/Bobby/Desktop/Robert.SH/about.md",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2016-01-09-welcome-to-jekyll.markdown",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/views/layouts/application.html.erb",
+		"/Users/Bobby/Dropbox/CPD/DigitalOcean.txt",
+		"/Users/Bobby/Downloads/assignment1_init_script.sh",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/verifier/assignment1_verifier.py",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/verifier/author.exp",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/verifier/ip.exp",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/rshannon/include/logger.h",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/verifier/README",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/verifier/port.exp",
+		"/Users/Bobby/Downloads/whmcs_v621_full 2/whmcs/configuration.php.new",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/footer.html",
+		"/Users/Bobby/Desktop/TalkDuel/bill/credentials.txt",
+		"/Users/Bobby/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/96890638-BC3F-461A-8323-D16F8FD84A02/test.md",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/header_sub.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/header_full.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/footertimepicker.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/footerconverse.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/footerchat.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/controllers/chat.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/config/autoload.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/config/config.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/config/database.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/config/constants.php",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2016-01-10-test.markdown",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/footer.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/adminnav.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/controllers/control.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/chat.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/common/header.php",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-07-07-how-do-you-plan-for-a-ddos-attack.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-03-17-c-project-a-word-chain-generator.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-05-25-c-project-the-netflix-prize.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-02-20-lvm-cheat-sheet.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-28-importing-or-exporting-a-mysql-database-via-command-line.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-27-static-ip-address-configuration-on-centos-5-or-6.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-22-running-multiple-versions-of-jquery-on-the-same-page.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-19-logging-into-a-remote-page-using-php-and-curl.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-03-simplifying-content-management-using-php-header-footer-includes.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-14-setting-up-ssh-keys-for-secure-logins.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2014-01-02-securing-your-rhelcentosfedora-server-using-iptables.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2013-12-31-addressing-rear-shelf-rattle-due-to-bass.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2013-12-30-upgrading-disk-space-on-a-kvm-based-vps-with-classical-partitioning.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2013-12-30-search-and-replace-via-command-line-using-perl.html",
+		"/Users/Bobby/Desktop/Robert.SH/_posts/2015-01-13-hiding-your-ass-by-quickly-turning-any-server-socks-proxy.html",
+		"/Users/Bobby/Desktop/Robert.SH/_sass/_layout.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_layouts/default.html",
+		"/Users/Bobby/Desktop/Robert.SH/index.html",
+		"/Users/Bobby/Desktop/Robert.SH/_layouts/post.html",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/icon-github.html",
+		"/Users/Bobby/Desktop/Robert.SH/css/main.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/externals/styling.html",
+		"/Users/Bobby/Desktop/Robert.SH/_site/css/main.css",
+		"/Users/Bobby/Desktop/Robert.SH/_sass/_syntax-highlighting.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_sass/_base.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_sass/_default.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_sass/_mixins.scss",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/meta_tags/base.html",
+		"/Users/Bobby/Desktop/Robert.SH/_includes/meta_tags/sharing.html",
+		"/Users/Bobby/Desktop/TalkDuel/bill/installation notes.txt",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/robert.sh.access.log",
+		"/Users/Bobby/Desktop/daktilo/_config.yml",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/module/_header.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/bower.json",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/vendor/_retina.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/vendor/retina/_background.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/vendor/retina/_retina.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/vendor/retina/_sprite.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/style.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/core/_variables.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/stylesheets/core/_sprites.scss",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/views/candidates/candidate_template.html.erb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/Gruntfile.js",
+		"/Users/Bobby/Desktop/TalkDuel/app/assets/javascripts/application.js",
+		"/Users/Bobby/Desktop/TalkDuel/app/assets/stylesheets/chat-client/default.css",
+		"/Users/Bobby/Desktop/TalkDuel/Gemfile",
+		"/Users/Bobby/Desktop/TalkDuel/config/routes.rb",
+		"/Users/Bobby/Desktop/TalkDuel/app/views/page/home.html.erb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/public/favicon.ico",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/views/pages/home.html.erb",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/candy/example/index.html",
+		"/Users/Bobby/Desktop/TalkDuel/app/assets/stylesheets/application.css.scss",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/welcome.php",
+		"/Users/Bobby/Desktop/TalkDuel/bower.json",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/candy/setup.sh",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/candy/res/default.css",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/config/routes.rb",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/compass-mixins/lib/_compass.scss",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/compass-mixins/lib/compass/reset/_utilities.scss",
+		"/Users/Bobby/Desktop/TalkDuel/config/application.rb",
+		"/Users/Bobby/Desktop/TalkDuel/config/initializers/assets.rb",
+		"/Users/Bobby/Desktop/TalkDuel/sass/style.scss",
+		"/Users/Bobby/Desktop/TalkDuel/stylesheets/style.css",
+		"/Users/Bobby/Desktop/TalkDuel/app/assets/stylesheets/page.scss",
+		"/Users/Bobby/Desktop/TalkDuel/app/views/layouts/application.html.erb",
+		"/Users/Bobby/Desktop/TalkDuel/vendor/assets/bower_components/candy/README.md",
+		"/Users/Bobby/Desktop/TalkDuel/app/assets/stylesheets/application.scss",
+		"/Users/Bobby/Desktop/TalkDuel/config/environments/production.rb",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/createduel.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/application/views/editroom.php",
+		"/Users/Bobby/Desktop/TalkDuel/bill/system/core/Config.php",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/lib/alchemy/alchemyapi.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/lib/alchemy/person.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/lib/daemons/twitter_miner.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/lib/alchemy/tweetparser.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/config/application.yml",
+		"/Users/Bobby/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/22BB87F3-6883-4FA0-B191-E67D26C11E23/www_talkduel_com/www_talkduel_com.crt",
+		"/Users/Bobby/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/84FFD28A-432D-404C-8B78-215CC0B337B2/dev_talkduel_com/dev_talkduel_com.crt",
+		"/Users/Bobby/Desktop/TalkDuel/scripts/nginx.conf",
+		"/Users/Bobby/Desktop/TalkDuel/scripts/provision.sh",
+		"/Users/Bobby/Desktop/TalkDuel/Vagrantfile",
+		"/Users/Bobby/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/84FFD28A-432D-404C-8B78-215CC0B337B2/dev_talkduel_com/dev_talkduel_com.ca-bundle",
+		"/Users/Bobby/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/22BB87F3-6883-4FA0-B191-E67D26C11E23/www_talkduel_com/www_talkduel_com.ca-bundle",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/models/candidate.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/controllers/candidates_controller.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/javascripts/tweet_stream.js",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/tweet_stream.js",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/map.html.erb",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/list.html.erb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/javascripts/tweet_map.js",
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/tweet_map.js",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/controllers/tweet_map_controller.rb",
+		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/views/tweet_map/map.html.erb"
+	],
+	"find":
+	{
+		"height": 29.0
+	},
+	"find_in_files":
+	{
+		"height": 99.0,
+		"where_history":
+		[
+			"Open files and folders",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"rss-subscribe",
+			"pre",
+			"https://robert.sh/uploads/",
+			"https://robert.sh/blog/uploads/uploads/",
+			"http://bobbyshannon.com/wp-content/",
+			"/img/",
+			"img/",
+			"sass-rails",
+			"donald-pro",
+			"@apiKey",
+			"apikey",
+			"key",
+			"api",
+			"relative",
+			",  ",
+			",   ",
+			".issue",
+			"fitToBackground",
+			"http",
+			"#about",
+			"main",
+			"z-index",
+			"candidates",
+			".candidates",
+			"a",
+			"b",
+			"coordinates",
+			"log",
+			"h_1",
+			"t_h",
+			"links",
+			"hardlinks",
+			"MIIFUjCCBDqgAwIBAgIRANilPavRyvlK0ceG4VZNSJkwDQYJKoZIhvcNAQELBQAw",
+			"passenger",
+			"        }",
+			"nginx",
+			"sprockets",
+			"npm",
+			"htmllint",
+			"\"",
+			"scss",
+			"jscs",
+			"font-awesome",
+			"agent",
+			"forward",
+			"hostname",
+			"welcome",
+			"Welcome",
+			"provision",
+			"\"2\"",
+			"lint",
+			"unsupported",
+			"goBackText",
+			"head",
+			"entry",
+			"entry.first",
+			"wrapper",
+			"form-section",
+			"entry-template",
+			".not",
+			"initializeCheckbox",
+			".checkbox",
+			"optional-entry",
+			"checkbox",
+			"selectboxit",
+			"clone",
+			".entry",
+			"add-entry",
+			"initializedatepicker",
+			"active",
+			"mobile-nav",
+			"mobile-nav-toggle",
+			"will-cha",
+			"//'",
+			"!important",
+			"highlight",
+			"sync",
+			"search",
+			"else",
+			"getLocation",
+			"updateInput",
+			"asyncrequest",
+			"query !==",
+			"renderSuggestions",
+			"function overwrite",
+			"renderSuggestions",
+			"function overwrite",
+			"onAsyncRequested",
+			"asyncreceived",
+			"function trigger",
+			"asyncrequest",
+			"asyncreceived",
+			"q !==",
+			"asyncrequest",
+			"function get",
+			"search",
+			"async",
+			"bloodhound",
+			"complete()",
+			"before",
+			"function sync",
+			"sync",
+			"ttAdapter",
+			"sync(",
+			"sync",
+			"get(",
+			"AUTOCOMPLETE",
+			"iNPUT_ID",
+			"rendered =",
+			"query.length",
+			"bloodhound",
+			"clearable",
+			"makeInputClearable",
+			"current locat",
+			"initialize",
+			"typeahead",
+			"placeholder",
+			"selectboxit",
+			"picker",
+			"\"None\"",
+			"clearfix",
+			"allowedfilters",
+			"include text box",
+			"class=\"tooltip\"",
+			"tooltip",
+			"fieldset",
+			"Continuing",
+			"input-text"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"/uploads/",
+			"/uploads",
+			"https://robert.sh/uploads/",
+			"https://robert.sh/blog/uploads/",
+			"/chat-client/img/",
+			"/img/",
+			", ",
+			"2",
+			"1",
+			"y",
+			"x",
+			"'",
+			"[0]",
+			"class=\"error-msg\"",
+			"",
+			"@import \"../../compass/support\";",
+			"",
+			": ",
+			"",
+			"Badge Design: ",
+			"Badge Design:",
+			"",
+			"<h2 class=\"white\">",
+			"$this->element('Form/radio_picker', [",
+			"$this->element('Form/button', [",
+			"$this->element('Form/button'",
+			"",
+			"Badge Design: ",
+			"",
+			": ",
+			"<span class=\"price\"><i class=\"fa fa-tag\"></i> ",
+			"",
+			": ",
+			"Badge Design: ",
+			":",
+			": ",
+			"infoBox: true, pinned: false, ",
+			"infoBox: false, pinned: false, ",
+			"infoBox: false, pinned: false",
+			" infoBox: true, monthlyPrice:",
+			"Listing #",
+			"Badge Design: ",
+			"",
+			": ",
+			":",
+			"",
+			"\\n",
+			"\\\"",
+			"",
+			"750",
+			"250",
+			"25",
+			", type:",
+			", lng:",
+			"../../",
+			"../fonts/",
+			"#map-wrap",
+			"infoBox",
+			"\\t",
+			"",
+			"NE Admin DAYPASS:",
+			"Date:",
+			"Helicopter Training:",
+			"Cell Phone Number:",
+			"NERC Training Date:",
+			"NERC Training:",
+			"Background Check Date:",
+			"Background Check:",
+			"Office Phone Number:",
+			"Badge Type:",
+			"NERC Requestor:",
+			"Date EXPIRES:",
+			"Restricted To:",
+			"License #:",
+			"Union:",
+			"Department:",
+			"Employee ID:",
+			"Work Location:",
+			"Sponsor:",
+			"Company:",
+			"Badge No. (NE Only):",
+			"Badge Design:",
+			"",
+			"^",
+			" ",
+			"Last Name: ",
+			"",
+			"'",
+			"\\n",
+			"",
+			"\\n",
+			"",
+			"\\n",
+			"",
+			"../../",
+			"../fonts/custom-font/",
+			"#home",
+			"",
+			","
+		],
+		"reverse": false,
+		"show_context": false,
+		"use_buffer2": false,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "rshannon/src/rshannon_assignment1.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1190,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								672,
+								674
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++ Starting Kit/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 149.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1554,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								87,
+								93
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 542.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 763,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								763,
+								763
+							]
+						],
+						"settings":
+						{
+							"auto_indent": false,
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_width": 2,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 100,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								99,
+								99
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "rshannon/src/logger.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3159,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "rshannon/include/global.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 91,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "rshannon/include/logger.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 227,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 37.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 270.0
+	},
+	"output.find_results":
+	{
+		"height": 136.0
+	},
+	"pinned_build_system": "Packages/User/cse489-ass1.sublime-build",
+	"project": "chatapp.sublime-project",
+	"replace":
+	{
+		"height": 54.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Desktop/EasyRent/easyrent/webroot/js/website/jquery.sidr.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

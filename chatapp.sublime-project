@@ -1,0 +1,7 @@
+{
+    "settings":
+    {
+		"sublimegdb_commandline": "gdb -nx -readnow -fullname --interpreter=mi -args ./rshannon/assignment1",
+		"sublimegdb_workingdir": "."
+    }
+}
