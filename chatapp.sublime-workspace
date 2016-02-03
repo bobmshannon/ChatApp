@@ -8,10 +8,7 @@
 	"buffers":
 	[
 		{
-			"contents": "/**\n* @rshannon_assignment1\n* @author  Robert Shannon <rshannon@buffalo.edu>\n* @version 1.0\n*\n* @section LICENSE\n*\n* This program is free software; you can redistribute it and/or\n* modify it under the terms of the GNU General Public License as\n* published by the Free Software Foundation; either version 2 of\n* the License, or (at your option) any later version.\n*\n* This program is distributed in the hope that it will be useful, but\n* WITHOUT ANY WARRANTY; without even the implied warranty of\n* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU\n* General Public License for more details at\n* http://www.gnu.org/copyleft/gpl.html\n*\n* @section DESCRIPTION\n*\n* This contains the main function. Add further description here....\n*/\n#include <iostream>\n#include <stdio.h>\n\n#include \"../include/global.h\"\n#include \"../include/logger.h\"\n\nusing namespace std;\n\n/**\n* main function\n* S\n* @param  argc Number of arguments\n* @param  argv The argument list\n* @return 0 EXIT_SUCCESS\n*/\nint main(int argc, char** argv) {\n    /*Init. Logger*/\n    cse4589_init_log(argv[2]);\n\n    /* Clear LOGFILE*/\n    fclose(fopen(LOGFILE, \"w\"));\n\n    cout << \"Hello\";\n    /*Start Here*/\n\n    return 0;\n}",
 			"file": "rshannon/src/rshannon_assignment1.cpp",
-			"file_size": 1188,
-			"file_write_time": 130988481890000000,
 			"settings":
 			{
 				"buffer_size": 1190,
@@ -19,31 +16,30 @@
 			}
 		},
 		{
-			"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+			"file": "rshannon/include/commands.h",
 			"settings":
 			{
-				"buffer_size": 1554,
+				"buffer_size": 3869,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "Package Control Messages\n========================\n\nSublimeLinter-cppcheck\n----------------------\n\n  SublimeLinter-cppcheck\n  -------------------------------\n  This linter plugin for SublimeLinter provides an interface to cppcheck.\n  \n  ** IMPORTANT! **\n  \n  Before this plugin will activate, you *must*\n  follow the installation instructions here:\n  \n  https://github.com/SublimeLinter/SublimeLinter-cppcheck\n\n\nSublimeLinter-contrib-clang\n---------------------------\n\n  SublimeLinter-clang\n  -------------------------------\n  This linter plugin for SublimeLinter provides an interface to clang.\n  \n  ** IMPORTANT! **\n  \n  Before this plugin will activate, you *must*\n  follow the installation instructions here:\n  \n  https://github.com/nirm03/SublimeLinter-clang\n",
+			"contents": "",
+			"file": "rshannon/include/server.h",
+			"file_size": 0,
+			"file_write_time": 130989334490000000,
 			"settings":
 			{
-				"buffer_size": 763,
-				"line_ending": "Unix",
-				"name": "Package Control Messages",
-				"read_only": true,
-				"scratch": true
+				"buffer_size": 0,
+				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+			"file": "rshannon/include/logger.h",
 			"settings":
 			{
-				"buffer_size": 100,
-				"line_ending": "Unix",
-				"name": "untitled.sublime-build"
+				"buffer_size": 227,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -59,14 +55,6 @@
 			"settings":
 			{
 				"buffer_size": 91,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "rshannon/include/logger.h",
-			"settings":
-			{
-				"buffer_size": 227,
 				"line_ending": "Unix"
 			}
 		}
@@ -126,18 +114,10 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
-		"last_filter": "syntax",
+		"height": 147.0,
+		"last_filter": "install",
 		"selected_items":
 		[
-			[
-				"syntax",
-				"Set Syntax: C++"
-			],
-			[
-				"gdb",
-				"Set Syntax: GDB"
-			],
 			[
 				"install",
 				"Package Control: Install Package"
@@ -145,6 +125,14 @@
 			[
 				"clang",
 				"Clang Format: Format Selection"
+			],
+			[
+				"gdb",
+				"SublimeGDB: Start Debugging"
+			],
+			[
+				"syntax",
+				"Set Syntax: C++"
 			],
 			[
 				"lint",
@@ -215,7 +203,13 @@
 	},
 	"file_history":
 	[
+		"/Users/Bobby/Downloads/assignment1_init_script (1).sh",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/rshannon/include/test2.html",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/rshannon/include/test.html",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/rshannon/Makefile",
 		"/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+		"/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/Users/Bobby/Desktop/Spring 2016/CSE489/Assignments/ChatApp/chatapp.sublime-project",
 		"/Users/Bobby/Desktop/Robert.SH/_config.yml",
 		"/Users/Bobby/Desktop/Robert.SH/_includes/head.html",
 		"/Users/Bobby/Desktop/Robert.SH/_includes/header.html",
@@ -336,13 +330,7 @@
 		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/models/candidate.rb",
 		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/controllers/candidates_controller.rb",
 		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/javascripts/tweet_stream.js",
-		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/tweet_stream.js",
-		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/map.html.erb",
-		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/list.html.erb",
-		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/assets/javascripts/tweet_map.js",
-		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/tweet_map.js",
-		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/controllers/tweet_map_controller.rb",
-		"/Users/Bobby/Desktop/UBVoting/ubvoting/app/views/tweet_map/map.html.erb"
+		"/private/var/folders/64/7f43d7zn5n7_hxjnkx2f35340000gn/T/fz3temp-1/tweet_stream.js"
 	],
 	"find":
 	{
@@ -606,7 +594,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -622,8 +610,8 @@
 						"selection":
 						[
 							[
-								672,
-								674
+								1045,
+								1045
 							]
 						],
 						"settings":
@@ -631,63 +619,79 @@
 							"syntax": "Packages/C++ Starting Kit/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 149.0,
+						"translation.y": 181.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+					"file": "rshannon/include/commands.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1554,
+						"buffer_size": 3869,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								87,
-								93
+								319,
+								319
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 542.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 763,
-						"regions":
-						{
-						},
-						"selection":
-						[
+							"c_time":
 							[
-								763,
-								763
-							]
-						],
-						"settings":
-						{
-							"auto_indent": false,
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_width": 2,
-							"word_wrap": true
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								224,
+								2,
+								2,
+								0,
+								5,
+								10,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"syntax": "Packages/C++ Starting Kit/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -697,31 +701,106 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "/Users/Bobby/Library/Application Support/Sublime Text 3/Packages/User/cse489-ass1.sublime-build",
+					"buffer": 2,
+					"file": "rshannon/include/server.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 100,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								99,
-								99
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								224,
+								2,
+								2,
+								19,
+								37,
+								28,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "rshannon/include/logger.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 227,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -778,35 +857,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "rshannon/include/logger.h",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 227,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -894,10 +945,10 @@
 	{
 	},
 	"show_minimap": true,
-	"show_open_files": false,
+	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 309.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

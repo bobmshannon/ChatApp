@@ -1,5 +1,5 @@
 /**
-* @rshannon_assignment1
+* @ChatApp
 * @author  Robert Shannon <rshannon@buffalo.edu>
 * @version 1.0
 *
@@ -22,28 +22,49 @@
 */
 #include <iostream>
 #include <stdio.h>
+#include <curses.h>
 
 #include "../include/global.h"
 #include "../include/logger.h"
+#include "../include/console.h"
 
 using namespace std;
 
 /**
 * main function
-* S
 * @param  argc Number of arguments
 * @param  argv The argument list
 * @return 0 EXIT_SUCCESS
 */
 int main(int argc, char** argv) {
-    /*Init. Logger*/
+    // Initialize Logger
     cse4589_init_log(argv[2]);
 
-    /* Clear LOGFILE*/
+    // Clear LOGFILE
     fclose(fopen(LOGFILE, "w"));
 
-    cout << "Hello";
-    /*Start Here*/
+    // Fetch user input
+    WINDOW* chat_window;
+    WINDOW* cmd_window;
+    int ch;
 
-    return 0;
+    initscr(); /* Start curses mode */
+    cbreak();  /* Disable line buffering */
+    refresh(); /* Paint initial frame */
+    start_color(); /* Enable color support */
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(2, COLOR_WHITE, COLOR_GREEN);
+
+    // Setup chat and command windows
+    chat_window = create_newwin(LINES - PROMPT_HEIGHT, COLS, 0, 0);
+    cmd_window = create_newwin(PROMPT_HEIGHT, COLS, LINES - PROMPT_HEIGHT, 0);
+    wbkgd(chat_window, COLOR_PAIR(1));
+    wbkgd(cmd_window, COLOR_PAIR(2));
+    wrefresh(chat_window);
+    wrefresh(cmd_window);
+
+    while ((ch = getch()) != KEY_F(1)) {
+    }
+
+    endwin();
 }
