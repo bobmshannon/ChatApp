@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 00:00:29
+* @Last Modified time: 2016-02-03 00:10:01
 */
 
 #include <ncurses.h>
@@ -39,6 +39,7 @@ Console::Console(void) {
     mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX, cmd);
     wrefresh(chat_window);
     wrefresh(cmd_window);
+    clearcmd();
 }
 
 Console::~Console(void) {
@@ -87,10 +88,14 @@ void Console::chatprint() {
 	return;
 }
 void Console::clearchat() {
-	return;
+	werase(chat_window);
+	wrefresh(chat_window);
 }
 void Console::clearcmd() {
-	return;
+	werase(cmd_window);
+	mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX, CMD_WINDOW_CONTENT);
+	wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
+	wrefresh(cmd_window);
 }
 void Console::refresh() {
 	return;
