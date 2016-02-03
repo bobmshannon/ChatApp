@@ -2,12 +2,52 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-02 21:05:44
+* @Last Modified time: 2016-02-03 00:00:29
 */
 
 #include <ncurses.h>
+#include "../include/console.h"
 
-WINDOW* create_newwin(int height, int width, int starty, int startx) {
+Console::Console(void) {
+    char cmd[CMD_LENGTH];
+
+    initscr(); /* Start curses mode */
+    cbreak();  /* Disable line buffering */
+    refresh(); /* Paint initial frame */
+    start_color(); /* Enable color support */
+    init_pair(1, COLOR_WHITE, COLOR_BLUE);
+    init_pair(2, COLOR_RED, COLOR_WHITE);
+
+    // Setup chat and command windows
+    chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
+    cmd_window = create_newwin(CMD_WINDOW_HEIGHT, COLS, LINES - CMD_WINDOW_HEIGHT, 0);
+
+    // Set window background colors
+    wbkgd(chat_window, COLOR_PAIR(1));
+    wbkgd(cmd_window, COLOR_PAIR(2));
+
+    // Set initial window content
+    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX, CHAT_WINDOW_CONTENT);
+    mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX, CMD_WINDOW_CONTENT);
+    wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
+    wrefresh(chat_window);
+    wrefresh(cmd_window);
+
+    // Wait for user input
+    wgetstr(cmd_window, cmd);
+    process_command(cmd);
+    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX, cmd);
+    wrefresh(chat_window);
+    wrefresh(cmd_window);
+}
+
+Console::~Console(void) {
+	destroy_win(cmd_window);
+	destroy_win(chat_window);
+	endwin();
+}
+
+WINDOW* Console::create_newwin(int height, int width, int starty, int startx) {
     WINDOW* local_win;
 
     local_win = newwin(height, width, starty, startx);
@@ -19,7 +59,7 @@ WINDOW* create_newwin(int height, int width, int starty, int startx) {
     return local_win;
 }
 
-void destroy_win(WINDOW* local_win) {
+void Console::destroy_win(WINDOW* local_win) {
     /* box(local_win, ' ', ' '); : This won't produce the desired
      * result of erasing the window. It will leave it's four corners
      * and so an ugly remnant of window.
@@ -38,4 +78,20 @@ void destroy_win(WINDOW* local_win) {
      */
     wrefresh(local_win);
     delwin(local_win);
+}
+
+void Console::process_command(char cmd[]) {
+	return;
+}
+void Console::chatprint() {
+	return;
+}
+void Console::clearchat() {
+	return;
+}
+void Console::clearcmd() {
+	return;
+}
+void Console::refresh() {
+	return;
 }
