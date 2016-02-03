@@ -44,24 +44,27 @@ int main(int argc, char** argv) {
     fclose(fopen(LOGFILE, "w"));
 
     // Fetch user input
-    WINDOW* chat_window;
-    WINDOW* cmd_window;
+    WINDOW *chat_window, *cmd_window;
     int ch;
+    char cmd[CMD_LENGTH];
 
     initscr(); /* Start curses mode */
     cbreak();  /* Disable line buffering */
     refresh(); /* Paint initial frame */
     start_color(); /* Enable color support */
-    init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    init_pair(2, COLOR_WHITE, COLOR_GREEN);
+    init_pair(1, COLOR_WHITE, COLOR_BLUE);
+    init_pair(2, COLOR_RED, COLOR_WHITE);
 
     // Setup chat and command windows
-    chat_window = create_newwin(LINES - PROMPT_HEIGHT, COLS, 0, 0);
-    cmd_window = create_newwin(PROMPT_HEIGHT, COLS, LINES - PROMPT_HEIGHT, 0);
+    chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
+    cmd_window = create_newwin(CMD_WINDOW_HEIGHT, COLS, LINES - CMD_WINDOW_HEIGHT, 0);
     wbkgd(chat_window, COLOR_PAIR(1));
     wbkgd(cmd_window, COLOR_PAIR(2));
+    mvwprintw(cmd_window, CMD_WINDOW_STARTX, CMD_WINDOW_STARTY, "Enter a command...");
+    wmove(cmd_window, CMD_WINDOW_STARTX, CMD_WINDOW_STARTY);
     wrefresh(chat_window);
     wrefresh(cmd_window);
+    wgetstr(cmd_window, cmd);
 
     while ((ch = getch()) != KEY_F(1)) {
     }
