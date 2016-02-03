@@ -2,7 +2,7 @@
 #define CONSOLE_H_
 
 #define CMD_WINDOW_HEIGHT 3
-#define CMD_WINDOW_STARTX 1 
+#define CMD_WINDOW_STARTX 1
 #define CMD_WINDOW_STARTY 1
 #define CMD_LENGTH 1024
 #define CMD_WINDOW_CONTENT ">"
@@ -15,6 +15,7 @@ class Console {
   private:
     WINDOW *chat_window, *cmd_window;
     WINDOW* create_newwin(int height, int width, int starty, int startx);
+    static Console console;
     void destroy_win(WINDOW* local_win);
 
   public:
@@ -33,7 +34,7 @@ class Console {
     /**
      * Print a string to the chat window.
      */
-    void chatprint();
+    void print(char str[]);
     /**
      * Clear the chat window.
      */
@@ -46,6 +47,14 @@ class Console {
      * Refresh the current frame.
      */
     void refresh();
+    /**
+     * Reset cursor to default position.
+     */
+    void reset_curs();
+    /**
+     * Read input from user.
+     */
+    void read();
 };
 
 #endif

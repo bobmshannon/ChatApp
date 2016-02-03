@@ -2,50 +2,48 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 00:10:01
+* @Last Modified time: 2016-02-03 18:06:22
 */
 
 #include <ncurses.h>
+#include <signal.h>
+#include <cstring>
 #include "../include/console.h"
 
 Console::Console(void) {
-    char cmd[CMD_LENGTH];
-
-    initscr(); /* Start curses mode */
-    cbreak();  /* Disable line buffering */
-    refresh(); /* Paint initial frame */
-    start_color(); /* Enable color support */
+    initscr();     // Start curses mode
+    cbreak();      // Disable line buffering
+    refresh();     // Paint initial frame
+    start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
-    cmd_window = create_newwin(CMD_WINDOW_HEIGHT, COLS, LINES - CMD_WINDOW_HEIGHT, 0);
+    cmd_window =
+        create_newwin(CMD_WINDOW_HEIGHT, COLS, LINES - CMD_WINDOW_HEIGHT, 0);
 
     // Set window background colors
     wbkgd(chat_window, COLOR_PAIR(1));
     wbkgd(cmd_window, COLOR_PAIR(2));
 
     // Set initial window content
-    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX, CHAT_WINDOW_CONTENT);
-    mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX, CMD_WINDOW_CONTENT);
+    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
+              CHAT_WINDOW_CONTENT);
+    mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX,
+              CMD_WINDOW_CONTENT);
     wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
     wrefresh(chat_window);
     wrefresh(cmd_window);
 
     // Wait for user input
-    wgetstr(cmd_window, cmd);
-    process_command(cmd);
-    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX, cmd);
-    wrefresh(chat_window);
-    wrefresh(cmd_window);
-    clearcmd();
+    read();
 }
 
 Console::~Console(void) {
-	destroy_win(cmd_window);
-	destroy_win(chat_window);
-	endwin();
+    destroy_win(cmd_window);
+    destroy_win(chat_window);
+    endwin();
 }
 
 WINDOW* Console::create_newwin(int height, int width, int starty, int startx) {
@@ -82,21 +80,40 @@ void Console::destroy_win(WINDOW* local_win) {
 }
 
 void Console::process_command(char cmd[]) {
-	return;
+    clearchat();          // Clear chat window
+    print(cmd);           // Echo input
+    wrefresh(cmd_window); // Refresh cmd window
+    clearcmd();           // Clear cmd window
+    read();               // Wait for more user input
 }
-void Console::chatprint() {
-	return;
+void Console::print(char str[]) {
+    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
+              str);        // Print string to chat window
+    wrefresh(chat_window); // Refresh chat window
+}
+void Console::reset_curs() {
+    wmove(cmd_window, CMD_WINDOW_STARTY,
+          CMD_WINDOW_STARTX + 2); // Reset cursor to default position
+    wrefresh(cmd_window);
 }
 void Console::clearchat() {
-	werase(chat_window);
-	wrefresh(chat_window);
+    werase(chat_window);    // Clear chat window
+    box(chat_window, 0, 0); // Re-draw chat window borders
+    wrefresh(chat_window);
 }
 void Console::clearcmd() {
-	werase(cmd_window);
-	mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX, CMD_WINDOW_CONTENT);
-	wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
-	wrefresh(cmd_window);
+    werase(cmd_window);    // Clear cmd window
+    box(cmd_window, 0, 0); // Re-draw cmd window borders
+    mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX,
+              CMD_WINDOW_CONTENT);
+    reset_curs(); // Reset cursor position
 }
 void Console::refresh() {
-	return;
+    wrefresh(cmd_window);
+    wrefresh(chat_window);
+}
+void Console::read() {
+    char cmd[CMD_LENGTH];
+    wgetstr(cmd_window, cmd);
+    process_command(cmd);
 }
