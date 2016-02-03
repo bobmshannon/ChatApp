@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 18:06:22
+* @Last Modified time: 2016-02-03 18:34:33
 */
 
 #include <ncurses.h>
@@ -17,6 +17,9 @@ Console::Console(void) {
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
+
+    // Initial running state
+    running = true;
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
@@ -41,6 +44,7 @@ Console::Console(void) {
 }
 
 Console::~Console(void) {
+	running = false;
     destroy_win(cmd_window);
     destroy_win(chat_window);
     endwin();

@@ -28,6 +28,10 @@ class Console {
      */
     ~Console();
     /**
+     * Whether interactive console is running or not.
+     */
+    bool running;
+    /**
      * Process a user inputted command.
      */
     void process_command(char cmd[]);
