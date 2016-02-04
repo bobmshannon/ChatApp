@@ -2,12 +2,13 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 18:34:33
+* @Last Modified time: 2016-02-03 20:09:39
 */
 
 #include <ncurses.h>
 #include <signal.h>
-#include <cstring>
+#include <string>
+#include <logger.h>
 #include "../include/console.h"
 
 Console::Console(void) {
@@ -38,13 +39,10 @@ Console::Console(void) {
     wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
     wrefresh(chat_window);
     wrefresh(cmd_window);
-
-    // Wait for user input
-    read();
 }
 
 Console::~Console(void) {
-	running = false;
+    running = false;
     destroy_win(cmd_window);
     destroy_win(chat_window);
     endwin();
@@ -90,21 +88,27 @@ void Console::process_command(char cmd[]) {
     clearcmd();           // Clear cmd window
     read();               // Wait for more user input
 }
-void Console::print(char str[]) {
+
+void Console::print(std::string str) {
+    clearchat();
     mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
-              str);        // Print string to chat window
-    wrefresh(chat_window); // Refresh chat window
+              str.c_str()); // Print string to chat window
+    wrefresh(chat_window);  // Refresh chat window
+    cse4589_print_and_log(str.c_str());
 }
+
 void Console::reset_curs() {
     wmove(cmd_window, CMD_WINDOW_STARTY,
           CMD_WINDOW_STARTX + 2); // Reset cursor to default position
     wrefresh(cmd_window);
 }
+
 void Console::clearchat() {
     werase(chat_window);    // Clear chat window
     box(chat_window, 0, 0); // Re-draw chat window borders
     wrefresh(chat_window);
 }
+
 void Console::clearcmd() {
     werase(cmd_window);    // Clear cmd window
     box(cmd_window, 0, 0); // Re-draw cmd window borders
@@ -112,12 +116,16 @@ void Console::clearcmd() {
               CMD_WINDOW_CONTENT);
     reset_curs(); // Reset cursor position
 }
+
 void Console::refresh() {
     wrefresh(cmd_window);
     wrefresh(chat_window);
 }
-void Console::read() {
+
+std::string Console::read() {
     char cmd[CMD_LENGTH];
+    reset_curs();
     wgetstr(cmd_window, cmd);
-    process_command(cmd);
+    clearcmd();
+    return std::string(cmd);
 }

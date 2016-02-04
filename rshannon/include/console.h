@@ -15,7 +15,6 @@ class Console {
   private:
     WINDOW *chat_window, *cmd_window;
     WINDOW* create_newwin(int height, int width, int starty, int startx);
-    static Console console;
     void destroy_win(WINDOW* local_win);
 
   public:
@@ -38,7 +37,7 @@ class Console {
     /**
      * Print a string to the chat window.
      */
-    void print(char str[]);
+    void print(std::string str);
     /**
      * Clear the chat window.
      */
@@ -58,7 +57,7 @@ class Console {
     /**
      * Read input from user.
      */
-    void read();
+    std::string read();
 };
 
 #endif

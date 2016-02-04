@@ -44,7 +44,13 @@ int main(int argc, char** argv) {
     fclose(fopen(LOGFILE, "w"));
 
     // Fetch user input
-    Console console = Console();
+    Console* console = new Console();
+    string cmd;
 
-    while(1) { }
+    while (console->running) {
+        cmd = console->read();
+        console->print(cmd);
+    }
+
+    delete console;
 }
