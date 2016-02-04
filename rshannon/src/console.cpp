@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 20:13:05
+* @Last Modified time: 2016-02-03 20:15:28
 */
 
 #include <ncurses.h>
@@ -90,7 +90,6 @@ void Console::process_command(char cmd[]) {
 }
 
 void Console::print(std::string str) {
-	str += '\n';
     clearchat();
     mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
               str.c_str()); // Print string to chat window

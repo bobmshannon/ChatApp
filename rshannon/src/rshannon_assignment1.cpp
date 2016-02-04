@@ -22,7 +22,9 @@
 */
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include <curses.h>
+#include <stdlib.h>
 
 #include "../include/global.h"
 #include "../include/logger.h"
@@ -42,6 +44,21 @@ int main(int argc, char** argv) {
 
     // Clear LOGFILE
     fclose(fopen(LOGFILE, "w"));
+
+    // Argument checking
+    if (argc != 3) {
+        cerr << "Usage: " + string(argv[0]) + " <MODE> <PORT>" << endl
+             << "    <MODE> [s/c]" << endl
+             << "    Indicates whether to run program in server or client mode"
+             << endl
+             << "    <PORT> [0-65535]" << endl
+             << "    The port number to listen on." << endl;
+        // return -1;
+    } else if (string(argv[1]) != "s" && string(argv[1]) != "c") {
+        // return -1;
+    } else if (atoi(argv[2]) > 65535 || atoi(argv[2]) < 0) {
+        // return -1;
+    }
 
     // Fetch user input
     Console* console = new Console();
