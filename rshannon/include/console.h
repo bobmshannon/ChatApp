@@ -58,6 +58,10 @@ class Console {
      * Read input from user.
      */
     std::string read();
+    /**
+     * Exit console.
+     */
+    void exit();
 };
 
 #endif
