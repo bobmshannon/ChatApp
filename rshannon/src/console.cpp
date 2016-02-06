@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 21:57:02
+* @Last Modified time: 2016-02-05 23:03:53
 */
 
 #include <signal.h>
@@ -10,21 +10,20 @@
 #include <logger.h>
 #include "../include/console.h"
 
-Console::Console(void) {
+Console::Console(void) {  
     initscr();     // Start curses mode
     cbreak();      // Disable line buffering
-    refresh();     // Paint initial frame
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
-
-    // Initial running state
-    running = true;
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
     cmd_window =
         create_newwin(CMD_WINDOW_HEIGHT, COLS, LINES - CMD_WINDOW_HEIGHT, 0);
+
+    // Initial running state
+    running = true;
 
     // Set window background colors
     wbkgd(chat_window, COLOR_PAIR(1));
@@ -36,8 +35,8 @@ Console::Console(void) {
     mvwprintw(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX,
               CMD_WINDOW_CONTENT);
     wmove(cmd_window, CMD_WINDOW_STARTY, CMD_WINDOW_STARTX + 2);
-    wrefresh(chat_window);
-    wrefresh(cmd_window);
+    // Paint initial frame
+    refresh();
 }
 
 Console::~Console(void) {
@@ -93,7 +92,7 @@ void Console::print(std::string str) {
     mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
               str.c_str()); // Print string to chat window
     wrefresh(chat_window);  // Refresh chat window
-    cse4589_print_and_log(str.c_str());
+    //cse4589_print_and_log(str.c_str());
 }
 
 void Console::reset_curs() {

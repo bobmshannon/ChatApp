@@ -51,28 +51,33 @@ void show_usage(string progname) {
 * @return 0 EXIT_SUCCESS
 */
 int main(int argc, char** argv) {
+    // Argument checking  
+    if (argc != 3) {
+        show_usage(string(argv[0]));
+        return -1;
+    } 
+
     // Get arguments
     string progname(argv[0]);
     string mode(argv[1]);
     string port(argv[2]);
 
+    // More argument checking
+    if (mode != "s" && mode != "c") {
+        show_usage(string(argv[0]));
+        return -1;
+    } else if (stoi(port) > 65535 || stoi(port) < 0) {
+        show_usage(string(argv[0]));
+        return -1;
+    }
+
     // Initialize Logger
     cse4589_init_log(argv[2]);
 
     // Clear LOGFILE
-    fclose(fopen(LOGFILE, "w"));
-
-    // Argument checking  
-    if (argc != 3) {
-        show_usage(progname);
-        return -1;
-    } 
-    else if (mode != "s" && mode != "c") {
-        show_usage(progname);
-        return -1;
-    } else if (stoi(port) > 65535 || stoi(port) < 0) {
-        show_usage(progname);
-        return -1;
+    FILE* fp = fopen(LOGFILE, "w");
+    if (fp != NULL) {
+        fclose(fp);
     }
 
     if (mode == "s") {
