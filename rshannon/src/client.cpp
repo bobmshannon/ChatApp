@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-06 18:56:06
+* @Last Modified time: 2016-02-06 18:59:23
 */
 
 #include <string>
@@ -90,6 +90,7 @@ void Client::notify_success(string operation, string results) {
 
 void Client::exit() {
     // todo: logout from remote server
+    notify_success("EXIT", "Terminating...");
     console->exit();
     delete console;
 }
