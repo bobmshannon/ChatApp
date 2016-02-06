@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 23:46:19
+* @Last Modified time: 2016-02-05 23:47:19
 */
 
 #include <string>
@@ -19,54 +19,41 @@ Client::Client() {}
 Client::~Client() {}
 
 void Client::process_command(string cmd) {
-	// Grab the operation from the user inputted
-	// command, i.e. LOGIN, EXIT, AUTHOR, etc.
-	stringstream stream(cmd);
-	string operation;
+    // Grab the operation from the user inputted
+    // command, i.e. LOGIN, EXIT, AUTHOR, etc.
+    stringstream stream(cmd);
+    string operation;
 
-	stream >> operation;
+    stream >> operation;
 
-	if(operation == "IP") {
+    if (operation == "IP") {
 
-	} 
-	else if (operation == "PORT") {
+    } else if (operation == "PORT") {
 
-	}
-	else if (operation == "LIST") {
+    } else if (operation == "LIST") {
 
-	}
-	else if (operation == "LOGIN") {
-		
-	}
-	else if (operation == "REFRESH") {
-		
-	}
-	else if (operation == "SEND") {
-		
-	}
-	else if (operation == "BROADCAST") {
-		
-	}
-	else if (operation == "BLOCK") {
-		
-	}
-	else if (operation == "BLOCKED") {
-		
-	}
-	else if (operation == "UNBLOCK") {
-		
-	}
-	else if (operation == "LOGOUT") {
-		
-	}
-	else if (operation == "EXIT") {
-		
-	}
-	else if (operation == "STATISTICS") {
-		
-	}
+    } else if (operation == "LOGIN") {
 
-	console->print(operation);
+    } else if (operation == "REFRESH") {
+
+    } else if (operation == "SEND") {
+
+    } else if (operation == "BROADCAST") {
+
+    } else if (operation == "BLOCK") {
+
+    } else if (operation == "BLOCKED") {
+
+    } else if (operation == "UNBLOCK") {
+
+    } else if (operation == "LOGOUT") {
+
+    } else if (operation == "EXIT") {
+
+    } else if (operation == "STATISTICS") {
+    }
+
+    console->print(operation);
 }
 
 void Client::launch() {
@@ -76,7 +63,7 @@ void Client::launch() {
 
     while (console->running) {
         cmd = console->read();
-        
+
         // Process user inputted command
         process_command(cmd);
     }
