@@ -51,6 +51,12 @@ void show_usage(string progname) {
 * @return 0 EXIT_SUCCESS
 */
 int main(int argc, char** argv) {
+    /*Init. Logger*/
+    cse4589_init_log(argv[2]);
+
+    /* Clear LOGFILE*/
+    fclose(fopen(LOGFILE, "w"));
+
     // Argument checking  
     if (argc != 3) {
         show_usage(string(argv[0]));

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 23:03:53
+* @Last Modified time: 2016-02-05 23:05:48
 */
 
 #include <signal.h>
@@ -92,7 +92,7 @@ void Console::print(std::string str) {
     mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
               str.c_str()); // Print string to chat window
     wrefresh(chat_window);  // Refresh chat window
-    //cse4589_print_and_log(str.c_str());
+    cse4589_print_and_log(str.c_str());
 }
 
 void Console::reset_curs() {
