@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 23:24:58
+* @Last Modified time: 2016-02-06 18:40:39
 */
 
 #include <signal.h>
@@ -16,6 +16,9 @@ Console::Console(void) {
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
+
+    // Chat cursor y-position
+    chat_curs_y = CHAT_WINDOW_STARTY;
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
@@ -88,11 +91,12 @@ void Console::process_command(char cmd[]) {
 }
 
 void Console::print(std::string str) {
-    clearchat();
-    mvwprintw(chat_window, CHAT_WINDOW_STARTY, CHAT_WINDOW_STARTX,
+    //clearchat();
+    mvwprintw(chat_window, chat_curs_y, CHAT_WINDOW_STARTX,
               str.c_str()); // Print string to chat window
     wrefresh(chat_window);  // Refresh chat window
     cse4589_print_and_log(str.c_str());
+    chat_curs_y += 1;
 }
 
 void Console::reset_curs() {

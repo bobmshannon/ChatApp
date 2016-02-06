@@ -76,9 +76,11 @@ class Client {
      */
     void logout();
     /**
-     * Logout from the server if logged in, and then terminate the application.
+     * Notify the user of a successfully executed command.
+     * @param operation The command that was executed, e.g. LOGIN, AUTHOR, etc.
+     * @param results   The resulting output from the executed command.
      */
-    void exit();
+    void notify_success(std::string operation, std::string results);
 
   public:
     Client();

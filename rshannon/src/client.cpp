@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-06 18:18:12
+* @Last Modified time: 2016-02-06 18:38:09
 */
 
 #include <string>
@@ -51,53 +51,46 @@ void Client::process_command(string cmd) {
     } else if (operation == "EXIT") {
 
     } else if (operation == "STATISTICS") {
+
+    } else if (operation == "AUTHOR") {
+        author();
     }
 
-    console->print(operation);
+    // console->print(operation);
 }
 
 void Client::author() {
-
+    notify_success("AUTHOR", "I, rshannon, have read and understood the course "
+                             "academic integrity policy.");
 }
 
-void Client::ip() {
+void Client::ip() {}
 
-}
+void Client::port() {}
 
-void Client::port() {
+void Client::list() {}
 
-}
+void Client::login() {}
 
-void Client::list() {
+void Client::refresh() {}
 
-}
+void Client::broadcast() {}
 
-void Client::login() {
+void Client::block() {}
 
-}
+void Client::unblock() {}
 
-void Client::refresh() {
+void Client::logout() {}
 
-}
-
-void Client::broadcast() {
-
-}
-
-void Client::block() {
-
-}
-
-void Client::unblock() {
-
-}
-
-void Client::logout() {
-
+void Client::notify_success(string operation, string results) {
+    console->print("[" + operation + ":SUCCESS]\n");
+    console->print(results + "\n");
+    console->print("[" + operation + ":END]\n");
 }
 
 void Client::exit() {
-	
+    console->exit();
+    delete console;
 }
 
 void Client::launch() {
@@ -111,9 +104,4 @@ void Client::launch() {
         // Process user inputted command
         process_command(cmd);
     }
-}
-
-void Client::exit() {
-    console->exit();
-    delete console;
 }

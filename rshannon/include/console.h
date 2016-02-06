@@ -18,6 +18,7 @@ class Console {
     WINDOW *chat_window, *cmd_window;
     WINDOW* create_newwin(int height, int width, int starty, int startx);
     void destroy_win(WINDOW* local_win);
+    int chat_curs_y;
 
   public:
     /**
