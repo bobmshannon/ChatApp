@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-06 18:40:39
+* @Last Modified time: 2016-02-06 18:44:07
 */
 
 #include <signal.h>
@@ -91,7 +91,10 @@ void Console::process_command(char cmd[]) {
 }
 
 void Console::print(std::string str) {
-    //clearchat();
+    if (chat_curs_y >= LINES - CMD_WINDOW_HEIGHT) {
+      chat_curs_y = CHAT_WINDOW_STARTY;
+      clearchat();
+    }
     mvwprintw(chat_window, chat_curs_y, CHAT_WINDOW_STARTX,
               str.c_str()); // Print string to chat window
     wrefresh(chat_window);  // Refresh chat window
