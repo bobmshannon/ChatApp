@@ -9,6 +9,11 @@ class Client {
 
 		~Client();
 		/**
+		 * Process a user inputted command.
+		 * @param cmd The user inputted string
+		 */
+		void process_command(std::string cmd);
+		/**
 		 * Launch a new client window.
 		 */
 		void launch();
