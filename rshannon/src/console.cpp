@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-03 20:15:28
+* @Last Modified time: 2016-02-05 20:44:02
 */
 
 #include <ncurses.h>
@@ -55,7 +55,7 @@ WINDOW* Console::create_newwin(int height, int width, int starty, int startx) {
     box(local_win, 0, 0); /* 0, 0 gives default characters
                            * for the vertical and horizontal
                            * lines */
-    wrefresh(local_win);  /* Show that box 	*/
+    wrefresh(local_win);  /* Show that box  */
 
     return local_win;
 }
@@ -121,6 +121,8 @@ void Console::refresh() {
     wrefresh(cmd_window);
     wrefresh(chat_window);
 }
+
+void Console::exit() { running = false; }
 
 std::string Console::read() {
     char cmd[CMD_LENGTH];
