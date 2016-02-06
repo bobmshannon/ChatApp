@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 23:05:48
+* @Last Modified time: 2016-02-05 23:24:58
 */
 
 #include <signal.h>
@@ -10,7 +10,7 @@
 #include <logger.h>
 #include "../include/console.h"
 
-Console::Console(void) {  
+Console::Console(void) {
     initscr();     // Start curses mode
     cbreak();      // Disable line buffering
     start_color(); // Enable color support

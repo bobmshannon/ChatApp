@@ -57,11 +57,11 @@ int main(int argc, char** argv) {
     /* Clear LOGFILE*/
     fclose(fopen(LOGFILE, "w"));
 
-    // Argument checking  
+    // Argument checking
     if (argc != 3) {
         show_usage(string(argv[0]));
         return -1;
-    } 
+    }
 
     // Get arguments
     string progname(argv[0]);
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 
     if (mode == "s") {
 
-    } else if(mode == "c") {
+    } else if (mode == "c") {
         Client client = Client();
         client.launch();
     }

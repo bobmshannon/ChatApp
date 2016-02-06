@@ -1,8 +1,8 @@
-/* 
+/*
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 22:00:08
+* @Last Modified time: 2016-02-05 23:25:06
 */
 
 #include <string>
@@ -12,13 +12,9 @@
 
 using std::string;
 
-Client::Client() {
+Client::Client() {}
 
-}
-
-Client::~Client() {
-
-}
+Client::~Client() {}
 
 void Client::launch() {
     // Fetch user input
@@ -32,6 +28,6 @@ void Client::launch() {
 }
 
 void Client::exit() {
-	console->exit();
+    console->exit();
     delete console;
 }
