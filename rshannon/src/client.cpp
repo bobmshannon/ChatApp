@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-06 18:55:38
+* @Last Modified time: 2016-02-06 18:56:06
 */
 
 #include <string>
@@ -49,7 +49,7 @@ void Client::process_command(string cmd) {
     } else if (operation == "LOGOUT") {
 
     } else if (operation == "EXIT") {
-    	exit();
+        exit();
     } else if (operation == "STATISTICS") {
 
     } else if (operation == "AUTHOR") {
@@ -89,7 +89,7 @@ void Client::notify_success(string operation, string results) {
 }
 
 void Client::exit() {
-	//todo: logout from remote server
+    // todo: logout from remote server
     console->exit();
     delete console;
 }
