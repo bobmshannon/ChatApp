@@ -11,6 +11,8 @@
 #define CHAT_WINDOW_STARTY 1
 #define CHAT_WINDOW_CONTENT ""
 
+#include <ncurses.h>
+
 class Console {
   private:
     WINDOW *chat_window, *cmd_window;

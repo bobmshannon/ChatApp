@@ -30,6 +30,8 @@
 #include "../include/global.h"
 #include "../include/logger.h"
 #include "../include/console.h"
+#include "../include/commands.h"
+#include "../include/client.h"
 
 using namespace std;
 
@@ -73,16 +75,10 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // Fetch user input
-    Console* console = new Console();
-    string cmd;
+    if (mode == "s") {
 
-    console->print(port);
-
-    while (console->running) {
-        cmd = console->read();
-        console->print(cmd);
+    } else if(mode == "c") {
+        Client client = Client();
+        client.launch();
     }
-
-    delete console;
 }

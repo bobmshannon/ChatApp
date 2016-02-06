@@ -2,10 +2,9 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 20:44:02
+* @Last Modified time: 2016-02-05 21:57:02
 */
 
-#include <ncurses.h>
 #include <signal.h>
 #include <string>
 #include <logger.h>
