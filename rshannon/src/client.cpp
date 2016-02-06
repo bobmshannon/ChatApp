@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-05 23:47:19
+* @Last Modified time: 2016-02-06 18:18:12
 */
 
 #include <string>
@@ -54,6 +54,50 @@ void Client::process_command(string cmd) {
     }
 
     console->print(operation);
+}
+
+void Client::author() {
+
+}
+
+void Client::ip() {
+
+}
+
+void Client::port() {
+
+}
+
+void Client::list() {
+
+}
+
+void Client::login() {
+
+}
+
+void Client::refresh() {
+
+}
+
+void Client::broadcast() {
+
+}
+
+void Client::block() {
+
+}
+
+void Client::unblock() {
+
+}
+
+void Client::logout() {
+
+}
+
+void Client::exit() {
+	
 }
 
 void Client::launch() {

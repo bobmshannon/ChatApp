@@ -53,6 +53,7 @@ void refresh();
  * @throws UnknownIPException an unknown IP address was provided
  */
 void send();
+
 /**
  * Send message: <msg> to all logged-in clients. <msg> can have a maximum length
  * of
