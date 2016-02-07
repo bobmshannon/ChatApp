@@ -1,13 +1,13 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
-#define PORT "2512" // the port client will be connecting to 
-#define MAXDATASIZE 100 // max number of bytes we can get at once 
+#define PORT "2512"     // the port client will be connecting to
+#define MAXDATASIZE 100 // max number of bytes we can get at once
 
 class Client {
   private:
     Console* console;
-    void *get_in_addr(struct sockaddr *sa);
+    void* get_in_addr(struct sockaddr* sa);
     int server_connect(std::string host, std::string port);
     int server_disconnect(int sockfd);
     /**

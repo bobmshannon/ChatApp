@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-07 16:53:18
+* @Last Modified time: 2016-02-07 16:55:27
 */
 
 #include <vector>
@@ -140,15 +140,15 @@ int Client::server_connect(string host, string port) {
 }
 
 int Client::server_disconnect(int sockfd) {
-	close(sockfd);
-	return 0;
+    close(sockfd);
+    return 0;
 }
 
 void Client::login(string host, string port) {
-	char data[MAXDATASIZE];
-	int sockfd, nbytes;
+    char data[MAXDATASIZE];
+    int sockfd, nbytes;
 
-	sockfd = server_connect(host, port);
+    sockfd = server_connect(host, port);
 
     if ((nbytes = recv(sockfd, data, MAXDATASIZE - 1, 0)) == -1) {
         perror("recv");
