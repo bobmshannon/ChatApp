@@ -1,9 +1,15 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
+#define PORT "2512" // the port client will be connecting to 
+#define MAXDATASIZE 100 // max number of bytes we can get at once 
+
 class Client {
   private:
     Console* console;
+    void *get_in_addr(struct sockaddr *sa);
+    int server_connect(std::string host, std::string port);
+    int server_disconnect(int sockfd);
     /**
      * Print the author information and statement of academic integrity.
      */
@@ -36,7 +42,7 @@ class Client {
      * @throws ConnectionErrorException an unreachable IP address or port number
      * combination was provided
      */
-    void login();
+    void login(std::string host, std::string port);
     /**
      * Get an updated list of currently logged-in clients from the server.
      */
