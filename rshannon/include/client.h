@@ -1,15 +1,30 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
-#define PORT "2512"     // the port client will be connecting to
 #define MAXDATASIZE 100 // max number of bytes we can get at once
+
+#define IP "IP"
+#define PORT "PORT"
+#define LIST "LIST"
+#define LOGIN "LOGIN"
+#define REFRESH "REFRESH"
+#define SEND "SEND"
+#define BROADCAST "BROADCAST"
+#define BLOCK "BLOCK"
+#define BLOCKED "BLOCKED"
+#define UNBLOCK "UNBLOCK"
+#define LOGOUT "LOGOUT"
+#define EXIT "EXIT"
+#define STATISTICS "STATISTICS"
+#define AUTHOR "AUTHOR"
 
 class Client {
   private:
     Console* console;
+    int sockfd; // File descriptor for network socket
     void* get_in_addr(struct sockaddr* sa);
     int server_connect(std::string host, std::string port);
-    int server_disconnect(int sockfd);
+    int server_disconnect();
     /**
      * Print the author information and statement of academic integrity.
      */
@@ -87,6 +102,12 @@ class Client {
      * @param results   The resulting output from the executed command.
      */
     void notify_success(std::string operation, std::string results);
+    /**
+     * Notify the user that an error occured while executing a command.
+     * @param operation The command that was executed, e.g. LOGIN, AUTHOR, etc.
+     * @param error   The corresponding error message
+     */
+    void notify_error(std::string operation, std::string error);
 
   public:
     Client();
