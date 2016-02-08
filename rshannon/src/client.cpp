@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-08 16:27:59
+* @Last Modified time: 2016-02-08 16:29:30
 */
 
 #include <vector>
@@ -103,7 +103,7 @@ int Client::server_connect(string host, string port) {
 
     if ((results =
              getaddrinfo(host.c_str(), port.c_str(), &hints, &servinfo)) != 0) {
-        //console->print("getaddrinfo: " + string(gai_strerror(results)));
+        // console->print("getaddrinfo: " + string(gai_strerror(results)));
         // return 1;
     }
 
@@ -111,13 +111,13 @@ int Client::server_connect(string host, string port) {
     while (servinfo != NULL) {
         if ((sockfd = socket(servinfo->ai_family, servinfo->ai_socktype,
                              servinfo->ai_protocol)) == -1) {
-            //perror("client: socket");
+            // perror("client: socket");
             servinfo = servinfo->ai_next;
             continue;
         } else if (connect(sockfd, servinfo->ai_addr, servinfo->ai_addrlen) ==
                    -1) {
             close(sockfd);
-            //perror("client: connect");
+            // perror("client: connect");
             servinfo = servinfo->ai_next;
             continue;
         }
@@ -132,7 +132,7 @@ int Client::server_connect(string host, string port) {
 
     inet_ntop(servinfo->ai_family,
               get_in_addr((struct sockaddr*)servinfo->ai_addr), s, sizeof s);
-    //console->print("client: connecting to " + string(s));
+    // console->print("client: connecting to " + string(s));
 
     freeaddrinfo(servinfo); // all done with this structure
 
@@ -145,14 +145,14 @@ int Client::server_disconnect() {
 }
 
 void Client::login(string host, string port) {
-    char data[MAXDATASIZE];	// Data received buffer
+    char data[MAXDATASIZE]; // Data received buffer
     int nbytes;
     string result;
     sockfd = server_connect(host, port);
 
     if ((nbytes = recv(sockfd, data, MAXDATASIZE - 1, 0)) == -1) {
-    	result = string(strerror(nbytes));
-    	notify_error(LOGIN, result);
+        result = string(strerror(nbytes));
+        notify_error(LOGIN, result);
         // exit(1);
     }
 
@@ -168,9 +168,7 @@ void Client::block() {}
 
 void Client::unblock() {}
 
-void Client::logout() {
-	server_disconnect();
-}
+void Client::logout() { server_disconnect(); }
 
 void Client::notify_success(string operation, string results) {
     console->print("[" + operation + ":SUCCESS]\n");
@@ -181,7 +179,7 @@ void Client::notify_success(string operation, string results) {
 void Client::notify_error(string operation, string error) {
     console->print("[" + operation + ":ERROR]\n");
     console->print(error + "\n");
-    console->print("[" + operation + ":END]\n");	
+    console->print("[" + operation + ":END]\n");
 }
 
 void Client::exit() {
