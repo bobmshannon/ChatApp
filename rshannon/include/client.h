@@ -22,6 +22,7 @@ class Client {
   private:
     Console* console;
     int sockfd; // File descriptor for network socket
+    bool logged_in; // Whether client is logged into a remote server
     void* get_in_addr(struct sockaddr* sa);
     int server_connect(std::string host, std::string port);
     int server_disconnect();
