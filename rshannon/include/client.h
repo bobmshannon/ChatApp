@@ -24,7 +24,20 @@ class Client {
     int sockfd; // File descriptor for network socket
     bool logged_in; // Whether client is logged into a remote server
     void* get_in_addr(struct sockaddr* sa);
+    /**
+     * Initialize a socket for communication with specified 
+     * remote host and port.
+     * 
+     * @param  host The hostname of the server
+     * @param  port The port to connect to 
+     * @return      0 if sucessful, negative integer otherwise
+     */
     int server_connect(std::string host, std::string port);
+    /**
+     * Close the socket (if currently logged in to a 
+     * remote server, i.e. a socket exists)
+     * @return 0 if sucessful, negative integer otherwise
+     */
     int server_disconnect();
     /**
      * Print the author information and statement of academic integrity.
@@ -53,10 +66,9 @@ class Client {
      * Login to the server located at ip address: <server-ip> listening on port:
      * <server-port>.
      *
-     * @throws InvalidIPException an invalid IP address or port number was
-     * provided
-     * @throws ConnectionErrorException an unreachable IP address or port number
-     * combination was provided
+     * @param  host The hostname of the server
+     * @param  port The port to connect to 
+     * @return      0 if sucessful, negative integer otherwise
      */
     void login(std::string host, std::string port);
     /**
