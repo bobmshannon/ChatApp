@@ -6,9 +6,9 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 OBJ_PATH  = $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(OBJ_FILES))
 
-LIBS	= 
+LIBS	= -lncurses -ltinfo
 CC	= /usr/bin/g++
-CFLAGS	= -g -std=c++0x -lncurses -I$(INC_DIR)
+CFLAGS	= -g -std=c++0x -I$(INC_DIR)
 
 all: assignment1
 
