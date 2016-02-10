@@ -10,6 +10,8 @@ class Server {
 		Console* console;
 		static void sigchld_handler(int s);
 		void *get_in_addr(struct sockaddr *sa);
+		int init_socket(std::string port);
+		int new_connection_handler(int listener);
 	public:
 		Server();
 		~Server();

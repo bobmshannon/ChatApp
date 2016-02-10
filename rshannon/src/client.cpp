@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-09 22:45:34
+* @Last Modified time: 2016-02-10 15:07:06
 */
 
 #include <vector>
@@ -124,7 +124,7 @@ void Client::port() {}
 void Client::list() {}
 
 int Client::server_connect(string host, string port) {
-    int sockfd, nbytes, results;
+    int sockfd;
     char s[INET6_ADDRSTRLEN];
     struct addrinfo hints, *servinfo;
 
@@ -132,8 +132,7 @@ int Client::server_connect(string host, string port) {
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    if ((results =
-             getaddrinfo(host.c_str(), port.c_str(), &hints, &servinfo)) != 0) {
+    if ((getaddrinfo(host.c_str(), port.c_str(), &hints, &servinfo)) != 0) {
         return ERR_CONNECTION;
     }
 
