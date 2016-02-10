@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 
     if (mode == "s") {
         Server server = Server();
-        server.launch();
+        server.launch(port);
     } else if (mode == "c") {
         Client client = Client();
         client.launch();

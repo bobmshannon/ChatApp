@@ -19,7 +19,7 @@ class Server {
 	public:
 		Server();
 		~Server();
-		int launch();
+		int launch(std::string port);
 };
 
 #endif

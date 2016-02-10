@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 17:28:35
+* @Last Modified time: 2016-02-10 17:32:26
 */
 
 #include <vector>
@@ -54,7 +54,7 @@ int Server::init_socket(std::string port) {
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, "2512", &hints, &ai)) != 0) {
+    if ((rv = getaddrinfo(NULL, port.c_str(), &hints, &ai)) != 0) {
         return ERR_SOCKET_INIT;
     }
 
@@ -123,7 +123,7 @@ int Server::new_connection_handler(int listener) {
     return newfd;
 }
 
-int Server::launch() {
+int Server::launch(std::string port) {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
     char buf[BUFFER_SIZE];
@@ -133,7 +133,7 @@ int Server::launch() {
     FD_ZERO(&read_fds);
 
     // Initialize socket that listens for new connections
-    if ((listener = init_socket("2512")) < 0) {
+    if ((listener = init_socket(port)) < 0) {
         return listener;
     }
 
