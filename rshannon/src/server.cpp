@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 15:48:22
+* @Last Modified time: 2016-02-10 16:11:00
 */
 
 #include <vector>
@@ -21,6 +21,7 @@
 
 #include "../include/console.h"
 #include "../include/server.h"
+#include "../include/error.h"
 
 void Server::sigchld_handler(int s) {
     // waitpid() might overwrite errno, so we save and restore it:
@@ -56,8 +57,7 @@ int Server::init_socket(std::string port) {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     if ((rv = getaddrinfo(NULL, "2512", &hints, &ai)) != 0) {
-        fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
-        exit(1);
+        return ERR_SOCKET_INIT;
     }
 
     for (p = ai; p != NULL; p = p->ai_next) {
@@ -79,16 +79,14 @@ int Server::init_socket(std::string port) {
 
     // if we got here, it means we didn't get bound
     if (p == NULL) {
-        // fprintf(stderr, "selectserver: failed to bind\n");
-        return -1;
+        return ERR_SOCKET_BIND;
     }
 
     freeaddrinfo(ai); // all done with this
 
     // Listen for new connections on socket
     if (listen(listener, 10) == -1) {
-    	return -1;
-        //perror("listen");
+        return ERR_SOCKET_LISTEN;
     }
 
     return listener;
@@ -101,19 +99,17 @@ int Server::new_connection_handler(int listener) {
 
     // handle new connections
     addrlen = sizeof remoteaddr;
-    newfd = accept(listener, (struct sockaddr*)&remoteaddr,
-                   &addrlen);
+    newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
     char remoteIP[INET6_ADDRSTRLEN];
 
     if (newfd == -1) {
-    	return -1;
+        return ERR_SOCKET_ACCEPT;
     } else {
         printf("selectserver: new connection from %s on "
                "socket %d\n",
-               inet_ntop(
-                   remoteaddr.ss_family,
-                   get_in_addr((struct sockaddr*)&remoteaddr),
-                   remoteIP, INET6_ADDRSTRLEN),
+               inet_ntop(remoteaddr.ss_family,
+                         get_in_addr((struct sockaddr*)&remoteaddr), remoteIP,
+                         INET6_ADDRSTRLEN),
                newfd);
         send(newfd, "Connection ACK.\0", 16, 0);
     }
@@ -127,12 +123,12 @@ int Server::launch() {
     char buf[256];
 
     // Clear the master and temp sets
-    FD_ZERO(&master); 
+    FD_ZERO(&master);
     FD_ZERO(&read_fds);
 
     // Initialize socket that listens for new connections
-    if((listener = init_socket("2512")) == -1) {
-    	return -1;
+    if ((listener = init_socket("2512")) < 0) {
+        return listener;
     }
 
     // Add the listener and STDIN file descriptors to the master set
@@ -143,7 +139,7 @@ int Server::launch() {
     fdmax = listener;
 
     // main loop
-    while(1) {
+    while (1) {
         read_fds = master;
 
         if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
@@ -152,34 +148,34 @@ int Server::launch() {
         }
 
         for (int i = 0; i <= fdmax; i++) {
-        	// Check whether file descriptor is ready to be read
+            // Check whether file descriptor is ready to be read
             if (FD_ISSET(i, &read_fds)) {
                 if (i == listener) {
-          			// New connection received
-                	if((clientfd = new_connection_handler(listener)) == -1) {
-                		return -1;
-					} else {
-				        FD_SET(clientfd, &master); // add to master set
-				        if (clientfd > fdmax) {    // keep track of the max
-				            fdmax = clientfd;
-				        }
-					}
+                    // New connection received
+                    if ((clientfd = new_connection_handler(listener)) == -1) {
+                        return -1;
+                    } else {
+                        FD_SET(clientfd, &master); // add to master set
+                        if (clientfd > fdmax) {    // keep track of the max
+                            fdmax = clientfd;
+                        }
+                    }
                 } else if (i == 0) {
-                	// Input received from STDIN
-                	if(fgets(buf,256, stdin)) {
-                		printf("A key was pressed.\n");
-                	} else {
-                		printf("fail");
-                	}
+                    // Input received from STDIN
+                    if (fgets(buf, 256, stdin)) {
+                        printf("A key was pressed.\n");
+                    } else {
+                        printf("fail");
+                    }
                 } else {
                     // Data received from existing connection
                     if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
                         // got error or connection closed by client
                         if (nbytes == 0) {
                             // connection closed
-                            printf("selectserver: socket %d hung up\n", i);
+                            return ERR_CONN_CLOSED;
                         } else {
-                            perror("recv");
+                            return ERR_SOCKET_READ;
                         }
                         close(i);           // bye!
                         FD_CLR(i, &master); // remove from master set
@@ -197,10 +193,10 @@ int Server::launch() {
                             }
                         }
                     }
-                } // END handle data from client
-            }     // END got new incoming connection
-        }         // END looping through file descriptors
-    }             // END for(;;)--and you thought it would never end!
+                }
+            }
+        }
+    }
 
     return 0;
 
