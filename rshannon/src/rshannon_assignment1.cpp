@@ -30,7 +30,6 @@
 #include "../include/global.h"
 #include "../include/logger.h"
 #include "../include/console.h"
-#include "../include/commands.h"
 #include "../include/client.h"
 
 using namespace std;

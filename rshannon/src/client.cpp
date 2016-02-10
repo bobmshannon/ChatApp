@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-08 22:47:20
+* @Last Modified time: 2016-02-09 22:45:34
 */
 
 #include <vector>
@@ -81,6 +81,10 @@ void Client::process_command(string cmd) {
             console->print("STATISTICS");
         } else if (operation == AUTHOR) {
             author();
+        } else if (operation == LOGIN) {
+            notify_error(operation, "You are already logged in to a server.");
+        } else {
+            notify_error(operation, "You entered an invalid command.");
         }
     } else {
         // Commands allowed to be processed when client is
@@ -88,7 +92,14 @@ void Client::process_command(string cmd) {
         // Note that EXIT, and AUTHOR are allowed to be
         // processed regardless of whether the client
         // is logged into a server or not.
-        if (operation == EXIT) {
+        if (operation == IP || operation == PORT || operation == LIST ||
+            operation == SEND || operation == BROADCAST || operation == BLOCK ||
+            operation == BLOCKED || operation == UNBLOCK ||
+            operation == LOGOUT || operation == STATISTICS) {
+            notify_error(
+                operation,
+                "You must be logged into a server to run this command.");
+        } else if (operation == EXIT) {
             exit();
         } else if (operation == AUTHOR) {
             author();
@@ -96,9 +107,7 @@ void Client::process_command(string cmd) {
             // LOGIN <HOST> <PORT>
             login(args[1], args[2]);
         } else {
-            notify_error(
-                operation,
-                "You must be logged into a server to run this command.");
+            notify_error(operation, "You entered an invalid command.");
         }
     }
 }
