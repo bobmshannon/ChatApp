@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 16:11:00
+* @Last Modified time: 2016-02-10 17:28:35
 */
 
 #include <vector>
@@ -23,16 +23,6 @@
 #include "../include/server.h"
 #include "../include/error.h"
 
-void Server::sigchld_handler(int s) {
-    // waitpid() might overwrite errno, so we save and restore it:
-    int saved_errno = errno;
-
-    while (waitpid(-1, NULL, WNOHANG) > 0)
-        ;
-
-    errno = saved_errno;
-}
-
 // get sockaddr, IPv4 or IPv6:
 void* Server::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
@@ -42,9 +32,17 @@ void* Server::get_in_addr(struct sockaddr* sa) {
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server() {}
+Server::Server() {
+	active_connections = std::vector<Connection>();
+}
 
 Server::~Server() {}
+
+void Server::process_data(int sockfd) {
+
+}
+
+void Server::process_command() {}
 
 int Server::init_socket(std::string port) {
     int listener, rv;
@@ -97,7 +95,7 @@ int Server::new_connection_handler(int listener) {
     socklen_t addrlen;
     int newfd;
 
-    // handle new connections
+    // Handle new connection
     addrlen = sizeof remoteaddr;
     newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
     char remoteIP[INET6_ADDRSTRLEN];
@@ -114,13 +112,21 @@ int Server::new_connection_handler(int listener) {
         send(newfd, "Connection ACK.\0", 16, 0);
     }
 
+    // Keep track of new connection
+    Connection connection = {
+    	newfd,
+    	std::string(remoteIP)
+    };
+
+    active_connections.push_back(connection);
+
     return newfd;
 }
 
 int Server::launch() {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
-    char buf[256];
+    char buf[BUFFER_SIZE];
 
     // Clear the master and temp sets
     FD_ZERO(&master);
@@ -153,7 +159,7 @@ int Server::launch() {
                 if (i == listener) {
                     // New connection received
                     if ((clientfd = new_connection_handler(listener)) == -1) {
-                        return -1;
+                        return clientfd;
                     } else {
                         FD_SET(clientfd, &master); // add to master set
                         if (clientfd > fdmax) {    // keep track of the max
@@ -162,34 +168,29 @@ int Server::launch() {
                     }
                 } else if (i == 0) {
                     // Input received from STDIN
-                    if (fgets(buf, 256, stdin)) {
+                    process_command();
+
+                    /*if (fgets(buf, BUFFER_SIZE, stdin)) {
                         printf("A key was pressed.\n");
-                    } else {
-                        printf("fail");
-                    }
+                    }*/
                 } else {
                     // Data received from existing connection
                     if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
-                        // got error or connection closed by client
                         if (nbytes == 0) {
-                            // connection closed
+                            // Connection closed by client
                             return ERR_CONN_CLOSED;
                         } else {
+                            // read() error
                             return ERR_SOCKET_READ;
                         }
-                        close(i);           // bye!
-                        FD_CLR(i, &master); // remove from master set
+                        close(i);
+                        FD_CLR(i, &master);
                     } else {
-                        // we got some data from a client
+                        // Process data received
                         for (int j = 0; j <= fdmax; j++) {
-                            // send to everyone!
                             if (FD_ISSET(j, &master)) {
-                                // except the listener and ourselves
-                                if (j != listener && j != i) {
-                                    if (send(j, buf, nbytes, 0) == -1) {
-                                        perror("send");
-                                    }
-                                }
+                            	// Process incoming data
+                            	process_data(j);
                             }
                         }
                     }

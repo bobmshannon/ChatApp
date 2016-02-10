@@ -17,7 +17,7 @@
 #define ERR_CONN_CLOSED -12
 #define ERR_SOCKET_READ -13
 
-std::string err_to_str(int errcode) {
+inline std::string err_to_str(int errcode) {
     switch (errcode) {
     case ERR_INVALID_IP:
         return "InvalidIPError";
@@ -46,6 +46,6 @@ std::string err_to_str(int errcode) {
     }
 }
 
-bool is_err(int errcode) { return errcode < 0 ? true : false; }
+inline bool is_err(int errcode) { return errcode < 0 ? true : false; }
 
 #endif
