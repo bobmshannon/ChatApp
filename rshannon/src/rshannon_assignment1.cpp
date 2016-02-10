@@ -31,6 +31,7 @@
 #include "../include/logger.h"
 #include "../include/console.h"
 #include "../include/client.h"
+#include "../include/server.h"
 
 using namespace std;
 
@@ -86,7 +87,8 @@ int main(int argc, char** argv) {
     }
 
     if (mode == "s") {
-
+        Server server = Server();
+        server.launch();
     } else if (mode == "c") {
         Client client = Client();
         client.launch();
