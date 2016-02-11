@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 14:43:45
+* @Last Modified time: 2016-02-11 14:44:37
 */
 
 #include <signal.h>
@@ -11,9 +11,9 @@
 #include "../include/console.h"
 
 Console::Console(void) {
-    initscr();     // Start curses mode
-    cbreak();      // Disable line buffering
-    //nocbreak();
+    initscr(); // Start curses mode
+    cbreak();  // Disable line buffering
+    // nocbreak();
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
@@ -134,29 +134,28 @@ void Console::refresh() {
 void Console::exit() { running = false; }
 
 char Console::getchar() {
-  noecho();
-  char c = wgetch(cmd_window);
-  
-  if(c != 127 && c != 8) {
-    if(cmd_curs_x == CMD_WINDOW_STARTX) {
-      cmd_curs_x += 2;
-    } else {
-      cmd_curs_x += 1;
+    noecho();
+    char c = wgetch(cmd_window);
+
+    if (c != 127 && c != 8) {
+        if (cmd_curs_x == CMD_WINDOW_STARTX) {
+            cmd_curs_x += 2;
+        } else {
+            cmd_curs_x += 1;
+        }
+        wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+        refresh();
+        waddch(cmd_window, c);
+    } else if (cmd_curs_x != CMD_WINDOW_STARTX) {
+        wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+        wdelch(cmd_window);
+        cmd_curs_x -= 1;
+        wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+        refresh();
     }
-    wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
-    refresh();
-    waddch(cmd_window, c);
-  } else {
-    if(cmd_curs_x != CMD_WINDOW_STARTX) {
-      wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
-      wdelch(cmd_window);
-      cmd_curs_x -= 1;
-      wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
-      refresh();
-    }
-  }
-  refresh();
-  return c;
+}
+refresh();
+return c;
 }
 
 std::string Console::read() {
