@@ -1,7 +1,6 @@
 #ifndef _SERVER_H_
 #define _SERVER_H_
 
-#define BUFFER_SIZE 256 // Size of receive buffer in bytes
 #define MESSAGE_SIZE 256
 
 using std::string;
