@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 21:03:47
+* @Last Modified time: 2016-02-11 00:17:01
 */
 
 #include <vector>
@@ -24,6 +24,8 @@
 #include "../include/error.h"
 
 using std::string;
+using std::istringstream;
+using std::istream_iterator;
 using std::vector;
 
 void* Server::get_in_addr(struct sockaddr* sa) {
@@ -38,7 +40,49 @@ Server::Server() { active_connections = vector<Connection>(); }
 
 Server::~Server() {}
 
-void Server::process_data(int sockfd, string data) {}
+void Server::process_data(int sockfd, string data) {
+    string operation;
+    istringstream buf(data);
+    istream_iterator<string> beg(buf), end;
+    vector<string> args(beg, end);
+
+    // Grab the operation from the user inputted
+    // command, i.e. LOGIN, EXIT, AUTHOR, etc.
+    operation = args[0];
+
+    if (operation == SEND) {
+    	string msg;
+   		string sender_ip = fd_to_ip(sockfd);
+    	int clientfd;
+    	for(int i = 2; i < args.size(); i++) {
+    		msg += (args[i] + " ");
+    	}
+    	msg = "msg from:" + sender_ip + "\n[msg]:" + msg;
+    	if((clientfd = ip_to_fd(args[1])) != -1) {
+    		relay_to_client(msg, clientfd, sockfd);	
+		}
+
+    }
+}
+
+int Server::ip_to_fd(string ip) {
+	for(int i = 0; i < active_connections.size(); i++) {
+		if(active_connections[i].remote_ip == ip) {
+			return active_connections[i].fd;
+		}
+	}
+	return -1;
+}
+
+string Server::fd_to_ip(int fd) {
+	for(int i = 0; i < active_connections.size(); i++) {
+		if(active_connections[i].fd == fd) {
+			return active_connections[i].remote_ip;
+		}
+	}
+	return NULL;
+}
+
 
 int Server::process_command() {
     char buf[MESSAGE_SIZE];
@@ -94,7 +138,7 @@ int Server::init_socket(string port) {
     return listener;
 }
 
-int Server::send_to_client(string str, int clientfd) {
+int Server::relay_to_client(string str, int clientfd, int senderfd) {
     char buf[MESSAGE_SIZE] = {'\0'};
     for (int i = 0; i < str.length(); i++) {
         buf[i] = str[i];
@@ -151,7 +195,7 @@ int Server::new_connection_handler(int listener) {
 int Server::launch(string port) {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
-    char buf[BUFFER_SIZE] = {'\0'};
+    char buf[MESSAGE_SIZE] = {'\0'};
 
     // Clear the master and temp sets
     FD_ZERO(&master);

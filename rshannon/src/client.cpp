@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 21:03:43
+* @Last Modified time: 2016-02-10 22:59:39
 */
 
 #include <vector>
@@ -63,7 +63,12 @@ void Client::process_command(string cmd) {
         } else if (operation == LIST) {
             console->print("LIST");
         } else if (operation == SEND) {
-            send_msg(args[1], args[2]);
+            string msg;
+            for(int i = 2; i < args.size(); i++) {
+                msg += (args[i] +" ");
+            }
+            // SEND <IP> <MSG>
+            send_msg(args[1], msg);
         } else if (operation == BROADCAST) {
             console->print("BROADCAST");
         } else if (operation == BLOCK) {

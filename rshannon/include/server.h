@@ -1,7 +1,22 @@
 #ifndef _SERVER_H_
 #define _SERVER_H_
 
-#define MESSAGE_SIZE 256
+#define MESSAGE_SIZE 512
+
+#define IP "IP"
+#define PORT "PORT"
+#define LIST "LIST"
+#define LOGIN "LOGIN"
+#define REFRESH "REFRESH"
+#define SEND "SEND"
+#define BROADCAST "BROADCAST"
+#define BLOCK "BLOCK"
+#define BLOCKED "BLOCKED"
+#define UNBLOCK "UNBLOCK"
+#define LOGOUT "LOGOUT"
+#define EXIT "EXIT"
+#define STATISTICS "STATISTICS"
+#define AUTHOR "AUTHOR"
 
 using std::string;
 using std::vector;
@@ -35,6 +50,8 @@ class Server {
      * @param data   The data that was read
      */
     void process_data(int sockfd, string data);
+    int ip_to_fd(string ip);
+    string fd_to_ip(int fd);
     /**
      * Send data to the client in the form of a string.
      * @param  str      The string to send
@@ -42,7 +59,7 @@ class Server {
      * socket
      * @return          0 success, negative otherwise
      */
-    int send_to_client(string str, int clientfd);
+    int relay_to_client(string str, int clientfd, int senderfd);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

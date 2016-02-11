@@ -1,7 +1,7 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
-#define MESSAGE_SIZE 256
+#define MESSAGE_SIZE 512
 
 #define IP "IP"
 #define PORT "PORT"
