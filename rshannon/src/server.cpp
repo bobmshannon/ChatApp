@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 19:30:55
+* @Last Modified time: 2016-02-10 20:24:07
 */
 
 #include <vector>
@@ -23,6 +23,8 @@
 #include "../include/server.h"
 #include "../include/error.h"
 
+using std::string;
+
 // get sockaddr, IPv4 or IPv6:
 void* Server::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
@@ -32,17 +34,19 @@ void* Server::get_in_addr(struct sockaddr* sa) {
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server() {
-	active_connections = std::vector<Connection>();
-}
+Server::Server() { active_connections = std::vector<Connection>(); }
 
 Server::~Server() {}
 
-void Server::process_data(int sockfd) {
+void Server::process_data(int sockfd, string data) {}
 
+int Server::process_command() {
+    char buf[MESSAGE_SIZE];
+    if (fgets(buf, MESSAGE_SIZE, stdin) == NULL) {
+        return -1;
+    }
+    printf("You entered a command: %s", buf);
 }
-
-void Server::process_command() {}
 
 int Server::init_socket(std::string port) {
     int listener, rv;
@@ -113,10 +117,7 @@ int Server::new_connection_handler(int listener) {
     }
 
     // Keep track of new connection
-    Connection connection = {
-    	newfd,
-    	std::string(remoteIP)
-    };
+    Connection connection = {newfd, std::string(remoteIP), true};
 
     active_connections.push_back(connection);
 
@@ -126,7 +127,7 @@ int Server::new_connection_handler(int listener) {
 int Server::launch(std::string port) {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
-    char buf[BUFFER_SIZE] = { '\0' };
+    char buf[BUFFER_SIZE] = {'\0'};
 
     // Clear the master and temp sets
     FD_ZERO(&master);
@@ -159,7 +160,7 @@ int Server::launch(std::string port) {
                 if (i == listener) {
                     // New connection received
                     if ((clientfd = new_connection_handler(listener)) == -1) {
-                        return clientfd;
+                        // return clientfd;
                     } else {
                         FD_SET(clientfd, &master); // add to master set
                         if (clientfd > fdmax) {    // keep track of the max
@@ -170,24 +171,20 @@ int Server::launch(std::string port) {
                     // Input received from STDIN
                     process_command();
 
-                    /*if (fgets(buf, BUFFER_SIZE, stdin)) {
-                        printf("A key was pressed.\n");
-                    }*/
                 } else {
                     // Data received from existing connection
-                    if ((nbytes = recv(i, buf, BUFFER_SIZE, 0)) <= 0) {
+                    if ((nbytes = recv(i, buf, MESSAGE_SIZE, 0)) <= 0) {
                         if (nbytes == 0) {
                             // Connection closed by client
-                            return ERR_CONN_CLOSED;
                         } else {
                             // read() error
-                            return ERR_SOCKET_READ;
                         }
                         close(i);
                         FD_CLR(i, &master);
                     } else {
-                    	printf("received %i bytes from fd %i: %s", nbytes, i, buf);
-
+                        printf("received %i bytes from fd %i: %s", nbytes, i,
+                               buf);
+                        process_data(i, string(buf));
                     }
                 }
             }
@@ -195,16 +192,4 @@ int Server::launch(std::string port) {
     }
 
     return 0;
-
-    /*
-// Fetch user input
-string cmd;
-console = new Console();
-
-while (console->running) {
-    cmd = console->read();
-
-    // Process user inputted command
-    process_command(cmd);
-}*/
 }

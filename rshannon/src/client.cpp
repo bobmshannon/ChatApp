@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 19:35:01
+* @Last Modified time: 2016-02-10 20:24:20
 */
 
 #include <vector>
@@ -117,23 +117,29 @@ void Client::send_msg(string ip, string msg) {
     notify_success(SEND, "Message sent.");
 }
 
-int Client::send_to_server(string str)
-{
-    const char * buf = str.c_str();
-    int len = strlen(buf);
-    int total = 0;        // how many bytes we've sent
-    int bytesleft = len; // how many we have left to send
+int Client::send_to_server(string str) {
+    char buf[MESSAGE_SIZE] = {'\0'};
+    for (int i = 0; i < str.length(); i++) {
+        buf[i] = str[i];
+        if (i == str.length() - 1) {
+            buf[i + 1] = '\n';
+        }
+    }
+    int total = 0;                // how many bytes we've sent
+    int bytesleft = MESSAGE_SIZE; // how many we have left to send
     int n;
 
-    while(total < len) {
-        n = send(sockfd, buf+total, bytesleft, 0);
-        if (n == -1) { break; }
+    while (total < MESSAGE_SIZE) {
+        n = send(sockfd, buf + total, bytesleft, 0);
+        if (n == -1) {
+            break;
+        }
         total += n;
         bytesleft -= n;
     }
 
-    return n==-1?-1:0; // return -1 on failure, 0 on success
-} 
+    return n == -1 ? -1 : 0; // return -1 on failure, 0 on success
+}
 
 void Client::author() {
     notify_success(AUTHOR, "I, rshannon, have read and understood the course "

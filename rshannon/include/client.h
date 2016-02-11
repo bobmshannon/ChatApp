@@ -2,6 +2,7 @@
 #define _CLIENT_H_
 
 #define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MESSAGE_SIZE 256
 
 #define IP "IP"
 #define PORT "PORT"
