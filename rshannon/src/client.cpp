@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 15:07:06
+* @Last Modified time: 2016-02-10 19:35:01
 */
 
 #include <vector>
@@ -64,7 +64,7 @@ void Client::process_command(string cmd) {
         } else if (operation == LIST) {
             console->print("LIST");
         } else if (operation == SEND) {
-            console->print("SEND");
+            send_msg(args[1], args[2]);
         } else if (operation == BROADCAST) {
             console->print("BROADCAST");
         } else if (operation == BLOCK) {
@@ -111,6 +111,29 @@ void Client::process_command(string cmd) {
         }
     }
 }
+
+void Client::send_msg(string ip, string msg) {
+    send_to_server(string(SEND) + " " + ip + " " + msg);
+    notify_success(SEND, "Message sent.");
+}
+
+int Client::send_to_server(string str)
+{
+    const char * buf = str.c_str();
+    int len = strlen(buf);
+    int total = 0;        // how many bytes we've sent
+    int bytesleft = len; // how many we have left to send
+    int n;
+
+    while(total < len) {
+        n = send(sockfd, buf+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    return n==-1?-1:0; // return -1 on failure, 0 on success
+} 
 
 void Client::author() {
     notify_success(AUTHOR, "I, rshannon, have read and understood the course "

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 17:32:26
+* @Last Modified time: 2016-02-10 19:30:55
 */
 
 #include <vector>
@@ -126,7 +126,7 @@ int Server::new_connection_handler(int listener) {
 int Server::launch(std::string port) {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
-    char buf[BUFFER_SIZE];
+    char buf[BUFFER_SIZE] = { '\0' };
 
     // Clear the master and temp sets
     FD_ZERO(&master);
@@ -175,7 +175,7 @@ int Server::launch(std::string port) {
                     }*/
                 } else {
                     // Data received from existing connection
-                    if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
+                    if ((nbytes = recv(i, buf, BUFFER_SIZE, 0)) <= 0) {
                         if (nbytes == 0) {
                             // Connection closed by client
                             return ERR_CONN_CLOSED;
@@ -186,13 +186,8 @@ int Server::launch(std::string port) {
                         close(i);
                         FD_CLR(i, &master);
                     } else {
-                        // Process data received
-                        for (int j = 0; j <= fdmax; j++) {
-                            if (FD_ISSET(j, &master)) {
-                            	// Process incoming data
-                            	process_data(j);
-                            }
-                        }
+                    	printf("received %i bytes from fd %i: %s", nbytes, i, buf);
+
                     }
                 }
             }

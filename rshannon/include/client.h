@@ -122,6 +122,8 @@ class Client {
      */
     void notify_error(std::string operation, std::string error);
 
+    void send_msg(std::string ip, std::string msg);
+    int send_to_server(std::string str);
   public:
     Client();
     ~Client();
