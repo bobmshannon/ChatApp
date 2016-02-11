@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 22:59:39
+* @Last Modified time: 2016-02-11 09:54:50
 */
 
 #include <vector>
@@ -269,10 +269,64 @@ void Client::launch() {
     string cmd;
     console = new Console();
 
-    while (console->running) {
+    while (console->running && !logged_in) {
         cmd = console->read();
 
         // Process user inputted command
         process_command(cmd);
+    }
+
+    fd_set master, read_fds;
+    int fdmax, nbytes;
+    char buf[MESSAGE_SIZE] = {'\0'};
+
+    // Clear the master and temp sets
+    FD_ZERO(&master);
+    FD_ZERO(&read_fds);
+
+    // Add the listener and STDIN file descriptors to the master set
+    FD_SET(sockfd, &master);
+    FD_SET(0, &master);
+
+    // Keep track of the biggest file descriptor
+    fdmax = sockfd;
+
+    // Main loop
+    while (1) {
+        console->reset_curs();
+        read_fds = master;
+
+        if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+            perror("select");
+            // unable to read message from server
+        }
+
+        for (int i = 0; i <= fdmax; i++) {
+            // Check whether file descriptor is ready to be read
+            if (FD_ISSET(i, &read_fds)) {
+                if (i == sockfd) {
+                    // Message received from server
+                    if ((nbytes = recv(i, buf, MESSAGE_SIZE, 0)) <= 0) {
+                        if (nbytes == 0) {
+                            // Connection closed by client
+                        } else {
+                            // read() error
+                        }
+                        close(i);
+                        FD_CLR(i, &master);
+                        exit();
+                    } else {
+                        //printf("received %i bytes from fd %i: %s", nbytes, i,
+                        //       buf);
+                        console->print(string(buf));
+                    }
+                } else if (i == 0) {
+                    // Input received from STDIN
+                    fgets(buf, MESSAGE_SIZE, stdin);
+                    //printf("%s", buf);
+                    process_command(string(buf));
+                }
+            }
+        }
     }
 }

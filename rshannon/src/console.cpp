@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-06 18:56:10
+* @Last Modified time: 2016-02-11 01:05:25
 */
 
 #include <signal.h>
@@ -12,7 +12,8 @@
 
 Console::Console(void) {
     initscr();     // Start curses mode
-    cbreak();      // Disable line buffering
+    //cbreak();      // Disable line buffering
+    nocbreak();
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);

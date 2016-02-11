@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 00:17:01
+* @Last Modified time: 2016-02-11 10:07:35
 */
 
 #include <vector>
@@ -49,6 +49,8 @@ void Server::process_data(int sockfd, string data) {
     // Grab the operation from the user inputted
     // command, i.e. LOGIN, EXIT, AUTHOR, etc.
     operation = args[0];
+
+    printf(operation.c_str());
 
     if (operation == SEND) {
     	string msg;
@@ -139,6 +141,7 @@ int Server::init_socket(string port) {
 }
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
+	printf("relaying to client %i: %s", clientfd, str.c_str());
     char buf[MESSAGE_SIZE] = {'\0'};
     for (int i = 0; i < str.length(); i++) {
         buf[i] = str[i];
