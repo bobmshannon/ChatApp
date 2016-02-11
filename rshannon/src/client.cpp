@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 14:51:11
+* @Last Modified time: 2016-02-11 15:25:20
 */
 
 #include <vector>
@@ -322,14 +322,20 @@ void Client::launch() {
                         console->print(string(buf));
                     }
                 } else if (i == 0) {
+                    // Input received from STDIN
                     char c = console->getchar();
                     cmd += c;
-                    // Input received from STDIN
                     if(c == '\n') {
                         console->clearcmd();
                         console->reset_curs();
                         process_command(cmd);
                         cmd = "";
+                    } else if(c == 127 | c == 8) {
+                        if(cmd.size() > 2) {
+                            cmd = cmd.substr(0, cmd.size()-2);
+                        } else if(cmd.size() <= 2) {
+                            cmd = "";
+                        }
                     }
                 }
             }
