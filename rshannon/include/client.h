@@ -1,7 +1,6 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
 #define MESSAGE_SIZE 256
 
 #define IP "IP"
@@ -122,8 +121,17 @@ class Client {
      * @param error   The corresponding error message
      */
     void notify_error(std::string operation, std::string error);
-
+    /**
+     * Send a message to another client
+     * @param ip  The IP address of the client
+     * @param msg The message to send
+     */
     void send_msg(std::string ip, std::string msg);
+    /**
+     * Send data to the server in the form of a string
+     * @param  str The string to send
+     * @return     0 on success, negative otherwise
+     */
     int send_to_server(std::string str);
   public:
     Client();

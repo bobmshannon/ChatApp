@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 20:24:20
+* @Last Modified time: 2016-02-10 20:51:00
 */
 
 #include <vector>
@@ -32,7 +32,6 @@ Client::Client() {
 
 Client::~Client() {}
 
-// get sockaddr, IPv4 or IPv6:
 void* Client::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
@@ -125,8 +124,8 @@ int Client::send_to_server(string str) {
             buf[i + 1] = '\n';
         }
     }
-    int total = 0;                // how many bytes we've sent
-    int bytesleft = MESSAGE_SIZE; // how many we have left to send
+    int total = 0;
+    int bytesleft = MESSAGE_SIZE;
     int n;
 
     while (total < MESSAGE_SIZE) {
@@ -138,7 +137,7 @@ int Client::send_to_server(string str) {
         bytesleft -= n;
     }
 
-    return n == -1 ? -1 : 0; // return -1 on failure, 0 on success
+    return n == -1 ? -1 : 0;
 }
 
 void Client::author() {
@@ -165,7 +164,7 @@ int Client::server_connect(string host, string port) {
         return ERR_CONNECTION;
     }
 
-    // loop through all the results and connect to the first we can
+    // Loop through all the results and connect to the first we can
     while (servinfo != NULL) {
         if ((sockfd = socket(servinfo->ai_family, servinfo->ai_socktype,
                              servinfo->ai_protocol)) == -1) {
@@ -202,8 +201,7 @@ int Client::server_disconnect() {
 }
 
 void Client::login(string host, string port) {
-    char data[MAXDATASIZE]; // Data received buffer
-    int nbytes;
+    char data[MESSAGE_SIZE];
     string result;
     sockfd = server_connect(host, port);
 
@@ -212,8 +210,7 @@ void Client::login(string host, string port) {
         return;
     }
 
-    if ((nbytes = recv(sockfd, data, MAXDATASIZE - 1, 0)) == -1) {
-        // errmsg = string(strerror(nbytes));
+    if (recv(sockfd, data, MESSAGE_SIZE - 1, 0) == -1) {
         notify_error(LOGIN, err_to_str(ERR_CONNECTION));
         return;
     }
