@@ -61,6 +61,8 @@ class Console {
      * Read input from user.
      */
     std::string read();
+
+    char getchar();
     /**
      * Exit console.
      */

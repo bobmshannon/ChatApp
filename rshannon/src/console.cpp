@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 01:05:25
+* @Last Modified time: 2016-02-11 13:34:12
 */
 
 #include <signal.h>
@@ -12,8 +12,8 @@
 
 Console::Console(void) {
     initscr();     // Start curses mode
-    //cbreak();      // Disable line buffering
-    nocbreak();
+    cbreak();      // Disable line buffering
+    //nocbreak();
     start_color(); // Enable color support
     init_pair(1, COLOR_WHITE, COLOR_BLUE);
     init_pair(2, COLOR_RED, COLOR_WHITE);
@@ -129,6 +129,16 @@ void Console::refresh() {
 }
 
 void Console::exit() { running = false; }
+
+char Console::getchar() {
+  int x, y;
+  char c = wgetch(cmd_window);
+  getyx(cmd_window, y, x);
+  x++;
+  wmove(cmd_window, y, x);
+  refresh();
+  return c;
+}
 
 std::string Console::read() {
     char cmd[CMD_LENGTH];

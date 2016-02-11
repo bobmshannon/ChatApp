@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 09:54:50
+* @Last Modified time: 2016-02-11 13:26:39
 */
 
 #include <vector>
@@ -276,6 +276,8 @@ void Client::launch() {
         process_command(cmd);
     }
 
+    cmd = "";
+
     fd_set master, read_fds;
     int fdmax, nbytes;
     char buf[MESSAGE_SIZE] = {'\0'};
@@ -321,10 +323,15 @@ void Client::launch() {
                         console->print(string(buf));
                     }
                 } else if (i == 0) {
+                    char c = console->getchar();
+                    console->print(string(1,c));
+                    cmd += c;
                     // Input received from STDIN
-                    fgets(buf, MESSAGE_SIZE, stdin);
+                    //fgets(buf, MESSAGE_SIZE, stdin);
                     //printf("%s", buf);
-                    process_command(string(buf));
+                    if(c == '\n') {
+                        process_command(cmd);
+                    }
                 }
             }
         }
