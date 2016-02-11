@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 13:34:12
+* @Last Modified time: 2016-02-11 14:43:45
 */
 
 #include <signal.h>
@@ -20,6 +20,9 @@ Console::Console(void) {
 
     // Chat cursor y-position
     chat_curs_y = CHAT_WINDOW_STARTY;
+
+    // CMD cursor x-position
+    cmd_curs_x = CMD_WINDOW_STARTX;
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
@@ -131,11 +134,27 @@ void Console::refresh() {
 void Console::exit() { running = false; }
 
 char Console::getchar() {
-  int x, y;
+  noecho();
   char c = wgetch(cmd_window);
-  getyx(cmd_window, y, x);
-  x++;
-  wmove(cmd_window, y, x);
+  
+  if(c != 127 && c != 8) {
+    if(cmd_curs_x == CMD_WINDOW_STARTX) {
+      cmd_curs_x += 2;
+    } else {
+      cmd_curs_x += 1;
+    }
+    wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+    refresh();
+    waddch(cmd_window, c);
+  } else {
+    if(cmd_curs_x != CMD_WINDOW_STARTX) {
+      wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+      wdelch(cmd_window);
+      cmd_curs_x -= 1;
+      wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
+      refresh();
+    }
+  }
   refresh();
   return c;
 }
