@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 14:44:37
+* @Last Modified time: 2016-02-11 14:50:20
 */
 
 #include <signal.h>
@@ -107,6 +107,7 @@ void Console::print(std::string str) {
 }
 
 void Console::reset_curs() {
+    cmd_curs_x = CMD_WINDOW_STARTX;
     wmove(cmd_window, CMD_WINDOW_STARTY,
           CMD_WINDOW_STARTX + 2); // Reset cursor to default position
     wrefresh(cmd_window);
@@ -153,9 +154,7 @@ char Console::getchar() {
         wmove(cmd_window, CMD_WINDOW_STARTY, cmd_curs_x);
         refresh();
     }
-}
-refresh();
-return c;
+    return c;
 }
 
 std::string Console::read() {

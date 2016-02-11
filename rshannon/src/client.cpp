@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 14:08:55
+* @Last Modified time: 2016-02-11 14:51:11
 */
 
 #include <vector>
@@ -295,7 +295,6 @@ void Client::launch() {
 
     // Main loop
     while (1) {
-        console->reset_curs();
         read_fds = master;
 
         if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
