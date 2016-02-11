@@ -18,23 +18,25 @@
 #define STATISTICS "STATISTICS"
 #define AUTHOR "AUTHOR"
 
+using std::string;
+
 class Client {
   private:
     Console* console;
-    int sockfd; // File descriptor for network socket
+    int sockfd;     // File descriptor for network socket
     bool logged_in; // Whether client is logged into a remote server
     void* get_in_addr(struct sockaddr* sa);
     /**
-     * Initialize a socket for communication with specified 
+     * Initialize a socket for communication with specified
      * remote host and port.
-     * 
+     *
      * @param  host The hostname of the server
-     * @param  port The port to connect to 
+     * @param  port The port to connect to
      * @return      0 if sucessful, negative integer otherwise
      */
-    int server_connect(std::string host, std::string port);
+    int server_connect(string host, string port);
     /**
-     * Close the socket (if currently logged in to a 
+     * Close the socket (if currently logged in to a
      * remote server, i.e. a socket exists)
      * @return 0 if sucessful, negative integer otherwise
      */
@@ -67,10 +69,10 @@ class Client {
      * <server-port>.
      *
      * @param  host The hostname of the server
-     * @param  port The port to connect to 
+     * @param  port The port to connect to
      * @return      0 if sucessful, negative integer otherwise
      */
-    void login(std::string host, std::string port);
+    void login(string host, string port);
     /**
      * Get an updated list of currently logged-in clients from the server.
      */
@@ -114,25 +116,26 @@ class Client {
      * @param operation The command that was executed, e.g. LOGIN, AUTHOR, etc.
      * @param results   The resulting output from the executed command.
      */
-    void notify_success(std::string operation, std::string results);
+    void notify_success(string operation, string results);
     /**
      * Notify the user that an error occured while executing a command.
      * @param operation The command that was executed, e.g. LOGIN, AUTHOR, etc.
      * @param error   The corresponding error message
      */
-    void notify_error(std::string operation, std::string error);
+    void notify_error(string operation, string error);
     /**
      * Send a message to another client
      * @param ip  The IP address of the client
      * @param msg The message to send
      */
-    void send_msg(std::string ip, std::string msg);
+    void send_msg(string ip, string msg);
     /**
      * Send data to the server in the form of a string
      * @param  str The string to send
      * @return     0 on success, negative otherwise
      */
-    int send_to_server(std::string str);
+    int send_to_server(string str);
+
   public:
     Client();
     ~Client();
@@ -140,7 +143,7 @@ class Client {
      * Process a user inputted command.
      * @param cmd The user inputted string
      */
-    void process_command(std::string cmd);
+    void process_command(string cmd);
     /**
      * Launch a new client window.
      */

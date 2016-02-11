@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-10 20:24:07
+* @Last Modified time: 2016-02-10 21:01:49
 */
 
 #include <vector>
@@ -24,8 +24,8 @@
 #include "../include/error.h"
 
 using std::string;
+using std::vector;
 
-// get sockaddr, IPv4 or IPv6:
 void* Server::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
@@ -34,7 +34,7 @@ void* Server::get_in_addr(struct sockaddr* sa) {
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server() { active_connections = std::vector<Connection>(); }
+Server::Server() { active_connections = vector<Connection>(); }
 
 Server::~Server() {}
 
@@ -46,19 +46,21 @@ int Server::process_command() {
         return -1;
     }
     printf("You entered a command: %s", buf);
+    return 0;
 }
 
-int Server::init_socket(std::string port) {
-    int listener, rv;
+int Server::init_socket(string port) {
+    int listener;
     int yes = 1; // for setsockopt() SO_REUSEADDR, below
     struct addrinfo hints, *ai, *p;
 
-    // get us a socket and bind it
+    // Get us a socket and bind it
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, port.c_str(), &hints, &ai)) != 0) {
+
+    if (getaddrinfo(NULL, port.c_str(), &hints, &ai) != 0) {
         return ERR_SOCKET_INIT;
     }
 
@@ -68,7 +70,6 @@ int Server::init_socket(std::string port) {
             continue;
         }
 
-        // lose the pesky "address already in use" error message
         setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
         if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
@@ -79,12 +80,11 @@ int Server::init_socket(std::string port) {
         break;
     }
 
-    // if we got here, it means we didn't get bound
     if (p == NULL) {
         return ERR_SOCKET_BIND;
     }
 
-    freeaddrinfo(ai); // all done with this
+    freeaddrinfo(ai);
 
     // Listen for new connections on socket
     if (listen(listener, 10) == -1) {
@@ -94,8 +94,32 @@ int Server::init_socket(std::string port) {
     return listener;
 }
 
+int Server::send_to_client(string str, int clientfd) {
+    char buf[MESSAGE_SIZE] = {'\0'};
+    for (int i = 0; i < str.length(); i++) {
+        buf[i] = str[i];
+        if (i == str.length() - 1) {
+            buf[i + 1] = '\n';
+        }
+    }
+    int total = 0;
+    int bytesleft = MESSAGE_SIZE;
+    int n;
+
+    while (total < MESSAGE_SIZE) {
+        n = send(clientfd, buf + total, bytesleft, 0);
+        if (n == -1) {
+            break;
+        }
+        total += n;
+        bytesleft -= n;
+    }
+
+    return n == -1 ? -1 : 0;
+}
+
 int Server::new_connection_handler(int listener) {
-    struct sockaddr_storage remoteaddr; // client address
+    struct sockaddr_storage remoteaddr; // Client's IP address
     socklen_t addrlen;
     int newfd;
 
@@ -117,14 +141,14 @@ int Server::new_connection_handler(int listener) {
     }
 
     // Keep track of new connection
-    Connection connection = {newfd, std::string(remoteIP), true};
+    Connection connection = {newfd, string(remoteIP), true};
 
     active_connections.push_back(connection);
 
     return newfd;
 }
 
-int Server::launch(std::string port) {
+int Server::launch(string port) {
     fd_set master, read_fds;
     int fdmax, listener, clientfd, nbytes;
     char buf[BUFFER_SIZE] = {'\0'};
@@ -145,7 +169,7 @@ int Server::launch(std::string port) {
     // Keep track of the biggest file descriptor
     fdmax = listener;
 
-    // main loop
+    // Main loop
     while (1) {
         read_fds = master;
 
@@ -160,7 +184,7 @@ int Server::launch(std::string port) {
                 if (i == listener) {
                     // New connection received
                     if ((clientfd = new_connection_handler(listener)) == -1) {
-                        // return clientfd;
+                        // Unable to handle new connection
                     } else {
                         FD_SET(clientfd, &master); // add to master set
                         if (clientfd > fdmax) {    // keep track of the max
