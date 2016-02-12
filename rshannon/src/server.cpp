@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 18:18:53
+* @Last Modified time: 2016-02-12 18:42:42
 */
 
 #include <vector>
@@ -209,7 +209,7 @@ int Server::init_socket(string port) {
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
     cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n",
-                          fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd),
+                          fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd).c_str(),
                           str.c_str());
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
@@ -227,27 +227,18 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         }
     }
 
-    increment_num_sent(senderfd);
-    increment_num_recv(clientfd);
+    // Keep statistics on number messages received/sent
+    for(int i = 0; i < client_connections.size(); i++) {
+        if(client_connections[i].fd == clientfd) {
+            // Increment received num_recv
+            client_connections[i].num_recv += 1;
+        } else if(client_connections[i].fd == senderfd) {
+            // Increment sender num_sent
+            client_connections[i].num_sent += 1;
+        }
+    }
 
     return send_to_client(clientfd, buf);
-}
-
-int Server::increment_num_sent(int fd) {
-    int i;
-    if (i = get_connection(fd) != -1) {
-        client_connections[i].num_sent += 1;
-        return 0;
-    }
-    return -1;
-}
-
-int Server::increment_num_recv(int fd) {
-    int i;
-    if (i = get_connection(fd) != -1) {
-        client_connections[i].num_recv += 1;
-    }
-    return -1;
 }
 
 int Server::get_connection(int fd) {
