@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 17:56:30
+* @Last Modified time: 2016-02-12 17:58:48
 */
 
 #include <vector>
@@ -89,8 +89,6 @@ void Client::process_command(string cmd) {
             logout();
         } else if (operation == EXIT) {
             exit_client();
-        } else if (operation == STATISTICS) {
-            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == AUTHOR) {
             author();
         } else if (operation == REFRESH) {

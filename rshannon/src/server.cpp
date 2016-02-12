@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 17:55:17
+* @Last Modified time: 2016-02-12 18:18:53
 */
 
 #include <vector>
@@ -119,7 +119,7 @@ int Server::process_command() {
         return -1;
     }
 
-    printf("You entered a command: %s", operation.c_str());
+    printf("You entered: %s\n", operation.c_str());
 
     if (operation == EXIT) {
         exit_server();
@@ -134,10 +134,33 @@ int Server::process_command() {
     return 0;
 }
 
-void Server::exit_server() { exit(0); }
+void Server::exit_server() { 
+    cse4589_print_and_log("Bye!\n");
+    exit(0); 
+}
 void Server::blocked() {}
-void Server::statistics() {}
-void Server::author() {}
+
+void Server::statistics() {
+    string stats, status;
+    char buf[MESSAGE_SIZE];
+    for(int i = 0; i < client_connections.size(); i++) {
+        if(client_connections[i].active) {
+            status = "online";
+        } else {
+            status = "offline";
+        }
+        sprintf(buf, "%-5d%-35s%-8d%-8d%-8s\n", i, client_connections[i].fqdn.c_str(), client_connections[i].num_sent, client_connections[i].num_recv, status.c_str());
+        stats += string(buf);
+    }
+    if(client_connections.size() == 0) {
+        stats = "No statistics available, no one has ever connected to this server.\n";
+    }
+    cse4589_print_and_log("%s", stats.c_str());
+}
+
+void Server::author() {
+     cse4589_print_and_log("I, rshannon, have read and understood the course academic integrity policy.\n");   
+}
 
 int Server::init_socket(string port) {
     int listener;
