@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 00:32:40
+* @Last Modified time: 2016-02-12 00:41:48
 */
 
 #include <vector>
@@ -265,7 +265,7 @@ void Client::notify_success(string operation, string results) {
 }
 
 void Client::notify_error(string operation, string error) {
-    cse4589_print_and_log("[%s]:ERROR\n", operation.c_str());
+    cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
     cse4589_print_and_log("%s\n", error.c_str());
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
