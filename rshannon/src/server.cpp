@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 18:42:42
+* @Last Modified time: 2016-02-12 18:57:28
 */
 
 #include <vector>
@@ -232,7 +232,8 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         if(client_connections[i].fd == clientfd) {
             // Increment received num_recv
             client_connections[i].num_recv += 1;
-        } else if(client_connections[i].fd == senderfd) {
+        }
+        if(client_connections[i].fd == senderfd) {
             // Increment sender num_sent
             client_connections[i].num_sent += 1;
         }
