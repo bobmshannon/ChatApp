@@ -2,12 +2,13 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 21:45:56
+* @Last Modified time: 2016-02-12 00:32:40
 */
 
 #include <vector>
 #include <iterator>
 #include <string>
+#include <iostream>
 #include <cstring>
 #include <sstream>
 #include <sys/types.h>
@@ -16,9 +17,9 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-#include "../include/console.h"
 #include "../include/client.h"
 #include "../include/error.h"
+#include "../include/logger.h"
 
 using std::string;
 using std::istringstream;
@@ -48,7 +49,11 @@ void Client::process_command(string cmd) {
 
     // Grab the operation from the user inputted
     // command, i.e. LOGIN, EXIT, AUTHOR, etc.
-    operation = args[0];
+    if(args.size() > 0) {
+        operation = args[0];
+    } else {
+        return;
+    }
 
     if (logged_in) {
         // Commands allowed to be processed ONLY when
@@ -57,11 +62,11 @@ void Client::process_command(string cmd) {
         // processed regardless of whether the client
         // is logged into a server or not.
         if (operation == IP) {
-            console->print("IP");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == PORT) {
-            console->print("PORT");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == LIST) {
-            console->print("LIST");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == SEND) {
             for(int i = 2; i < args.size(); i++) {
                 msg += (args[i] +" ");
@@ -75,17 +80,17 @@ void Client::process_command(string cmd) {
             // BROADCAST <MSG>
             broadcast(msg);
         } else if (operation == BLOCK) {
-            console->print("BLOCK");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == BLOCKED) {
-            console->print("BLOCKED");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == UNBLOCK) {
-            console->print("UNBLOCK");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == LOGOUT) {
             logout();
         } else if (operation == EXIT) {
             exit();
         } else if (operation == STATISTICS) {
-            console->print("STATISTICS");
+            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == AUTHOR) {
             author();
         } else if (operation == LOGIN) {
@@ -254,15 +259,15 @@ void Client::logout() {
 }
 
 void Client::notify_success(string operation, string results) {
-    console->print("[" + operation + ":SUCCESS]\n");
-    console->print(results + "\n");
-    console->print("[" + operation + ":END]\n");
+    cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
+    cse4589_print_and_log("%s\n", results.c_str());
+    cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
 void Client::notify_error(string operation, string error) {
-    console->print("[" + operation + ":ERROR]\n");
-    console->print(error + "\n");
-    console->print("[" + operation + ":END]\n");
+    cse4589_print_and_log("[%s]:ERROR\n", operation.c_str());
+    cse4589_print_and_log("%s\n", error.c_str());
+    cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
 void Client::exit() {
@@ -270,17 +275,14 @@ void Client::exit() {
         logout();
     }
     notify_success(EXIT, "Terminating...");
-    console->exit();
-    delete console;
 }
 
 void Client::launch() {
     // Fetch user input
     string cmd;
-    console = new Console();
 
-    while (console->running && !logged_in) {
-        cmd = console->read();
+    while (!logged_in) {
+        getline(std::cin, cmd);
 
         // Process user inputted command
         process_command(cmd);
@@ -329,24 +331,24 @@ void Client::launch() {
                     } else {
                         //printf("received %i bytes from fd %i: %s", nbytes, i,
                         //       buf);
-                        console->print(string(buf));
+                        cse4589_print_and_log("%s\n", buf);
                     }
                 } else if (i == 0) {
                     // Input received from STDIN
-                    char c = console->getchar();
-                    cmd += c;
-                    if(c == '\n') {
-                        console->clearcmd();
-                        console->reset_curs();
-                        process_command(cmd);
-                        cmd = "";
-                    } else if(c == 127 | c == 8) {
+                    getline(std::cin, cmd);
+                    process_command(cmd);
+                    //char c = getchar();
+                    //cmd += c;
+                    //if(c == '\n' || c == '\r') {
+                    //    process_command(cmd);
+                    //    cmd = "";
+                    /*} else if(c == 127 | c == 8) {
                         if(cmd.size() > 2) {
                             cmd = cmd.substr(0, cmd.size()-2);
                         } else if(cmd.size() <= 2) {
                             cmd = "";
                         }
-                    }
+                    }*/
                 }
             }
         }

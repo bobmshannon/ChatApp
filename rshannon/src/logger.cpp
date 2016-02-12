@@ -89,7 +89,7 @@ void cse4589_print_and_log(const char* format, ...) {
 
     /* Print to STDOUT */
     va_start(args_pointer, format);
-    // ret_print = vprintf(format, args_pointer);
+    ret_print = vprintf(format, args_pointer);
 
     /* Write to LOG File */
     FILE* fp;

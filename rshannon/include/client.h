@@ -22,7 +22,6 @@ using std::string;
 
 class Client {
   private:
-    Console* console;
     int sockfd;     // File descriptor for network socket
     bool logged_in; // Whether client is logged into a remote server
     void* get_in_addr(struct sockaddr* sa);
