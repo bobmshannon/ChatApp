@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 14:58:19
+* @Last Modified time: 2016-02-11 19:04:10
 */
 
 #include <signal.h>
@@ -23,6 +23,9 @@ Console::Console(void) {
 
     // CMD cursor x-position
     cmd_curs_x = CMD_WINDOW_STARTX;
+
+    // Disable cursor
+    curs_set(0);
 
     // Setup chat and command windows
     chat_window = create_newwin(LINES - CMD_WINDOW_HEIGHT, COLS, 0, 0);
