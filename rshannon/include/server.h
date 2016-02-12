@@ -24,11 +24,13 @@ using std::vector;
 class Server {
   private:
     struct Connection {
-        int fd;
-        string remote_ip;
-        string fqdn;
-        string port;
-        bool active;
+        int fd;           // The file descriptor of the socket
+        int num_sent;     // Number messages sent by this client
+        int num_recv;     // Number of messages received by this client
+        string remote_ip; // The external IP address of this client
+        string fqdn;      // The hostname of this client
+        string port;      // The local port of this client
+        bool active;      // Whether this client is currently logged in or not
     };
     Console* console;
     vector<Connection> client_connections;
@@ -68,10 +70,14 @@ class Server {
     int send_to_client(int clientfd, char buf[]);
     void broadcast_to_all(string msg, int senderfd);
     void add_connection(Connection c);
+    int get_connection(int fd);
+    int increment_num_sent(int fd);
+    int increment_num_recv(int fd);
     void exit_server();
     void blocked();
     void statistics();
     void author();
+    int logout(int fd);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

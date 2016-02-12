@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 16:27:06
+* @Last Modified time: 2016-02-12 17:56:30
 */
 
 #include <vector>
@@ -271,6 +271,7 @@ void Client::block() {}
 void Client::unblock() {}
 
 void Client::logout() {
+    send_to_server(LOGOUT);
     int ret = server_disconnect();
     if (is_err(ret)) {
         notify_error(LOGOUT, err_to_str(ret));
@@ -323,7 +324,7 @@ void Client::prompt_login() {
 
 void Client::launch() {
     prompt_login();
-    
+
     string cmd = "";
 
     int fdmax, nbytes;

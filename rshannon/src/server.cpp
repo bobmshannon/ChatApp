@@ -2,10 +2,11 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 16:16:30
+* @Last Modified time: 2016-02-12 17:55:17
 */
 
 #include <vector>
+#include <algorithm>
 #include <iterator>
 #include <string>
 #include <iostream>
@@ -30,6 +31,7 @@ using std::strcpy;
 using std::istringstream;
 using std::istream_iterator;
 using std::vector;
+using std::find;
 
 void* Server::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
@@ -68,9 +70,18 @@ void Server::process_data(int sockfd, string data) {
         broadcast_to_all(msg, sockfd);
     } else if (operation == LIST || operation == REFRESH) {
         send_client_list(sockfd);
+    } else if (operation == LOGOUT) {
+        logout(sockfd);
     }
 }
 
+int Server::logout(int fd) {
+    int i = get_connection(fd);
+    if (i != -1) {
+        client_connections[i].active = false;
+    }
+    return -1;
+}
 int Server::ip_to_fd(string ip) {
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].remote_ip == ip) {
@@ -99,7 +110,7 @@ int Server::process_command() {
     istringstream buf(cmd);
     istream_iterator<string> beg(buf), end;
     vector<string> args(beg, end);
-    
+
     // Grab the operation from the user inputted
     // command, i.e. LOGIN, EXIT, AUTHOR, etc.
     if (args.size() > 0) {
@@ -110,7 +121,7 @@ int Server::process_command() {
 
     printf("You entered a command: %s", operation.c_str());
 
-    if(operation == EXIT) {
+    if (operation == EXIT) {
         exit_server();
     } else if (operation == BLOCKED) {
         blocked();
@@ -123,9 +134,7 @@ int Server::process_command() {
     return 0;
 }
 
-void Server::exit_server() {
-    exit(0);
-}
+void Server::exit_server() { exit(0); }
 void Server::blocked() {}
 void Server::statistics() {}
 void Server::author() {}
@@ -176,7 +185,9 @@ int Server::init_socket(string port) {
 }
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
-    cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n", fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd), str.c_str());
+    cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n",
+                          fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd),
+                          str.c_str());
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
 
@@ -193,7 +204,36 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         }
     }
 
+    increment_num_sent(senderfd);
+    increment_num_recv(clientfd);
+
     return send_to_client(clientfd, buf);
+}
+
+int Server::increment_num_sent(int fd) {
+    int i;
+    if (i = get_connection(fd) != -1) {
+        client_connections[i].num_sent += 1;
+        return 0;
+    }
+    return -1;
+}
+
+int Server::increment_num_recv(int fd) {
+    int i;
+    if (i = get_connection(fd) != -1) {
+        client_connections[i].num_recv += 1;
+    }
+    return -1;
+}
+
+int Server::get_connection(int fd) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd == fd) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void Server::send_client_list(int clientfd) {
@@ -281,9 +321,22 @@ int Server::new_connection_handler(int listener) {
     }
     printf("selectserver: new connection from %s (%s):%s on socket %d\n",
            hostname, ip, port, newfd);
-    // Keep track of new connection
-    Connection connection = {newfd, string(ip), string(hostname), string(port),
-                             true};
+
+    // Check if this is a returning client
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == string(ip) &&
+            !client_connections[i].active) {
+            client_connections[i].fd = newfd;
+            client_connections[i].active = true;
+            client_connections[i].port = string(port);
+            send_client_list(newfd);
+            return newfd;
+        }
+    }
+
+    // Otherwise create a new entry in connection tracking table
+    Connection connection = {newfd,        0,   0, string(ip), string(hostname),
+                             string(port), true};
     add_connection(connection);
 
     // Send client list as welcome message
