@@ -64,6 +64,7 @@ class Server {
     int relay_to_client(string str, int clientfd, int senderfd);
 
     void send_client_list(int clientfd);
+    string get_client_list();
     int send_to_client(int clientfd, char buf[]);
     void broadcast_to_all(string msg, int senderfd);
     void add_connection(Connection c);

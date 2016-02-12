@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 01:42:12
+* @Last Modified time: 2016-02-12 15:36:30
 */
 
 #include <vector>
@@ -64,6 +64,8 @@ void Server::process_data(int sockfd, string data) {
             msg += (args[i] + " ");
         }
         broadcast_to_all(msg, sockfd);
+    } else if (operation == LIST || operation == REFRESH) {
+        send_client_list(sockfd);
     }
 }
 
@@ -163,18 +165,25 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
 void Server::send_client_list(int clientfd) {
     string client_list;
     char buf[MESSAGE_SIZE] = {'\0'};
+    client_list = get_client_list();
+    client_list.resize(client_list.size() - 1); // Chop off last newline
+    strcpy(buf, client_list.c_str());
+    send_to_client(clientfd, buf);
+}
+
+string Server::get_client_list() {
+    string list;
+    char buf[MESSAGE_SIZE];
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].active) {
             sprintf(buf, "%-5d%-35s%-20s%-8s\n", i,
                     client_connections[i].fqdn.c_str(),
                     client_connections[i].remote_ip.c_str(),
                     client_connections[i].port.c_str());
-            client_list += string(buf);
+            list += string(buf);
         }
     }
-    client_list.resize(client_list.size() - 1); // Chop off last newline
-    strcpy(buf, client_list.c_str());
-    send_to_client(clientfd, buf);
+    return list;
 }
 
 void Server::broadcast_to_all(string msg, int senderfd) {

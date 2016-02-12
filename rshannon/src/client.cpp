@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 01:41:32
+* @Last Modified time: 2016-02-12 15:36:27
 */
 
 #include <vector>
@@ -93,6 +93,8 @@ void Client::process_command(string cmd) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == AUTHOR) {
             author();
+        } else if (operation == REFRESH) {
+            refresh();
         } else if (operation == LOGIN) {
             notify_error(operation, "You are already logged in to a server.");
         } else {
@@ -166,11 +168,19 @@ void Client::ip() {}
 
 void Client::port() {}
 
-void Client::list() {
-    if (logged_in) {
-        notify_success(LIST, client_list);
+void Client::refresh() {
+    char buf[MESSAGE_SIZE];
+    if (send_to_server(LIST) != -1) {
+        if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
+            notify_error(REFRESH,
+                         "Unable to get updated client list from server.");
+            return;
+        }
+        client_list = string(buf);
     }
+    notify_success(REFRESH, client_list);
 }
+void Client::list() { notify_success(LIST, client_list); }
 
 int Client::server_connect(string host, string port) {
     int sockfd;
@@ -241,8 +251,6 @@ void Client::login(string host, string port) {
     notify_success(LOGIN, result);
     logged_in = true;
 }
-
-void Client::refresh() {}
 
 void Client::broadcast(string msg) {
     send_to_server(string(BROADCAST) + " " + msg);
