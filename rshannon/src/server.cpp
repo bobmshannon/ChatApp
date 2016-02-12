@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 19:53:58
+* @Last Modified time: 2016-02-11 20:22:11
 */
 
 #include <vector>
@@ -60,7 +60,6 @@ void Server::process_data(int sockfd, string data) {
     	if((clientfd = ip_to_fd(args[1])) != -1) {
     		relay_to_client(msg, clientfd, sockfd);
     	}
-    	
     }
 }
 
@@ -79,7 +78,7 @@ string Server::fd_to_ip(int fd) {
 			return client_connections[i].remote_ip;
 		}
 	}
-	return NULL;
+	return "";
 }
 
 
@@ -139,11 +138,16 @@ int Server::init_socket(string port) {
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
 	printf("relaying to client %i: %s", clientfd, str.c_str());
-    char buf[MESSAGE_SIZE] = {'\0'};
-    string sender_ip = fd_to_ip(senderfd);
-	string msg = "msg from:" + sender_ip + "\n[msg]:" + str;
+    char buf[MESSAGE_SIZE];
+    string sender_ip, msg;
 
-    for (int i = 0; i < str.length(); i++) {
+    if((sender_ip = fd_to_ip(senderfd)) != "") {
+    	msg = "msg from:" + sender_ip + "\n[msg]:" + str;
+    } else {
+    	return -1;
+    }
+
+    for (int i = 0; i < msg.length(); i++) {
         buf[i] = msg[i];
         if (i == msg.length() - 1) {
             buf[i + 1] = '\n';
