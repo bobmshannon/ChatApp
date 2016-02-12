@@ -2,12 +2,13 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 15:36:30
+* @Last Modified time: 2016-02-12 16:07:03
 */
 
 #include <vector>
 #include <iterator>
 #include <string>
+#include <iostream>
 #include <cstring>
 #include <sstream>
 #include <sys/types.h>
@@ -22,6 +23,7 @@
 #include "../include/console.h"
 #include "../include/server.h"
 #include "../include/error.h"
+#include "../include/logger.h"
 
 using std::string;
 using std::strcpy;
@@ -88,13 +90,43 @@ string Server::fd_to_ip(int fd) {
 }
 
 int Server::process_command() {
-    char buf[MESSAGE_SIZE];
-    if (fgets(buf, MESSAGE_SIZE, stdin) == NULL) {
+    char input[MESSAGE_SIZE];
+    string operation, msg;
+    if (fgets(input, MESSAGE_SIZE, stdin) == NULL) {
         return -1;
     }
-    printf("You entered a command: %s", buf);
+    string cmd = string(input);
+    istringstream buf(cmd);
+    istream_iterator<string> beg(buf), end;
+    vector<string> args(beg, end);
+    
+    // Grab the operation from the user inputted
+    // command, i.e. LOGIN, EXIT, AUTHOR, etc.
+    if (args.size() > 0) {
+        operation = args[0];
+    } else {
+        return -1;
+    }
+
+    printf("You entered a command: %s", operation.c_str());
+
+    if(operation == EXIT) {
+        exit_server();
+    } else if (operation == BLOCKED) {
+        blocked();
+    } else if (operation == STATISTICS) {
+        statistics();
+    } else if (operation == AUTHOR) {
+        author();
+    }
+
     return 0;
 }
+
+void Server::exit_server() {}
+void Server::blocked() {}
+void Server::statistics() {}
+void Server::author() {}
 
 int Server::init_socket(string port) {
     int listener;
@@ -142,7 +174,7 @@ int Server::init_socket(string port) {
 }
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
-    printf("relaying to client %i: %s", clientfd, str.c_str());
+    cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n", fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd), str.c_str());
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
 

@@ -68,6 +68,10 @@ class Server {
     int send_to_client(int clientfd, char buf[]);
     void broadcast_to_all(string msg, int senderfd);
     void add_connection(Connection c);
+    void exit_server();
+    void blocked();
+    void statistics();
+    void author();
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 15:36:27
+* @Last Modified time: 2016-02-12 16:03:16
 */
 
 #include <vector>
@@ -131,6 +131,15 @@ void Client::process_command(string cmd) {
 }
 
 void Client::send_msg(string ip, string msg) {
+    struct sockaddr_in sa;
+
+    // Check if valid IP address.
+    if(inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) == -1) {
+        notify_error(SEND, "That IP address seems to not be a valid IPv4 address.");
+        return;
+    }
+
+    //TODO: check the IP in client_list, and whether it is valid
     send_to_server(string(SEND) + " " + ip + " " + msg);
     notify_success(SEND, "Message sent.");
 }
