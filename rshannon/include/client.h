@@ -25,6 +25,7 @@ class Client {
     int sockfd;         // File descriptor for network socket
     bool logged_in;     // Whether client is logged into a remote server
     string client_list; // Most recent list of clients retrieved from server
+    fd_set master, read_fds;
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a socket for communication with specified
@@ -136,6 +137,8 @@ class Client {
      */
     int send_to_server(string str);
 
+    void prompt_login();
+
   public:
     Client();
     ~Client();
@@ -151,7 +154,7 @@ class Client {
     /**
      * Exit client window.
      */
-    void exit();
+    void exit_client();
 };
 
 #endif

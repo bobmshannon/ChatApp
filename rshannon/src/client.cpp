@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 16:03:16
+* @Last Modified time: 2016-02-12 16:27:06
 */
 
 #include <vector>
@@ -88,7 +88,7 @@ void Client::process_command(string cmd) {
         } else if (operation == LOGOUT) {
             logout();
         } else if (operation == EXIT) {
-            exit();
+            exit_client();
         } else if (operation == STATISTICS) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == AUTHOR) {
@@ -114,7 +114,7 @@ void Client::process_command(string cmd) {
                 operation,
                 "You must be logged into a server to run this command.");
         } else if (operation == EXIT) {
-            exit();
+            exit_client();
         } else if (operation == AUTHOR) {
             author();
         } else if (operation == LOGIN) {
@@ -276,6 +276,7 @@ void Client::logout() {
         notify_error(LOGOUT, err_to_str(ret));
     } else {
         logged_in = false;
+        send_to_server(string(LOGOUT));
         notify_success(LOGOUT, "Successfully logged out from server.");
     }
 }
@@ -292,14 +293,15 @@ void Client::notify_error(string operation, string error) {
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
-void Client::exit() {
+void Client::exit_client() {
     if (logged_in) {
         logout();
     }
     notify_success(EXIT, "Terminating...");
+    exit(0);
 }
 
-void Client::launch() {
+void Client::prompt_login() {
     // Fetch user input
     string cmd;
 
@@ -310,12 +312,6 @@ void Client::launch() {
         process_command(cmd);
     }
 
-    cmd = "";
-
-    fd_set master, read_fds;
-    int fdmax, nbytes;
-    char buf[MESSAGE_SIZE] = {'\0'};
-
     // Clear the master and temp sets
     FD_ZERO(&master);
     FD_ZERO(&read_fds);
@@ -323,6 +319,15 @@ void Client::launch() {
     // Add the listener and STDIN file descriptors to the master set
     FD_SET(sockfd, &master);
     FD_SET(0, &master);
+}
+
+void Client::launch() {
+    prompt_login();
+    
+    string cmd = "";
+
+    int fdmax, nbytes;
+    char buf[MESSAGE_SIZE] = {'\0'};
 
     // Keep track of the biggest file descriptor
     fdmax = sockfd;
@@ -348,7 +353,7 @@ void Client::launch() {
                         }
                         close(i);
                         FD_CLR(i, &master);
-                        exit();
+                        exit(-1);
                     } else {
                         // Print welcome message from server
                         cse4589_print_and_log("%s", buf);
@@ -357,6 +362,9 @@ void Client::launch() {
                     // Input received from STDIN
                     getline(std::cin, cmd);
                     process_command(cmd);
+                    if(!logged_in) {
+                        launch();
+                    }
                 }
             }
         }
