@@ -26,6 +26,8 @@ class Server {
     struct Connection {
         int fd;
         string remote_ip;
+        string fqdn;
+        string port;
         bool active;
     };
     Console* console;
@@ -64,6 +66,7 @@ class Server {
     void send_client_list(int clientfd);
     int send_to_client(int clientfd, char buf[]);
     void broadcast_to_all(string msg, int senderfd);
+    void add_connection(Connection c);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

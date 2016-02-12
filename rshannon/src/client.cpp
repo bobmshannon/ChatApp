@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 20:55:40
+* @Last Modified time: 2016-02-11 21:45:56
 */
 
 #include <vector>
@@ -112,7 +112,11 @@ void Client::process_command(string cmd) {
             author();
         } else if (operation == LOGIN) {
             // LOGIN <HOST> <PORT>
-            login(args[1], args[2]);
+            if(args.size() == 3) {
+                login(args[1], args[2]);
+            } else {
+                notify_error(LOGIN, "LOGIN <HOST> <PORT>");
+            }
         } else {
             notify_error(operation, "You entered an invalid command.");
         }

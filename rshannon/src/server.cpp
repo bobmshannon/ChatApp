@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 20:59:01
+* @Last Modified time: 2016-02-11 23:09:55
 */
 
 #include <vector>
@@ -166,9 +166,11 @@ void Server::send_client_list(int clientfd) {
 	char buf[MESSAGE_SIZE] = {'\0'};
 	for(int i = 0; i < client_connections.size(); i++) {
 		if(client_connections[i].active) {
-			client_list += (client_connections[i].remote_ip + " ");
+			sprintf(buf, "%-5d%-35s%-20s%-8s\n", i, client_connections[i].fqdn.c_str(), client_connections[i].remote_ip.c_str(), client_connections[i].port.c_str());
+			client_list += string(buf);
 		}
 	}
+	client_list.resize(client_list.size()-1);
 	strcpy(buf, client_list.c_str());
 	send_to_client(clientfd, buf);
 }
@@ -209,27 +211,31 @@ int Server::send_to_client(int clientfd, char buf[]) {
 int Server::new_connection_handler(int listener) {
     struct sockaddr_storage remoteaddr; // Client's IP address
     socklen_t addrlen;
-    int newfd;
+    int newfd, rv;
+    char ip[NI_MAXHOST];	// IP
+    char port[NI_MAXSERV];	// Port
+    char hostname[NI_MAXHOST];	// Hostname
 
     // Handle new connection
     addrlen = sizeof remoteaddr;
     newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
-    char remoteIP[INET6_ADDRSTRLEN];
 
     if (newfd == -1) {
         return ERR_SOCKET_ACCEPT;
     }
-    printf("selectserver: new connection from %s on "
-           "socket %d\n",
-           inet_ntop(remoteaddr.ss_family,
-                     get_in_addr((struct sockaddr*)&remoteaddr), remoteIP,
-                     INET6_ADDRSTRLEN),
-           newfd);
 
+    getnameinfo((struct sockaddr *)&remoteaddr, addrlen, ip, sizeof(ip), port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV);
+
+    rv = getnameinfo((struct sockaddr *)&remoteaddr, addrlen, hostname, sizeof(hostname), port, sizeof(port), NI_NAMEREQD);
+    if(rv == -1) {
+    	for(int i = 0; i < NI_MAXHOST; i++) {
+    		hostname[i] = ip[i];
+    	}
+    }
+    printf("selectserver: new connection from %s (%s):%s on socket %d\n", hostname, ip, port, newfd);
     // Keep track of new connection
-    Connection connection = {newfd, string(remoteIP), true};
-
-    client_connections.push_back(connection);
+    Connection connection = {newfd, string(ip), string(hostname), string(port), true};
+    add_connection(connection);
 
     // Send client list as welcome message
     send_client_list(newfd);
@@ -238,6 +244,9 @@ int Server::new_connection_handler(int listener) {
 }
 
 
+void Server::add_connection(Connection c) {
+	client_connections.push_back(c);
+}
 
 int Server::launch(string port) {
     fd_set master, read_fds;
