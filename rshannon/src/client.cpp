@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 19:52:13
+* @Last Modified time: 2016-02-11 20:55:40
 */
 
 #include <vector>
@@ -41,7 +41,7 @@ void* Client::get_in_addr(struct sockaddr* sa) {
 }
 
 void Client::process_command(string cmd) {
-    string operation;
+    string operation, msg;
     istringstream buf(cmd);
     istream_iterator<string> beg(buf), end;
     vector<string> args(beg, end);
@@ -63,14 +63,17 @@ void Client::process_command(string cmd) {
         } else if (operation == LIST) {
             console->print("LIST");
         } else if (operation == SEND) {
-            string msg;
             for(int i = 2; i < args.size(); i++) {
                 msg += (args[i] +" ");
             }
             // SEND <IP> <MSG>
             send_msg(args[1], msg);
         } else if (operation == BROADCAST) {
-            console->print("BROADCAST");
+            for(int i = 1; i < args.size(); i++) {
+                msg += (args[i] +" ");
+            }
+            // BROADCAST <MSG>
+            broadcast(msg);
         } else if (operation == BLOCK) {
             console->print("BLOCK");
         } else if (operation == BLOCKED) {
@@ -227,7 +230,10 @@ void Client::login(string host, string port) {
 
 void Client::refresh() {}
 
-void Client::broadcast() {}
+void Client::broadcast(string msg) {
+    send_to_server(string(BROADCAST) + " " + msg);
+    notify_success(BROADCAST, "Broadcast message sent.");
+}
 
 void Client::block() {}
 

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 20:22:11
+* @Last Modified time: 2016-02-11 20:59:01
 */
 
 #include <vector>
@@ -42,7 +42,8 @@ Server::Server() { client_connections = vector<Connection>(); }
 Server::~Server() {}
 
 void Server::process_data(int sockfd, string data) {
-    string operation;
+    string operation, msg;
+    int clientfd;
     istringstream buf(data);
     istream_iterator<string> beg(buf), end;
     vector<string> args(beg, end);
@@ -52,14 +53,17 @@ void Server::process_data(int sockfd, string data) {
     operation = args[0];
 
     if (operation == SEND) {
-    	string msg;
-    	int clientfd;
     	for(int i = 2; i < args.size(); i++) {
     		msg += (args[i] + " ");
     	}
     	if((clientfd = ip_to_fd(args[1])) != -1) {
     		relay_to_client(msg, clientfd, sockfd);
     	}
+    } else if (operation == BROADCAST) {
+    	for(int i = 1; i < args.size(); i++) {
+    		msg += (args[i] + " ");
+    	}
+		broadcast_to_all(msg, sockfd);
     }
 }
 
@@ -167,6 +171,22 @@ void Server::send_client_list(int clientfd) {
 	}
 	strcpy(buf, client_list.c_str());
 	send_to_client(clientfd, buf);
+}
+
+void Server::broadcast_to_all(string msg, int senderfd) {
+	char buf[MESSAGE_SIZE];
+	string sender_ip = fd_to_ip(senderfd);
+	msg = "msg from:" + sender_ip + "\n[msg]:" + msg;
+	strcpy(buf, msg.c_str());
+	for(int i = 0; i < client_connections.size(); i++) {
+		if(client_connections[i].fd != senderfd) {
+			if(client_connections[i].active) {
+				send_to_client(client_connections[i].fd, buf);
+			} else {
+				// TODO: add message to buffer
+			}
+		}
+	}
 }
 
 int Server::send_to_client(int clientfd, char buf[]) {

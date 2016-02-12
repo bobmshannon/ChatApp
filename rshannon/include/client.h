@@ -83,7 +83,7 @@ class Client {
      * of
      * 256 bytes and consists of valid ASCII characters.
      */
-    void broadcast();
+    void broadcast(string msg);
     /**
      * Block all incoming messages from the client with IP address: <client-ip>.
      * The

@@ -63,6 +63,7 @@ class Server {
 
     void send_client_list(int clientfd);
     int send_to_client(int clientfd, char buf[]);
+    void broadcast_to_all(string msg, int senderfd);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise
