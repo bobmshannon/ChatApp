@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 15:25:20
+* @Last Modified time: 2016-02-11 19:52:13
 */
 
 #include <vector>
@@ -220,7 +220,7 @@ void Client::login(string host, string port) {
         return;
     }
 
-    result = "client: received " + string(data);
+    result = string(data);
     notify_success(LOGIN, result);
     logged_in = true;
 }

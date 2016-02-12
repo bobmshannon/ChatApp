@@ -29,7 +29,7 @@ class Server {
         bool active;
     };
     Console* console;
-    vector<Connection> active_connections;
+    vector<Connection> client_connections;
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a new socket on specified port
@@ -60,6 +60,9 @@ class Server {
      * @return          0 success, negative otherwise
      */
     int relay_to_client(string str, int clientfd, int senderfd);
+
+    void send_client_list(int clientfd);
+    int send_to_client(int clientfd, char buf[]);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

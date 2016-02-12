@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 10:07:35
+* @Last Modified time: 2016-02-11 19:53:58
 */
 
 #include <vector>
@@ -24,6 +24,7 @@
 #include "../include/error.h"
 
 using std::string;
+using std::strcpy;
 using std::istringstream;
 using std::istream_iterator;
 using std::vector;
@@ -36,7 +37,7 @@ void* Server::get_in_addr(struct sockaddr* sa) {
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server() { active_connections = vector<Connection>(); }
+Server::Server() { client_connections = vector<Connection>(); }
 
 Server::~Server() {}
 
@@ -50,36 +51,32 @@ void Server::process_data(int sockfd, string data) {
     // command, i.e. LOGIN, EXIT, AUTHOR, etc.
     operation = args[0];
 
-    printf(operation.c_str());
-
     if (operation == SEND) {
     	string msg;
-   		string sender_ip = fd_to_ip(sockfd);
     	int clientfd;
     	for(int i = 2; i < args.size(); i++) {
     		msg += (args[i] + " ");
     	}
-    	msg = "msg from:" + sender_ip + "\n[msg]:" + msg;
     	if((clientfd = ip_to_fd(args[1])) != -1) {
-    		relay_to_client(msg, clientfd, sockfd);	
-		}
-
+    		relay_to_client(msg, clientfd, sockfd);
+    	}
+    	
     }
 }
 
 int Server::ip_to_fd(string ip) {
-	for(int i = 0; i < active_connections.size(); i++) {
-		if(active_connections[i].remote_ip == ip) {
-			return active_connections[i].fd;
+	for(int i = 0; i < client_connections.size(); i++) {
+		if(client_connections[i].remote_ip == ip) {
+			return client_connections[i].fd;
 		}
 	}
 	return -1;
 }
 
 string Server::fd_to_ip(int fd) {
-	for(int i = 0; i < active_connections.size(); i++) {
-		if(active_connections[i].fd == fd) {
-			return active_connections[i].remote_ip;
+	for(int i = 0; i < client_connections.size(); i++) {
+		if(client_connections[i].fd == fd) {
+			return client_connections[i].remote_ip;
 		}
 	}
 	return NULL;
@@ -143,12 +140,32 @@ int Server::init_socket(string port) {
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
 	printf("relaying to client %i: %s", clientfd, str.c_str());
     char buf[MESSAGE_SIZE] = {'\0'};
+    string sender_ip = fd_to_ip(senderfd);
+	string msg = "msg from:" + sender_ip + "\n[msg]:" + str;
+
     for (int i = 0; i < str.length(); i++) {
-        buf[i] = str[i];
-        if (i == str.length() - 1) {
+        buf[i] = msg[i];
+        if (i == msg.length() - 1) {
             buf[i + 1] = '\n';
         }
     }
+
+    return send_to_client(clientfd, buf);
+}
+
+void Server::send_client_list(int clientfd) {
+	string client_list;
+	char buf[MESSAGE_SIZE] = {'\0'};
+	for(int i = 0; i < client_connections.size(); i++) {
+		if(client_connections[i].active) {
+			client_list += (client_connections[i].remote_ip + " ");
+		}
+	}
+	strcpy(buf, client_list.c_str());
+	send_to_client(clientfd, buf);
+}
+
+int Server::send_to_client(int clientfd, char buf[]) {
     int total = 0;
     int bytesleft = MESSAGE_SIZE;
     int n;
@@ -177,23 +194,26 @@ int Server::new_connection_handler(int listener) {
 
     if (newfd == -1) {
         return ERR_SOCKET_ACCEPT;
-    } else {
-        printf("selectserver: new connection from %s on "
-               "socket %d\n",
-               inet_ntop(remoteaddr.ss_family,
-                         get_in_addr((struct sockaddr*)&remoteaddr), remoteIP,
-                         INET6_ADDRSTRLEN),
-               newfd);
-        send(newfd, "Connection ACK.\0", 16, 0);
     }
+    printf("selectserver: new connection from %s on "
+           "socket %d\n",
+           inet_ntop(remoteaddr.ss_family,
+                     get_in_addr((struct sockaddr*)&remoteaddr), remoteIP,
+                     INET6_ADDRSTRLEN),
+           newfd);
 
     // Keep track of new connection
     Connection connection = {newfd, string(remoteIP), true};
 
-    active_connections.push_back(connection);
+    client_connections.push_back(connection);
+
+    // Send client list as welcome message
+    send_client_list(newfd);
 
     return newfd;
 }
+
+
 
 int Server::launch(string port) {
     fd_set master, read_fds;
