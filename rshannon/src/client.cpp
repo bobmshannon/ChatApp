@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 00:41:48
+* @Last Modified time: 2016-02-12 01:30:45
 */
 
 #include <vector>
@@ -66,7 +66,7 @@ void Client::process_command(string cmd) {
         } else if (operation == PORT) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == LIST) {
-            cse4589_print_and_log("%s", operation.c_str());
+            list();
         } else if (operation == SEND) {
             for(int i = 2; i < args.size(); i++) {
                 msg += (args[i] +" ");
@@ -166,7 +166,11 @@ void Client::ip() {}
 
 void Client::port() {}
 
-void Client::list() {}
+void Client::list() {
+    if(logged_in) {
+        notify_success(LIST, client_list);
+    }
+}
 
 int Client::server_connect(string host, string port) {
     int sockfd;
@@ -233,6 +237,7 @@ void Client::login(string host, string port) {
     }
 
     result = string(data);
+    client_list = result;
     notify_success(LOGIN, result);
     logged_in = true;
 }
