@@ -22,9 +22,9 @@ using std::string;
 
 class Client {
   private:
-    int sockfd;     // File descriptor for network socket
-    bool logged_in; // Whether client is logged into a remote server
-    string client_list;
+    int sockfd;         // File descriptor for network socket
+    bool logged_in;     // Whether client is logged into a remote server
+    string client_list; // Most recent list of clients retrieved from server
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a socket for communication with specified

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 23:28:23
+* @Last Modified time: 2016-02-12 01:42:12
 */
 
 #include <vector>
@@ -53,38 +53,37 @@ void Server::process_data(int sockfd, string data) {
     operation = args[0];
 
     if (operation == SEND) {
-    	for(int i = 2; i < args.size(); i++) {
-    		msg += (args[i] + " ");
-    	}
-    	if((clientfd = ip_to_fd(args[1])) != -1) {
-    		relay_to_client(msg, clientfd, sockfd);
-    	}
+        for (int i = 2; i < args.size(); i++) {
+            msg += (args[i] + " ");
+        }
+        if ((clientfd = ip_to_fd(args[1])) != -1) {
+            relay_to_client(msg, clientfd, sockfd);
+        }
     } else if (operation == BROADCAST) {
-    	for(int i = 1; i < args.size(); i++) {
-    		msg += (args[i] + " ");
-    	}
-		broadcast_to_all(msg, sockfd);
+        for (int i = 1; i < args.size(); i++) {
+            msg += (args[i] + " ");
+        }
+        broadcast_to_all(msg, sockfd);
     }
 }
 
 int Server::ip_to_fd(string ip) {
-	for(int i = 0; i < client_connections.size(); i++) {
-		if(client_connections[i].remote_ip == ip) {
-			return client_connections[i].fd;
-		}
-	}
-	return -1;
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == ip) {
+            return client_connections[i].fd;
+        }
+    }
+    return -1;
 }
 
 string Server::fd_to_ip(int fd) {
-	for(int i = 0; i < client_connections.size(); i++) {
-		if(client_connections[i].fd == fd) {
-			return client_connections[i].remote_ip;
-		}
-	}
-	return "";
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd == fd) {
+            return client_connections[i].remote_ip;
+        }
+    }
+    return "";
 }
-
 
 int Server::process_command() {
     char buf[MESSAGE_SIZE];
@@ -141,14 +140,14 @@ int Server::init_socket(string port) {
 }
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
-	printf("relaying to client %i: %s", clientfd, str.c_str());
+    printf("relaying to client %i: %s", clientfd, str.c_str());
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
 
-    if((sender_ip = fd_to_ip(senderfd)) != "") {
-    	msg = "msg from:" + sender_ip + "\n[msg]:" + str;
+    if ((sender_ip = fd_to_ip(senderfd)) != "") {
+        msg = "msg from:" + sender_ip + "\n[msg]:" + str;
     } else {
-    	return -1;
+        return -1;
     }
 
     for (int i = 0; i < msg.length(); i++) {
@@ -162,33 +161,36 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
 }
 
 void Server::send_client_list(int clientfd) {
-	string client_list;
-	char buf[MESSAGE_SIZE] = {'\0'};
-	for(int i = 0; i < client_connections.size(); i++) {
-		if(client_connections[i].active) {
-			sprintf(buf, "%-5d%-35s%-20s%-8s\n", i, client_connections[i].fqdn.c_str(), client_connections[i].remote_ip.c_str(), client_connections[i].port.c_str());
-			client_list += string(buf);
-		}
-	}
-	client_list.resize(client_list.size()-1);	// Chop off last newline
-	strcpy(buf, client_list.c_str());
-	send_to_client(clientfd, buf);
+    string client_list;
+    char buf[MESSAGE_SIZE] = {'\0'};
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].active) {
+            sprintf(buf, "%-5d%-35s%-20s%-8s\n", i,
+                    client_connections[i].fqdn.c_str(),
+                    client_connections[i].remote_ip.c_str(),
+                    client_connections[i].port.c_str());
+            client_list += string(buf);
+        }
+    }
+    client_list.resize(client_list.size() - 1); // Chop off last newline
+    strcpy(buf, client_list.c_str());
+    send_to_client(clientfd, buf);
 }
 
 void Server::broadcast_to_all(string msg, int senderfd) {
-	char buf[MESSAGE_SIZE];
-	string sender_ip = fd_to_ip(senderfd);
-	msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
-	strcpy(buf, msg.c_str());
-	for(int i = 0; i < client_connections.size(); i++) {
-		if(client_connections[i].fd != senderfd) {
-			if(client_connections[i].active) {
-				send_to_client(client_connections[i].fd, buf);
-			} else {
-				// TODO: add message to buffer
-			}
-		}
-	}
+    char buf[MESSAGE_SIZE];
+    string sender_ip = fd_to_ip(senderfd);
+    msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
+    strcpy(buf, msg.c_str());
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd != senderfd) {
+            if (client_connections[i].active) {
+                send_to_client(client_connections[i].fd, buf);
+            } else {
+                // TODO: add message to buffer
+            }
+        }
+    }
 }
 
 int Server::send_to_client(int clientfd, char buf[]) {
@@ -212,9 +214,9 @@ int Server::new_connection_handler(int listener) {
     struct sockaddr_storage remoteaddr; // Client's IP address
     socklen_t addrlen;
     int newfd, rv;
-    char ip[NI_MAXHOST];	// IP
-    char port[NI_MAXSERV];	// Port
-    char hostname[NI_MAXHOST];	// Hostname
+    char ip[NI_MAXHOST];       // IP
+    char port[NI_MAXSERV];     // Port
+    char hostname[NI_MAXHOST]; // Hostname
 
     // Handle new connection
     addrlen = sizeof remoteaddr;
@@ -224,17 +226,21 @@ int Server::new_connection_handler(int listener) {
         return ERR_SOCKET_ACCEPT;
     }
 
-    getnameinfo((struct sockaddr *)&remoteaddr, addrlen, ip, sizeof(ip), port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV);
+    getnameinfo((struct sockaddr*)&remoteaddr, addrlen, ip, sizeof(ip), port,
+                sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV);
 
-    rv = getnameinfo((struct sockaddr *)&remoteaddr, addrlen, hostname, sizeof(hostname), port, sizeof(port), NI_NAMEREQD);
-    if(rv == -1) {
-    	for(int i = 0; i < NI_MAXHOST; i++) {
-    		hostname[i] = ip[i];
-    	}
+    rv = getnameinfo((struct sockaddr*)&remoteaddr, addrlen, hostname,
+                     sizeof(hostname), port, sizeof(port), NI_NAMEREQD);
+    if (rv == -1) {
+        for (int i = 0; i < NI_MAXHOST; i++) {
+            hostname[i] = ip[i];
+        }
     }
-    printf("selectserver: new connection from %s (%s):%s on socket %d\n", hostname, ip, port, newfd);
+    printf("selectserver: new connection from %s (%s):%s on socket %d\n",
+           hostname, ip, port, newfd);
     // Keep track of new connection
-    Connection connection = {newfd, string(ip), string(hostname), string(port), true};
+    Connection connection = {newfd, string(ip), string(hostname), string(port),
+                             true};
     add_connection(connection);
 
     // Send client list as welcome message
@@ -243,10 +249,7 @@ int Server::new_connection_handler(int listener) {
     return newfd;
 }
 
-
-void Server::add_connection(Connection c) {
-	client_connections.push_back(c);
-}
+void Server::add_connection(Connection c) { client_connections.push_back(c); }
 
 int Server::launch(string port) {
     fd_set master, read_fds;

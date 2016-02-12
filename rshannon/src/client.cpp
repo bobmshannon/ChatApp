@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 01:30:45
+* @Last Modified time: 2016-02-12 01:41:32
 */
 
 #include <vector>
@@ -49,7 +49,7 @@ void Client::process_command(string cmd) {
 
     // Grab the operation from the user inputted
     // command, i.e. LOGIN, EXIT, AUTHOR, etc.
-    if(args.size() > 0) {
+    if (args.size() > 0) {
         operation = args[0];
     } else {
         return;
@@ -68,14 +68,14 @@ void Client::process_command(string cmd) {
         } else if (operation == LIST) {
             list();
         } else if (operation == SEND) {
-            for(int i = 2; i < args.size(); i++) {
-                msg += (args[i] +" ");
+            for (int i = 2; i < args.size(); i++) {
+                msg += (args[i] + " ");
             }
             // SEND <IP> <MSG>
             send_msg(args[1], msg);
         } else if (operation == BROADCAST) {
-            for(int i = 1; i < args.size(); i++) {
-                msg += (args[i] +" ");
+            for (int i = 1; i < args.size(); i++) {
+                msg += (args[i] + " ");
             }
             // BROADCAST <MSG>
             broadcast(msg);
@@ -117,7 +117,7 @@ void Client::process_command(string cmd) {
             author();
         } else if (operation == LOGIN) {
             // LOGIN <HOST> <PORT>
-            if(args.size() == 3) {
+            if (args.size() == 3) {
                 login(args[1], args[2]);
             } else {
                 notify_error(LOGIN, "LOGIN <HOST> <PORT>");
@@ -167,7 +167,7 @@ void Client::ip() {}
 void Client::port() {}
 
 void Client::list() {
-    if(logged_in) {
+    if (logged_in) {
         notify_success(LIST, client_list);
     }
 }
@@ -316,7 +316,6 @@ void Client::launch() {
 
         if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
             perror("select");
-            // unable to read message from server
         }
 
         for (int i = 0; i <= fdmax; i++) {
@@ -334,26 +333,13 @@ void Client::launch() {
                         FD_CLR(i, &master);
                         exit();
                     } else {
-                        //printf("received %i bytes from fd %i: %s", nbytes, i,
-                        //       buf);
-                        cse4589_print_and_log("%s\n", buf);
+                        // Print welcome message from server
+                        cse4589_print_and_log("%s", buf);
                     }
                 } else if (i == 0) {
                     // Input received from STDIN
                     getline(std::cin, cmd);
                     process_command(cmd);
-                    //char c = getchar();
-                    //cmd += c;
-                    //if(c == '\n' || c == '\r') {
-                    //    process_command(cmd);
-                    //    cmd = "";
-                    /*} else if(c == 127 | c == 8) {
-                        if(cmd.size() > 2) {
-                            cmd = cmd.substr(0, cmd.size()-2);
-                        } else if(cmd.size() <= 2) {
-                            cmd = "";
-                        }
-                    }*/
                 }
             }
         }
