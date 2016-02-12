@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 23:09:55
+* @Last Modified time: 2016-02-11 23:28:23
 */
 
 #include <vector>
@@ -170,7 +170,7 @@ void Server::send_client_list(int clientfd) {
 			client_list += string(buf);
 		}
 	}
-	client_list.resize(client_list.size()-1);
+	client_list.resize(client_list.size()-1);	// Chop off last newline
 	strcpy(buf, client_list.c_str());
 	send_to_client(clientfd, buf);
 }
@@ -178,7 +178,7 @@ void Server::send_client_list(int clientfd) {
 void Server::broadcast_to_all(string msg, int senderfd) {
 	char buf[MESSAGE_SIZE];
 	string sender_ip = fd_to_ip(senderfd);
-	msg = "msg from:" + sender_ip + "\n[msg]:" + msg;
+	msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
 	strcpy(buf, msg.c_str());
 	for(int i = 0; i < client_connections.size(); i++) {
 		if(client_connections[i].fd != senderfd) {
