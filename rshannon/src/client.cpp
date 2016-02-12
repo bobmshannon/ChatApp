@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 17:58:48
+* @Last Modified time: 2016-02-12 18:52:35
 */
 
 #include <vector>
@@ -326,7 +326,7 @@ void Client::launch() {
     string cmd = "";
 
     int fdmax, nbytes;
-    char buf[MESSAGE_SIZE] = {'\0'};
+    char buf[MESSAGE_SIZE+1] = {'\0'};
 
     // Keep track of the biggest file descriptor
     fdmax = sockfd;
@@ -362,7 +362,7 @@ void Client::launch() {
                     getline(std::cin, cmd);
                     process_command(cmd);
                     if(!logged_in) {
-                        launch();
+                        prompt_login();
                     }
                 }
             }
