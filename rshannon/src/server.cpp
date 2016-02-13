@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 20:58:42
+* @Last Modified time: 2016-02-12 21:24:17
 */
 
 #include <vector>
@@ -235,7 +235,9 @@ void Server::blocked(string clientip) {
             }
         }
     }
-    blocked.resize(blocked.size() - 1); // Chop off last newline
+    if(blocked.size() > 0) {
+        blocked.resize(blocked.size() - 1); // Chop off last newline
+    }
     notify_success(BLOCKED, blocked);
 }
 
