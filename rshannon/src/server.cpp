@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 00:29:31
+* @Last Modified time: 2016-02-13 14:29:01
 */
 
 #include <vector>
@@ -399,6 +399,7 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
 
     if ((sender_ip = fd_to_ip(senderfd)) != "") {
         msg = "msg from:" + sender_ip + "\n[msg]:" + str;
+        msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]\n";
     } else {
         return -1;
     }
@@ -477,8 +478,10 @@ string Server::get_client_list() {
 
 void Server::broadcast_to_all(string msg, int senderfd) {
     char buf[MESSAGE_SIZE];
-    string sender_ip = fd_to_ip(senderfd);
+    //string sender_ip = fd_to_ip(senderfd);
+    string sender_ip = "255.255.255.255";
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
+    msg = "[RELAYED:SUCCESS]\n" + msg + "[RELAYED:END]\n";
     strcpy(buf, msg.c_str());
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].fd != senderfd) {
