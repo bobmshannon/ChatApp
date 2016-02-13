@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 18:52:35
+* @Last Modified time: 2016-02-12 19:10:52
 */
 
 #include <vector>
@@ -132,12 +132,13 @@ void Client::send_msg(string ip, string msg) {
     struct sockaddr_in sa;
 
     // Check if valid IP address.
-    if(inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) == -1) {
-        notify_error(SEND, "That IP address seems to not be a valid IPv4 address.");
+    if (inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) == -1) {
+        notify_error(SEND,
+                     "That IP address seems to not be a valid IPv4 address.");
         return;
     }
 
-    //TODO: check the IP in client_list, and whether it is valid
+    // TODO: check the IP in client_list, and whether it is valid
     send_to_server(string(SEND) + " " + ip + " " + msg);
     notify_success(SEND, "Message sent.");
 }
@@ -326,7 +327,7 @@ void Client::launch() {
     string cmd = "";
 
     int fdmax, nbytes;
-    char buf[MESSAGE_SIZE+1] = {'\0'};
+    char buf[MESSAGE_SIZE + 1] = {'\0'};
 
     // Keep track of the biggest file descriptor
     fdmax = sockfd;
@@ -361,7 +362,7 @@ void Client::launch() {
                     // Input received from STDIN
                     getline(std::cin, cmd);
                     process_command(cmd);
-                    if(!logged_in) {
+                    if (!logged_in) {
                         prompt_login();
                     }
                 }

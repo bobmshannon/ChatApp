@@ -78,6 +78,8 @@ class Server {
     void statistics();
     void author();
     int logout(int fd);
+    void notify_success(string operation, string results);
+    void notify_error(string operation, string error);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 18:57:28
+* @Last Modified time: 2016-02-12 19:10:43
 */
 
 #include <vector>
@@ -119,8 +119,6 @@ int Server::process_command() {
         return -1;
     }
 
-    printf("You entered: %s\n", operation.c_str());
-
     if (operation == EXIT) {
         exit_server();
     } else if (operation == BLOCKED) {
@@ -129,37 +127,46 @@ int Server::process_command() {
         statistics();
     } else if (operation == AUTHOR) {
         author();
+    } else {
+        notify_error(operation, "You entered an invalid command.");
     }
 
     return 0;
 }
 
-void Server::exit_server() { 
-    cse4589_print_and_log("Bye!\n");
-    exit(0); 
+void Server::exit_server() {
+    notify_success(EXIT, "Bye!");
+    exit(0);
 }
 void Server::blocked() {}
 
 void Server::statistics() {
     string stats, status;
     char buf[MESSAGE_SIZE];
-    for(int i = 0; i < client_connections.size(); i++) {
-        if(client_connections[i].active) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].active) {
             status = "online";
         } else {
             status = "offline";
         }
-        sprintf(buf, "%-5d%-35s%-8d%-8d%-8s\n", i, client_connections[i].fqdn.c_str(), client_connections[i].num_sent, client_connections[i].num_recv, status.c_str());
+        sprintf(buf, "%-5d%-35s%-8d%-8d%-8s\n", i,
+                client_connections[i].fqdn.c_str(),
+                client_connections[i].num_sent, client_connections[i].num_recv,
+                status.c_str());
         stats += string(buf);
     }
-    if(client_connections.size() == 0) {
-        stats = "No statistics available, no one has ever connected to this server.\n";
+    if (client_connections.size() == 0) {
+        notify_error(STATISTICS, "No statistics available, no one has ever "
+                                 "connected to this server.");
+    } else {
+        stats.resize(stats.size() - 1); // Chop off last newline
+        notify_success(STATISTICS, stats);
     }
-    cse4589_print_and_log("%s", stats.c_str());
 }
 
 void Server::author() {
-     cse4589_print_and_log("I, rshannon, have read and understood the course academic integrity policy.\n");   
+    notify_success(AUTHOR, "I, rshannon, have read and understood the course "
+                           "academic integrity policy.");
 }
 
 int Server::init_socket(string port) {
@@ -209,8 +216,8 @@ int Server::init_socket(string port) {
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
     cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n",
-                          fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd).c_str(),
-                          str.c_str());
+                          fd_to_ip(senderfd).c_str(),
+                          fd_to_ip(clientfd).c_str(), str.c_str());
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
 
@@ -228,12 +235,12 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
     }
 
     // Keep statistics on number messages received/sent
-    for(int i = 0; i < client_connections.size(); i++) {
-        if(client_connections[i].fd == clientfd) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd == clientfd) {
             // Increment received num_recv
             client_connections[i].num_recv += 1;
         }
-        if(client_connections[i].fd == senderfd) {
+        if (client_connections[i].fd == senderfd) {
             // Increment sender num_sent
             client_connections[i].num_sent += 1;
         }
@@ -308,6 +315,18 @@ int Server::send_to_client(int clientfd, char buf[]) {
     return n == -1 ? -1 : 0;
 }
 
+void Server::notify_success(string operation, string results) {
+    cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
+    cse4589_print_and_log("%s\n", results.c_str());
+    cse4589_print_and_log("[%s:END]\n", operation.c_str());
+}
+
+void Server::notify_error(string operation, string error) {
+    cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
+    cse4589_print_and_log("%s\n", error.c_str());
+    cse4589_print_and_log("[%s:END]\n", operation.c_str());
+}
+
 int Server::new_connection_handler(int listener) {
     struct sockaddr_storage remoteaddr; // Client's IP address
     socklen_t addrlen;
@@ -334,8 +353,8 @@ int Server::new_connection_handler(int listener) {
             hostname[i] = ip[i];
         }
     }
-    printf("selectserver: new connection from %s (%s):%s on socket %d\n",
-           hostname, ip, port, newfd);
+    // printf("selectserver: new connection from %s (%s):%s on socket %d\n",
+    //       hostname, ip, port, newfd);
 
     // Check if this is a returning client
     for (int i = 0; i < client_connections.size(); i++) {
