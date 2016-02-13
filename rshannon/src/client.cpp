@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 00:33:20
+* @Last Modified time: 2016-02-13 14:29:22
 */
 
 #include <vector>
@@ -215,8 +215,7 @@ void Client::port() {
     string port;
     if (send_to_server(PORT) != -1) {
         if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
-            notify_error(PORT,
-                         "Unable to get port from server.");
+            notify_error(PORT, "Unable to get port from server.");
             return;
         }
         port = string(buf);

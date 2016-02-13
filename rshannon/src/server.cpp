@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 14:29:01
+* @Last Modified time: 2016-02-13 14:29:18
 */
 
 #include <vector>
@@ -94,10 +94,10 @@ int Server::logout(int fd) {
 void Server::port(int fd) {
     int idx = get_connection(fd);
     char buf[MESSAGE_SIZE] = {'\0'};
-    for(int i = 0; i < client_connections[idx].port.length(); i++) {
+    for (int i = 0; i < client_connections[idx].port.length(); i++) {
         buf[i] = client_connections[idx].port[i];
     }
-    if(idx != -1) {
+    if (idx != -1) {
         send_to_client(fd, buf);
     }
 }
@@ -121,12 +121,12 @@ string Server::fd_to_ip(int fd) {
 }
 
 int Server::buffer_message(string senderip, string receiverip, string msg) {
-    if(!is_known_ip(receiverip)) {
+    if (!is_known_ip(receiverip)) {
         return -1;
     }
 
-    for(int i = 0; i < client_connections.size(); i++) {
-        if(client_connections[i].remote_ip == receiverip) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == receiverip) {
             Message m = {senderip, receiverip, msg};
             client_connections[i].msg_buffer.push_back(m);
             return 0;
@@ -143,8 +143,8 @@ int Server::send_buffered_messages(int fd) {
     int idx = get_connection(fd);
     int clientfd = client_connections[idx].fd;
     printf("idx:%d\n", idx);
-    if(idx != -1) {
-        for(int j = 0; j < client_connections[idx].msg_buffer.size(); j++) {
+    if (idx != -1) {
+        for (int j = 0; j < client_connections[idx].msg_buffer.size(); j++) {
             senderip = client_connections[idx].msg_buffer[j].sender_ip;
             msg = client_connections[idx].msg_buffer[j].msg;
 
@@ -189,14 +189,13 @@ int Server::process_command() {
         author();
     } else if (operation == LIST) {
         string list = get_client_list();
-        if(list.size() > 0) {
-            list.resize(list.size()-1); // Chop off last newline
+        if (list.size() > 0) {
+            list.resize(list.size() - 1); // Chop off last newline
         }
         notify_success(LIST, list);
     } else if (operation == PORT) {
         notify_success(PORT, "PORT:" + listen_port + "\n");
-    }
-    else {
+    } else {
         notify_error(operation, "You entered an invalid command.");
     }
 
@@ -296,7 +295,7 @@ void Server::blocked(string clientip) {
             }
         }
     }
-    if(blocked.size() > 0) {
+    if (blocked.size() > 0) {
         blocked.resize(blocked.size() - 1); // Chop off last newline
     }
     notify_success(BLOCKED, blocked);
@@ -431,9 +430,9 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
 }
 
 bool Server::is_online(string ip) {
-    for(int i = 0; i < client_connections.size(); i++) {
-        if(client_connections[i].remote_ip == ip) {
-            if(client_connections[i].active) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == ip) {
+            if (client_connections[i].active) {
                 return true;
             } else {
                 return false;
@@ -478,7 +477,7 @@ string Server::get_client_list() {
 
 void Server::broadcast_to_all(string msg, int senderfd) {
     char buf[MESSAGE_SIZE];
-    //string sender_ip = fd_to_ip(senderfd);
+    // string sender_ip = fd_to_ip(senderfd);
     string sender_ip = "255.255.255.255";
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
     msg = "[RELAYED:SUCCESS]\n" + msg + "[RELAYED:END]\n";
