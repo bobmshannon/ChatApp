@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 14:52:27
+* @Last Modified time: 2016-02-13 14:59:34
 */
 
 #include <vector>
@@ -137,18 +137,21 @@ int Server::buffer_message(string senderip, string receiverip, string msg) {
 }
 
 int Server::send_buffered_messages(int fd) {
-    char buf[MESSAGE_SIZE];
+    char buf[MESSAGE_SIZE] = {'\0'};
     string msg, senderip;
 
     int idx = get_connection(fd);
-    int clientfd = client_connections[idx].fd;
-    printf("idx:%d\n", idx);
+    // printf("idx:%d\n", idx);
     if (idx != -1) {
         for (int j = 0; j < client_connections[idx].msg_buffer.size(); j++) {
             senderip = client_connections[idx].msg_buffer[j].sender_ip;
             msg = client_connections[idx].msg_buffer[j].msg;
 
-            relay_to_client(msg, fd, ip_to_fd(senderip));
+            if (senderip != "255.255.255.255") {
+                relay_to_client(msg, fd, ip_to_fd(senderip));
+            } else {
+                send_to_client(fd, strcpy(buf, msg.c_str()));
+            }
         }
         client_connections[idx].msg_buffer.clear();
         return 0;
@@ -488,8 +491,7 @@ void Server::broadcast_to_all(string msg, int senderfd) {
                 send_to_client(client_connections[i].fd, buf);
             } else {
                 // Buffer message
-                Message m = {sender_ip, client_connections[i].remote_ip, msg};
-                client_connections[i].msg_buffer.push_back(m);
+                buffer_message(sender_ip, client_connections[i].remote_ip, msg);
             }
         }
     }
