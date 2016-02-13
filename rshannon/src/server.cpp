@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 14:29:18
+* @Last Modified time: 2016-02-13 14:52:27
 */
 
 #include <vector>
@@ -194,7 +194,7 @@ int Server::process_command() {
         }
         notify_success(LIST, list);
     } else if (operation == PORT) {
-        notify_success(PORT, "PORT:" + listen_port + "\n");
+        notify_success(PORT, "PORT:" + listen_port);
     } else {
         notify_error(operation, "You entered an invalid command.");
     }
@@ -397,8 +397,8 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
     string sender_ip, msg;
 
     if ((sender_ip = fd_to_ip(senderfd)) != "") {
-        msg = "msg from:" + sender_ip + "\n[msg]:" + str;
-        msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]\n";
+        msg = "msg from:" + sender_ip + "\n[msg]:" + str + "\n";
+        msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]";
     } else {
         return -1;
     }
@@ -487,7 +487,9 @@ void Server::broadcast_to_all(string msg, int senderfd) {
             if (client_connections[i].active) {
                 send_to_client(client_connections[i].fd, buf);
             } else {
-                // TODO: add message to buffer
+                // Buffer message
+                Message m = {sender_ip, client_connections[i].remote_ip, msg};
+                client_connections[i].msg_buffer.push_back(m);
             }
         }
     }
