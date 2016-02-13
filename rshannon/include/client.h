@@ -65,6 +65,9 @@ class Client {
      * 4 | euston.cse.buffalo.edu | 128.205.36.34 | 5701
      */
     void list();
+
+    int is_valid_ip(string ip);
+
     /**
      * Login to the server located at ip address: <server-ip> listening on port:
      * <server-port>.
@@ -95,7 +98,7 @@ class Client {
      * @throws UnknownIPException an unknown IP address was provided
      * @throws DuplicateBanException the provided IP address is already blocked
      */
-    void block();
+    void block_client(string ip);
     /**
      * Unblock a previously blocked client with IP address: <client-ip>. The
      * client

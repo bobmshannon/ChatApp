@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 19:10:43
+* @Last Modified time: 2016-02-12 20:41:46
 */
 
 #include <vector>
@@ -72,6 +72,8 @@ void Server::process_data(int sockfd, string data) {
         send_client_list(sockfd);
     } else if (operation == LOGOUT) {
         logout(sockfd);
+    } else if (operation == BLOCK) {
+        block(sockfd, args[1]);
     }
 }
 
@@ -122,7 +124,11 @@ int Server::process_command() {
     if (operation == EXIT) {
         exit_server();
     } else if (operation == BLOCKED) {
-        blocked();
+        if(args.size() == 2) {
+            blocked(args[1]);  
+        } else {
+            notify_error(operation, "Usage: BLOCKED <CLIENT-IP>");
+        }
     } else if (operation == STATISTICS) {
         statistics();
     } else if (operation == AUTHOR) {
@@ -134,11 +140,87 @@ int Server::process_command() {
     return 0;
 }
 
+void Server::block(int clientfd, string blockedip) {
+    int i = get_connection(clientfd);
+
+    if(i != -1) {
+        if (is_blocked(clientfd, blockedip)) {
+            // Already blocked
+            return;
+        } 
+
+        if(!is_known_ip(blockedip)) {
+            // IP not recognized as a client
+            return;
+        }
+
+        client_connections[i].blocked.push_back(blockedip);
+    }
+}
+
+bool Server::is_blocked(int fd, string ip) {
+    int idx = get_connection(fd);
+
+    for(int i = 0; i < client_connections[idx].blocked.size(); i++) {
+        if(ip == client_connections[idx].blocked[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Server::is_known_ip(string ip) {
+    for(int i = 0; i < client_connections.size(); i++) { 
+        if(client_connections[i].remote_ip == ip) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Server::exit_server() {
     notify_success(EXIT, "Bye!");
     exit(0);
 }
-void Server::blocked() {}
+
+void Server::blocked(string clientip) {
+    if(!is_valid_ip(clientip)) {
+        notify_error(BLOCKED, "That is not a valid IPv4 address.");
+        return;
+    }
+
+    string blocked;
+
+    for(int i = 0; i < client_connections.size(); i++) {
+        if(client_connections[i].remote_ip == clientip) {
+
+            char buf[MESSAGE_SIZE];
+            for(int j = 0; j < client_connections[i].blocked.size(); j++) {
+                int blockedfd = ip_to_fd(client_connections[i].blocked[j]);
+                int idx = get_connection(blockedfd);
+                sprintf(buf, "%-5d%-35s%-20s%-8s\n", i,
+                    client_connections[idx].fqdn.c_str(),
+                    client_connections[idx].remote_ip.c_str(),
+                    client_connections[idx].port.c_str());
+                blocked += string(buf);
+            }
+        }
+    }
+    blocked.resize(blocked.size()-1);   // Chop off last newline
+    notify_success(BLOCKED, blocked);
+}
+
+bool Server::is_valid_ip(string ip) {
+    struct sockaddr_in sa;
+
+    // Check if valid IP address.
+    if (inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) <= 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 void Server::statistics() {
     string stats, status;
@@ -246,7 +328,11 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         }
     }
 
-    return send_to_client(clientfd, buf);
+    if(!is_blocked(clientfd, fd_to_ip(senderfd))) {
+        return send_to_client(clientfd, buf);
+    }
+
+    return -1;
 }
 
 int Server::get_connection(int fd) {
@@ -370,7 +456,7 @@ int Server::new_connection_handler(int listener) {
 
     // Otherwise create a new entry in connection tracking table
     Connection connection = {newfd,        0,   0, string(ip), string(hostname),
-                             string(port), true};
+                             string(port), true, vector<string>()};
     add_connection(connection);
 
     // Send client list as welcome message

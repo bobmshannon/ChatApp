@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 19:10:52
+* @Last Modified time: 2016-02-12 19:56:02
 */
 
 #include <vector>
@@ -66,6 +66,7 @@ void Client::process_command(string cmd) {
         } else if (operation == PORT) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == LIST) {
+            // LIST
             list();
         } else if (operation == SEND) {
             for (int i = 2; i < args.size(); i++) {
@@ -80,7 +81,12 @@ void Client::process_command(string cmd) {
             // BROADCAST <MSG>
             broadcast(msg);
         } else if (operation == BLOCK) {
-            cse4589_print_and_log("%s", operation.c_str());
+            if(args.size() != 2) {
+                notify_error(BLOCK, "Usage: BLOCK <client-ip>");
+            } else {
+                // BLOCK <CLIENT-IP>
+                block_client(args[1]);
+            }
         } else if (operation == BLOCKED) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == UNBLOCK) {
@@ -120,7 +126,7 @@ void Client::process_command(string cmd) {
             if (args.size() == 3) {
                 login(args[1], args[2]);
             } else {
-                notify_error(LOGIN, "LOGIN <HOST> <PORT>");
+                notify_error(LOGIN, "Usage: LOGIN <HOST> <PORT>");
             }
         } else {
             notify_error(operation, "You entered an invalid command.");
@@ -128,19 +134,26 @@ void Client::process_command(string cmd) {
     }
 }
 
-void Client::send_msg(string ip, string msg) {
+int Client::is_valid_ip(string ip) {
     struct sockaddr_in sa;
 
     // Check if valid IP address.
-    if (inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) == -1) {
+    if (inet_pton(AF_INET, ip.c_str(), &sa.sin_addr) <= 0) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+void Client::send_msg(string ip, string msg) {
+    if(is_valid_ip(ip) == -1) {
         notify_error(SEND,
                      "That IP address seems to not be a valid IPv4 address.");
-        return;
+    } else {
+        // TODO: check the IP in client_list, and whether it is valid
+        send_to_server(string(SEND) + " " + ip + " " + msg);
+        notify_success(SEND, "Message sent.");       
     }
-
-    // TODO: check the IP in client_list, and whether it is valid
-    send_to_server(string(SEND) + " " + ip + " " + msg);
-    notify_success(SEND, "Message sent.");
 }
 
 int Client::send_to_server(string str) {
@@ -170,6 +183,16 @@ int Client::send_to_server(string str) {
 void Client::author() {
     notify_success(AUTHOR, "I, rshannon, have read and understood the course "
                            "academic integrity policy.");
+}
+
+void Client::block_client(string ip) {
+    if(is_valid_ip(ip) == -1) {
+        notify_error(BLOCK, "That is not a valid IPv4 address");
+    } else if(send_to_server(string(BLOCK) + " " + ip) == 0) {
+        notify_success(BLOCK, ip + " has been blocked.");
+    } else {
+        notify_error(BLOCK, "");
+    }
 }
 
 void Client::ip() {}
@@ -264,10 +287,6 @@ void Client::broadcast(string msg) {
     send_to_server(string(BROADCAST) + " " + msg);
     notify_success(BROADCAST, "Broadcast message sent.");
 }
-
-void Client::block() {}
-
-void Client::unblock() {}
 
 void Client::logout() {
     send_to_server(LOGOUT);

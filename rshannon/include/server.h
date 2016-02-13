@@ -31,6 +31,7 @@ class Server {
         string fqdn;      // The hostname of this client
         string port;      // The local port of this client
         bool active;      // Whether this client is currently logged in or not
+        vector<string> blocked; // List of client IP addresses to block messages from 
     };
     Console* console;
     vector<Connection> client_connections;
@@ -73,13 +74,24 @@ class Server {
     int get_connection(int fd);
     int increment_num_sent(int fd);
     int increment_num_recv(int fd);
+    void block(int clientfd, string blockedip);
     void exit_server();
-    void blocked();
+    void blocked(string clientip);
     void statistics();
     void author();
     int logout(int fd);
     void notify_success(string operation, string results);
     void notify_error(string operation, string error);
+    bool is_known_ip(string ip);
+    /**
+     * Check whether client associated with specified fd has blocked the
+     * IP address.
+     * @param  fd The fd of the client
+     * @param  ip The ip to check if whether is blocked by client or not
+     * @return    true if blocked, false otherwise
+     */
+    bool is_blocked(int fd, string ip);
+    bool is_valid_ip(string ip);
     /**
      * Process a user inputted command from STDIN.
      * @return 0 success, negative otherwise
