@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 19:56:02
+* @Last Modified time: 2016-02-12 20:58:51
 */
 
 #include <vector>
@@ -81,16 +81,19 @@ void Client::process_command(string cmd) {
             // BROADCAST <MSG>
             broadcast(msg);
         } else if (operation == BLOCK) {
-            if(args.size() != 2) {
+            if (args.size() != 2) {
                 notify_error(BLOCK, "Usage: BLOCK <client-ip>");
             } else {
                 // BLOCK <CLIENT-IP>
                 block_client(args[1]);
             }
-        } else if (operation == BLOCKED) {
-            cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == UNBLOCK) {
-            cse4589_print_and_log("%s", operation.c_str());
+            if (args.size() != 2) {
+                notify_error(UNBLOCK, "Usage: UNBLOCK <client-ip>");
+            } else {
+                // UNBLOCK <CLIENT-IP>
+                unblock_client(args[1]);
+            }
         } else if (operation == LOGOUT) {
             logout();
         } else if (operation == EXIT) {
@@ -146,13 +149,13 @@ int Client::is_valid_ip(string ip) {
 }
 
 void Client::send_msg(string ip, string msg) {
-    if(is_valid_ip(ip) == -1) {
+    if (is_valid_ip(ip) == -1) {
         notify_error(SEND,
                      "That IP address seems to not be a valid IPv4 address.");
     } else {
         // TODO: check the IP in client_list, and whether it is valid
         send_to_server(string(SEND) + " " + ip + " " + msg);
-        notify_success(SEND, "Message sent.");       
+        notify_success(SEND, "Message sent.");
     }
 }
 
@@ -186,12 +189,22 @@ void Client::author() {
 }
 
 void Client::block_client(string ip) {
-    if(is_valid_ip(ip) == -1) {
+    if (is_valid_ip(ip) == -1) {
         notify_error(BLOCK, "That is not a valid IPv4 address");
-    } else if(send_to_server(string(BLOCK) + " " + ip) == 0) {
+    } else if (send_to_server(string(BLOCK) + " " + ip) == 0) {
         notify_success(BLOCK, ip + " has been blocked.");
     } else {
         notify_error(BLOCK, "");
+    }
+}
+
+void Client::unblock_client(string ip) {
+    if (is_valid_ip(ip) == -1) {
+        notify_error(UNBLOCK, "That is not a valid IPv4 address");
+    } else if (send_to_server(string(UNBLOCK) + " " + ip) == 0) {
+        notify_success(UNBLOCK, ip + " has been unblocked.");
+    } else {
+        notify_error(UNBLOCK, "");
     }
 }
 

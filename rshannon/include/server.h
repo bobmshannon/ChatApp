@@ -31,7 +31,8 @@ class Server {
         string fqdn;      // The hostname of this client
         string port;      // The local port of this client
         bool active;      // Whether this client is currently logged in or not
-        vector<string> blocked; // List of client IP addresses to block messages from 
+        vector<string>
+            blocked; // List of client IP addresses to block messages from
     };
     Console* console;
     vector<Connection> client_connections;
@@ -75,6 +76,7 @@ class Server {
     int increment_num_sent(int fd);
     int increment_num_recv(int fd);
     void block(int clientfd, string blockedip);
+    void unblock(int clientfd, string blockedip);
     void exit_server();
     void blocked(string clientip);
     void statistics();

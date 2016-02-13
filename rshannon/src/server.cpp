@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 20:41:46
+* @Last Modified time: 2016-02-12 20:58:42
 */
 
 #include <vector>
@@ -74,6 +74,8 @@ void Server::process_data(int sockfd, string data) {
         logout(sockfd);
     } else if (operation == BLOCK) {
         block(sockfd, args[1]);
+    } else if (operation == UNBLOCK) {
+        unblock(sockfd, args[1]);
     }
 }
 
@@ -124,8 +126,8 @@ int Server::process_command() {
     if (operation == EXIT) {
         exit_server();
     } else if (operation == BLOCKED) {
-        if(args.size() == 2) {
-            blocked(args[1]);  
+        if (args.size() == 2) {
+            blocked(args[1]);
         } else {
             notify_error(operation, "Usage: BLOCKED <CLIENT-IP>");
         }
@@ -143,13 +145,13 @@ int Server::process_command() {
 void Server::block(int clientfd, string blockedip) {
     int i = get_connection(clientfd);
 
-    if(i != -1) {
+    if (i != -1) {
         if (is_blocked(clientfd, blockedip)) {
             // Already blocked
             return;
-        } 
+        }
 
-        if(!is_known_ip(blockedip)) {
+        if (!is_known_ip(blockedip)) {
             // IP not recognized as a client
             return;
         }
@@ -158,11 +160,37 @@ void Server::block(int clientfd, string blockedip) {
     }
 }
 
+void Server::unblock(int clientfd, string blockedip) {
+    int idx = get_connection(clientfd);
+
+    if (idx == -1) {
+        return;
+    }
+
+    if (!is_blocked(clientfd, blockedip)) {
+        // Not blocked
+        return;
+    }
+
+    if (!is_known_ip(blockedip)) {
+        // IP not recognized as a client
+        return;
+    }
+
+    for (int i = 0; i < client_connections[idx].blocked.size(); i++) {
+        if (blockedip == client_connections[idx].blocked[i]) {
+            client_connections[idx].blocked[i].erase(
+                client_connections[idx].blocked[i].begin() + i);
+            break;
+        }
+    }
+}
+
 bool Server::is_blocked(int fd, string ip) {
     int idx = get_connection(fd);
 
-    for(int i = 0; i < client_connections[idx].blocked.size(); i++) {
-        if(ip == client_connections[idx].blocked[i]) {
+    for (int i = 0; i < client_connections[idx].blocked.size(); i++) {
+        if (ip == client_connections[idx].blocked[i]) {
             return true;
         }
     }
@@ -171,8 +199,8 @@ bool Server::is_blocked(int fd, string ip) {
 }
 
 bool Server::is_known_ip(string ip) {
-    for(int i = 0; i < client_connections.size(); i++) { 
-        if(client_connections[i].remote_ip == ip) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == ip) {
             return true;
         }
     }
@@ -185,29 +213,29 @@ void Server::exit_server() {
 }
 
 void Server::blocked(string clientip) {
-    if(!is_valid_ip(clientip)) {
+    if (!is_valid_ip(clientip)) {
         notify_error(BLOCKED, "That is not a valid IPv4 address.");
         return;
     }
 
     string blocked;
 
-    for(int i = 0; i < client_connections.size(); i++) {
-        if(client_connections[i].remote_ip == clientip) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].remote_ip == clientip) {
 
             char buf[MESSAGE_SIZE];
-            for(int j = 0; j < client_connections[i].blocked.size(); j++) {
+            for (int j = 0; j < client_connections[i].blocked.size(); j++) {
                 int blockedfd = ip_to_fd(client_connections[i].blocked[j]);
                 int idx = get_connection(blockedfd);
                 sprintf(buf, "%-5d%-35s%-20s%-8s\n", i,
-                    client_connections[idx].fqdn.c_str(),
-                    client_connections[idx].remote_ip.c_str(),
-                    client_connections[idx].port.c_str());
+                        client_connections[idx].fqdn.c_str(),
+                        client_connections[idx].remote_ip.c_str(),
+                        client_connections[idx].port.c_str());
                 blocked += string(buf);
             }
         }
     }
-    blocked.resize(blocked.size()-1);   // Chop off last newline
+    blocked.resize(blocked.size() - 1); // Chop off last newline
     notify_success(BLOCKED, blocked);
 }
 
@@ -328,7 +356,7 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         }
     }
 
-    if(!is_blocked(clientfd, fd_to_ip(senderfd))) {
+    if (!is_blocked(clientfd, fd_to_ip(senderfd))) {
         return send_to_client(clientfd, buf);
     }
 
@@ -455,8 +483,9 @@ int Server::new_connection_handler(int listener) {
     }
 
     // Otherwise create a new entry in connection tracking table
-    Connection connection = {newfd,        0,   0, string(ip), string(hostname),
-                             string(port), true, vector<string>()};
+    Connection connection = {
+        newfd,           0, 0, string(ip), string(hostname), string(port), true,
+        vector<string>()};
     add_connection(connection);
 
     // Send client list as welcome message

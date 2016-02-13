@@ -108,7 +108,7 @@ class Client {
      * @throws UnknownIPException an unknown IP address was provided
      * @throws NoBanException the provided IP address is not blocked
      */
-    void unblock();
+    void unblock_client(string ip);
     /**
      * Logout from the server. Note that the application is still able to accept
      * the
