@@ -32,7 +32,7 @@ if __name__ == "__main__":
 		if not matches: return "No output detected: Check format/syntax of output."
 		return matches.group(1)
 
-	s_or_c = 'c'
+	s_or_c = 's'
 	port = 4242
 
 	print "Starting Application as "+s_or_c+" on port:"+str(port)
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 	print "AUTHOR ...",
 	sys.stdout.flush()
 	expect_command = "expect -f author.exp "+args.path[0]+" "+s_or_c+" "+str(port)
-	process = subprocess.Popen(expect_command, shell=True, stdout=open('log', 'w'), stderr=subprocess.STDOUT)
+	process = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
 	time.sleep(2)
 	print "I got the following output:"
 	print extractOutputSuccess("AUTHOR", logfile_path+"_"+str(port))
