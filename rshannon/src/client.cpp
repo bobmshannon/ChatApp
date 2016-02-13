@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 20:58:51
+* @Last Modified time: 2016-02-13 00:33:20
 */
 
 #include <vector>
@@ -64,7 +64,7 @@ void Client::process_command(string cmd) {
         if (operation == IP) {
             cse4589_print_and_log("%s", operation.c_str());
         } else if (operation == PORT) {
-            cse4589_print_and_log("%s", operation.c_str());
+            port();
         } else if (operation == LIST) {
             // LIST
             list();
@@ -210,7 +210,19 @@ void Client::unblock_client(string ip) {
 
 void Client::ip() {}
 
-void Client::port() {}
+void Client::port() {
+    char buf[MESSAGE_SIZE];
+    string port;
+    if (send_to_server(PORT) != -1) {
+        if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
+            notify_error(PORT,
+                         "Unable to get port from server.");
+            return;
+        }
+        port = string(buf);
+    }
+    notify_success(PORT, "PORT:" + port);
+}
 
 void Client::refresh() {
     char buf[MESSAGE_SIZE];
@@ -224,6 +236,7 @@ void Client::refresh() {
     }
     notify_success(REFRESH, client_list);
 }
+
 void Client::list() { notify_success(LIST, client_list); }
 
 int Client::server_connect(string host, string port) {
@@ -285,7 +298,7 @@ void Client::login(string host, string port) {
         return;
     }
 
-    if (recv(sockfd, data, MESSAGE_SIZE - 1, 0) == -1) {
+    if (recv(sockfd, data, MESSAGE_SIZE, 0) == -1) {
         notify_error(LOGIN, err_to_str(ERR_CONNECTION));
         return;
     }

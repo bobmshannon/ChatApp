@@ -23,6 +23,11 @@ using std::vector;
 
 class Server {
   private:
+    struct Message {
+        string sender_ip;
+        string receiver_ip;
+        string msg;
+    };
     struct Connection {
         int fd;           // The file descriptor of the socket
         int num_sent;     // Number messages sent by this client
@@ -33,9 +38,12 @@ class Server {
         bool active;      // Whether this client is currently logged in or not
         vector<string>
             blocked; // List of client IP addresses to block messages from
+        vector<Message>
+            msg_buffer;  // List of buffered messages 
     };
     Console* console;
     vector<Connection> client_connections;
+    string listen_port;
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a new socket on specified port
@@ -66,7 +74,8 @@ class Server {
      * @return          0 success, negative otherwise
      */
     int relay_to_client(string str, int clientfd, int senderfd);
-
+    int send_buffered_messages(int fd);
+    int buffer_message(string senderip, string receiverip, string msg);
     void send_client_list(int clientfd);
     string get_client_list();
     int send_to_client(int clientfd, char buf[]);
@@ -80,11 +89,13 @@ class Server {
     void exit_server();
     void blocked(string clientip);
     void statistics();
+    void port(int fd);
     void author();
     int logout(int fd);
     void notify_success(string operation, string results);
     void notify_error(string operation, string error);
     bool is_known_ip(string ip);
+    bool is_online(string ip);
     /**
      * Check whether client associated with specified fd has blocked the
      * IP address.

@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-12 21:24:17
+* @Last Modified time: 2016-02-13 00:29:31
 */
 
 #include <vector>
@@ -60,7 +60,9 @@ void Server::process_data(int sockfd, string data) {
         for (int i = 2; i < args.size(); i++) {
             msg += (args[i] + " ");
         }
-        if ((clientfd = ip_to_fd(args[1])) != -1) {
+        if (!is_online(args[1]) && is_known_ip(args[1])) {
+            buffer_message(fd_to_ip(sockfd), args[1], msg);
+        } else if ((clientfd = ip_to_fd(args[1])) != -1) {
             relay_to_client(msg, clientfd, sockfd);
         }
     } else if (operation == BROADCAST) {
@@ -76,6 +78,8 @@ void Server::process_data(int sockfd, string data) {
         block(sockfd, args[1]);
     } else if (operation == UNBLOCK) {
         unblock(sockfd, args[1]);
+    } else if (operation == PORT) {
+        port(sockfd);
     }
 }
 
@@ -86,6 +90,18 @@ int Server::logout(int fd) {
     }
     return -1;
 }
+
+void Server::port(int fd) {
+    int idx = get_connection(fd);
+    char buf[MESSAGE_SIZE] = {'\0'};
+    for(int i = 0; i < client_connections[idx].port.length(); i++) {
+        buf[i] = client_connections[idx].port[i];
+    }
+    if(idx != -1) {
+        send_to_client(fd, buf);
+    }
+}
+
 int Server::ip_to_fd(string ip) {
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].remote_ip == ip) {
@@ -102,6 +118,42 @@ string Server::fd_to_ip(int fd) {
         }
     }
     return "";
+}
+
+int Server::buffer_message(string senderip, string receiverip, string msg) {
+    if(!is_known_ip(receiverip)) {
+        return -1;
+    }
+
+    for(int i = 0; i < client_connections.size(); i++) {
+        if(client_connections[i].remote_ip == receiverip) {
+            Message m = {senderip, receiverip, msg};
+            client_connections[i].msg_buffer.push_back(m);
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+int Server::send_buffered_messages(int fd) {
+    char buf[MESSAGE_SIZE];
+    string msg, senderip;
+
+    int idx = get_connection(fd);
+    int clientfd = client_connections[idx].fd;
+    printf("idx:%d\n", idx);
+    if(idx != -1) {
+        for(int j = 0; j < client_connections[idx].msg_buffer.size(); j++) {
+            senderip = client_connections[idx].msg_buffer[j].sender_ip;
+            msg = client_connections[idx].msg_buffer[j].msg;
+
+            relay_to_client(msg, fd, ip_to_fd(senderip));
+        }
+        client_connections[idx].msg_buffer.clear();
+        return 0;
+    }
+    return -1;
 }
 
 int Server::process_command() {
@@ -135,7 +187,16 @@ int Server::process_command() {
         statistics();
     } else if (operation == AUTHOR) {
         author();
-    } else {
+    } else if (operation == LIST) {
+        string list = get_client_list();
+        if(list.size() > 0) {
+            list.resize(list.size()-1); // Chop off last newline
+        }
+        notify_success(LIST, list);
+    } else if (operation == PORT) {
+        notify_success(PORT, "PORT:" + listen_port + "\n");
+    }
+    else {
         notify_error(operation, "You entered an invalid command.");
     }
 
@@ -286,6 +347,9 @@ int Server::init_socket(string port) {
     int yes = 1; // for setsockopt() SO_REUSEADDR, below
     struct addrinfo hints, *ai, *p;
 
+    // Set port
+    listen_port = port;
+
     // Get us a socket and bind it
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
@@ -363,6 +427,19 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
     }
 
     return -1;
+}
+
+bool Server::is_online(string ip) {
+    for(int i = 0; i < client_connections.size(); i++) {
+        if(client_connections[i].remote_ip == ip) {
+            if(client_connections[i].active) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
 }
 
 int Server::get_connection(int fd) {
@@ -480,6 +557,8 @@ int Server::new_connection_handler(int listener) {
             client_connections[i].active = true;
             client_connections[i].port = string(port);
             send_client_list(newfd);
+            usleep(500000);
+            send_buffered_messages(newfd);
             return newfd;
         }
     }
