@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 01:56:41
+* @Last Modified time: 2016-02-15 02:03:48
 */
 
 #include <vector>
@@ -597,7 +597,8 @@ int Server::new_connection_handler(int listener) {
 
     // Send client list as welcome message
     // send_client_list(newfd);
-    char welcome[] = "WELCOME\0";
+    char welcome[MESSAGE_SIZE] = { '\0' };
+    strcpy(welcome, "WELCOME");
     send_to_client(newfd, welcome);
 
     // Wait for client to send their listen port
