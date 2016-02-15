@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 01:42:21
+* @Last Modified time: 2016-02-15 01:56:41
 */
 
 #include <vector>
@@ -581,7 +581,13 @@ int Server::new_connection_handler(int listener) {
             !client_connections[i].active) {
             client_connections[i].fd = newfd;
             client_connections[i].active = true;
-            client_connections[i].port = string(port);
+            // Wait for client to send their listen port
+            if (recv(newfd, port, MESSAGE_SIZE, 0) <= 0) {
+                close(newfd);
+                return -1;
+            } else {
+                client_connections[i].port = string(port);
+            }
             // send_client_list(newfd);
             usleep(500000);
             send_buffered_messages(newfd);
@@ -589,17 +595,22 @@ int Server::new_connection_handler(int listener) {
         }
     }
 
-    // Otherwise create a new entry in connection tracking table
-    Connection connection = {
-        newfd,           0, 0, string(ip), string(hostname), string(port), true,
-        vector<string>()};
-    add_connection(connection);
-
     // Send client list as welcome message
     // send_client_list(newfd);
     char welcome[] = "WELCOME\0";
     send_to_client(newfd, welcome);
 
+    // Wait for client to send their listen port
+    if (recv(newfd, port, MESSAGE_SIZE, 0) <= 0) {
+        close(newfd);
+        return -1;
+    }
+
+    // Create a new entry in connection tracking table
+    Connection connection = {
+        newfd,           0, 0, string(ip), string(hostname), string(port), true,
+        vector<string>()};
+    add_connection(connection);
     return newfd;
 }
 
