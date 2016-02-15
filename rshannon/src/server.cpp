@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 00:56:09
+* @Last Modified time: 2016-02-15 01:15:14
 */
 
 #include <vector>
@@ -32,6 +32,11 @@ using std::istringstream;
 using std::istream_iterator;
 using std::vector;
 using std::find;
+using std::sort;
+
+bool Server::compare_by_port(const Connection &a, const Connection &b) {
+    return stoi(a.port) < stoi(b.port);
+}
 
 void* Server::get_in_addr(struct sockaddr* sa) {
     if (sa->sa_family == AF_INET) {
@@ -585,7 +590,11 @@ int Server::new_connection_handler(int listener) {
     return newfd;
 }
 
-void Server::add_connection(Connection c) { client_connections.push_back(c); }
+void Server::add_connection(Connection c) {
+    client_connections.push_back(c);
+    // Sort vector by the clients' listening port
+    sort(client_connections.begin(), client_connections.end(), compare_by_port);
+}
 
 int Server::launch(string port) {
     fd_set master, read_fds;
