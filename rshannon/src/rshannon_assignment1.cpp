@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
         server.launch(port);
     } else if (mode == "c") {
         Client client = Client();
-        client.launch();
+        client.launch(port);
     }
 
     return 0;

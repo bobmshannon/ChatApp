@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 14:29:22
+* @Last Modified time: 2016-02-15 00:30:18
 */
 
 #include <vector>
@@ -113,7 +113,7 @@ void Client::process_command(string cmd) {
         // Note that EXIT, and AUTHOR are allowed to be
         // processed regardless of whether the client
         // is logged into a server or not.
-        if (operation == IP || operation == PORT || operation == LIST ||
+        if (operation == IP || operation == LIST ||
             operation == SEND || operation == BROADCAST || operation == BLOCK ||
             operation == BLOCKED || operation == UNBLOCK ||
             operation == LOGOUT || operation == STATISTICS) {
@@ -124,6 +124,8 @@ void Client::process_command(string cmd) {
             exit_client();
         } else if (operation == AUTHOR) {
             author();
+        } else if (operation == PORT) {
+            port();
         } else if (operation == LOGIN) {
             // LOGIN <HOST> <PORT>
             if (args.size() == 3) {
@@ -211,6 +213,8 @@ void Client::unblock_client(string ip) {
 void Client::ip() {}
 
 void Client::port() {
+    notify_success(PORT, "PORT:" + listen_port);
+    /*
     char buf[MESSAGE_SIZE];
     string port;
     if (send_to_server(PORT) != -1) {
@@ -220,7 +224,7 @@ void Client::port() {
         }
         port = string(buf);
     }
-    notify_success(PORT, "PORT:" + port);
+    notify_success(PORT, "PORT:" + port);*/
 }
 
 void Client::refresh() {
@@ -365,7 +369,9 @@ void Client::prompt_login() {
     FD_SET(0, &master);
 }
 
-void Client::launch() {
+void Client::launch(string port) {
+    listen_port = port;
+    
     prompt_login();
 
     string cmd = "";

@@ -26,6 +26,7 @@ class Client {
     bool logged_in;     // Whether client is logged into a remote server
     string client_list; // Most recent list of clients retrieved from server
     fd_set master, read_fds;
+    string listen_port;        // The port to listen on (passed as a command line argument)
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a socket for communication with specified
@@ -151,9 +152,9 @@ class Client {
      */
     void process_command(string cmd);
     /**
-     * Launch a new client window.
+     * Launch a new client listening on specified port.
      */
-    void launch();
+    void launch(string port);
     /**
      * Exit client window.
      */
