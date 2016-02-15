@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 01:15:14
+* @Last Modified time: 2016-02-15 01:42:21
 */
 
 #include <vector>
@@ -34,7 +34,7 @@ using std::vector;
 using std::find;
 using std::sort;
 
-bool Server::compare_by_port(const Connection &a, const Connection &b) {
+bool Server::compare_by_port(const Connection& a, const Connection& b) {
     return stoi(a.port) < stoi(b.port);
 }
 
@@ -68,7 +68,9 @@ void Server::process_data(int sockfd, string data) {
         if (!is_online(args[1]) && is_known_ip(args[1])) {
             buffer_message(fd_to_ip(sockfd), args[1], msg);
         } else if ((clientfd = ip_to_fd(args[1])) != -1) {
+            increment_num_sent(sockfd);
             relay_to_client(msg, clientfd, sockfd);
+            increment_num_recv(ip_to_fd(args[1]));
         }
     } else if (operation == BROADCAST) {
         for (int i = 1; i < args.size(); i++) {
@@ -148,7 +150,6 @@ int Server::send_buffered_messages(int fd) {
     string msg, senderip;
 
     int idx = get_connection(fd);
-    // printf("idx:%d\n", idx);
     if (idx != -1) {
         for (int j = 0; j < client_connections[idx].msg_buffer.size(); j++) {
             senderip = client_connections[idx].msg_buffer[j].sender_ip;
@@ -156,8 +157,10 @@ int Server::send_buffered_messages(int fd) {
 
             if (senderip != "255.255.255.255") {
                 relay_to_client(msg, fd, ip_to_fd(senderip));
+                increment_num_recv(fd);
             } else {
                 send_to_client(fd, strcpy(buf, msg.c_str()));
+                increment_num_recv(fd);
             }
         }
         client_connections[idx].msg_buffer.clear();
@@ -420,23 +423,31 @@ int Server::relay_to_client(string str, int clientfd, int senderfd) {
         }
     }
 
-    // Keep statistics on number messages received/sent
-    for (int i = 0; i < client_connections.size(); i++) {
-        if (client_connections[i].fd == clientfd) {
-            // Increment received num_recv
-            client_connections[i].num_recv += 1;
-        }
-        if (client_connections[i].fd == senderfd) {
-            // Increment sender num_sent
-            client_connections[i].num_sent += 1;
-        }
-    }
-
     if (!is_blocked(clientfd, fd_to_ip(senderfd))) {
         return send_to_client(clientfd, buf);
     }
 
     return -1;
+}
+
+int Server::increment_num_recv(int fd) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd == fd) {
+            // Increment num_recv
+            client_connections[i].num_recv += 1;
+        }
+    }
+    return 0;
+}
+
+int Server::increment_num_sent(int fd) {
+    for (int i = 0; i < client_connections.size(); i++) {
+        if (client_connections[i].fd == fd) {
+            // Increment num_sent
+            client_connections[i].num_sent += 1;
+        }
+    }
+    return 0;
 }
 
 bool Server::is_online(string ip) {
@@ -492,10 +503,12 @@ void Server::broadcast_to_all(string msg, int senderfd) {
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
     msg = "[RELAYED:SUCCESS]\n" + msg + "[RELAYED:END]\n";
     strcpy(buf, msg.c_str());
+    increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].fd != senderfd) {
             if (client_connections[i].active) {
                 send_to_client(client_connections[i].fd, buf);
+                increment_num_recv(client_connections[i].fd);
             } else {
                 // Buffer message
                 buffer_message(sender_ip, client_connections[i].remote_ip, msg);
@@ -569,7 +582,7 @@ int Server::new_connection_handler(int listener) {
             client_connections[i].fd = newfd;
             client_connections[i].active = true;
             client_connections[i].port = string(port);
-            //send_client_list(newfd);
+            // send_client_list(newfd);
             usleep(500000);
             send_buffered_messages(newfd);
             return newfd;
@@ -583,7 +596,7 @@ int Server::new_connection_handler(int listener) {
     add_connection(connection);
 
     // Send client list as welcome message
-    //send_client_list(newfd);
+    // send_client_list(newfd);
     char welcome[] = "WELCOME\0";
     send_to_client(newfd, welcome);
 

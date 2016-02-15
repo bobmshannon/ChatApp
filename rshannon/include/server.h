@@ -38,14 +38,13 @@ class Server {
         bool active;      // Whether this client is currently logged in or not
         vector<string>
             blocked; // List of client IP addresses to block messages from
-        vector<Message>
-            msg_buffer;  // List of buffered messages 
+        vector<Message> msg_buffer; // List of buffered messages
     };
     Console* console;
     vector<Connection> client_connections;
     string listen_port;
     void* get_in_addr(struct sockaddr* sa);
-    static bool compare_by_port(const Connection &a, const Connection &b);
+    static bool compare_by_port(const Connection& a, const Connection& b);
     /**
      * Initialize a new socket on specified port
      * @param  port The port to listen on

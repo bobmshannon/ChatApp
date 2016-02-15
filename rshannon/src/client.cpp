@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 00:57:07
+* @Last Modified time: 2016-02-15 01:17:19
 */
 
 #include <vector>
@@ -113,8 +113,8 @@ void Client::process_command(string cmd) {
         // Note that EXIT, and AUTHOR are allowed to be
         // processed regardless of whether the client
         // is logged into a server or not.
-        if (operation == IP || operation == LIST ||
-            operation == SEND || operation == BROADCAST || operation == BLOCK ||
+        if (operation == IP || operation == LIST || operation == SEND ||
+            operation == BROADCAST || operation == BLOCK ||
             operation == BLOCKED || operation == UNBLOCK ||
             operation == LOGOUT || operation == STATISTICS) {
             notify_error(
@@ -322,14 +322,13 @@ void Client::login(string host, string port) {
     result = string(data);
     send_to_server(string(PORT) + " " + listen_port);
     client_list = get_list();
-    if(result == "WELCOME") {
+    if (result == "WELCOME") {
         notify_success(LOGIN, "");
-        logged_in = true;       
+        logged_in = true;
     } else {
         notify_error(LOGIN, "");
         logged_in = false;
     }
-
 }
 
 void Client::broadcast(string msg) {
@@ -351,7 +350,7 @@ void Client::logout() {
 
 void Client::notify_success(string operation, string results) {
     cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
-    if(results != "") {
+    if (results != "") {
         cse4589_print_and_log("%s\n", results.c_str());
     }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
@@ -359,7 +358,7 @@ void Client::notify_success(string operation, string results) {
 
 void Client::notify_error(string operation, string error) {
     cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
-    if(error != "") {
+    if (error != "") {
         cse4589_print_and_log("%s\n", error.c_str());
     }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
