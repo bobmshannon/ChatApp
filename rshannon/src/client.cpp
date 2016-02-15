@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 01:17:19
+* @Last Modified time: 2016-02-15 01:49:03
 */
 
 #include <vector>
@@ -246,7 +246,7 @@ string Client::get_list() {
         if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
             notify_error(REFRESH,
                          "Unable to get updated client list from server.");
-            return NULL;
+            return "";
         }
         client_list = string(buf);
     }
@@ -322,7 +322,7 @@ void Client::login(string host, string port) {
     result = string(data);
     send_to_server(string(PORT) + " " + listen_port);
     client_list = get_list();
-    if (result == "WELCOME") {
+    if (result == "WELCOME" && client_list != "") {
         notify_success(LOGIN, "");
         logged_in = true;
     } else {
