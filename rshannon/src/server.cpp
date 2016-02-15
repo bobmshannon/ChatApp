@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 02:03:48
+* @Last Modified time: 2016-02-15 02:31:01
 */
 
 #include <vector>
@@ -101,6 +101,7 @@ int Server::logout(int fd) {
 void Server::port(int fd, string port) {
     int idx = get_connection(fd);
     client_connections[idx].port = port;
+    sort(client_connections.begin(), client_connections.end(), compare_by_port);
     /*int idx = get_connection(fd);
     char buf[MESSAGE_SIZE] = {'\0'};
     for (int i = 0; i < client_connections[idx].port.length(); i++) {
@@ -553,7 +554,11 @@ int Server::new_connection_handler(int listener) {
     char ip[NI_MAXHOST];       // IP
     char port[NI_MAXSERV];     // Port
     char hostname[NI_MAXHOST]; // Hostname
+    string client_port;
 
+    char welcome[MESSAGE_SIZE] = { '\0' };
+    strcpy(welcome, "WELCOME");
+    
     // Handle new connection
     addrlen = sizeof remoteaddr;
     newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
@@ -572,8 +577,6 @@ int Server::new_connection_handler(int listener) {
             hostname[i] = ip[i];
         }
     }
-    // printf("selectserver: new connection from %s (%s):%s on socket %d\n",
-    //       hostname, ip, port, newfd);
 
     // Check if this is a returning client
     for (int i = 0; i < client_connections.size(); i++) {
@@ -581,31 +584,17 @@ int Server::new_connection_handler(int listener) {
             !client_connections[i].active) {
             client_connections[i].fd = newfd;
             client_connections[i].active = true;
-            // Wait for client to send their listen port
-            if (recv(newfd, port, MESSAGE_SIZE, 0) <= 0) {
-                close(newfd);
-                return -1;
-            } else {
-                client_connections[i].port = string(port);
-            }
-            // send_client_list(newfd);
+            client_connections[i].port = string(port);
+            // Send welcome message
+            send_to_client(newfd, welcome);
             usleep(500000);
             send_buffered_messages(newfd);
             return newfd;
         }
     }
 
-    // Send client list as welcome message
-    // send_client_list(newfd);
-    char welcome[MESSAGE_SIZE] = { '\0' };
-    strcpy(welcome, "WELCOME");
+    // Send welcome message
     send_to_client(newfd, welcome);
-
-    // Wait for client to send their listen port
-    if (recv(newfd, port, MESSAGE_SIZE, 0) <= 0) {
-        close(newfd);
-        return -1;
-    }
 
     // Create a new entry in connection tracking table
     Connection connection = {
