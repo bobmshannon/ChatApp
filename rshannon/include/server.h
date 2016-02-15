@@ -89,7 +89,12 @@ class Server {
     void exit_server();
     void blocked(string clientip);
     void statistics();
-    void port(int fd);
+    /**
+     * Updates the listen port of the specified client
+     * @param fd   The fd associated with the client
+     * @param port The port that the client is listening on
+     */
+    void port(int fd, string port);
     void author();
     int logout(int fd);
     void notify_success(string operation, string results);

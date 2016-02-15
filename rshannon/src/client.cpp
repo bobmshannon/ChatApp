@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 00:30:18
+* @Last Modified time: 2016-02-15 00:57:07
 */
 
 #include <vector>
@@ -237,7 +237,20 @@ void Client::refresh() {
         }
         client_list = string(buf);
     }
-    notify_success(REFRESH, client_list);
+    notify_success(REFRESH, "");
+}
+
+string Client::get_list() {
+    char buf[MESSAGE_SIZE];
+    if (send_to_server(LIST) != -1) {
+        if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
+            notify_error(REFRESH,
+                         "Unable to get updated client list from server.");
+            return NULL;
+        }
+        client_list = string(buf);
+    }
+    return client_list;
 }
 
 void Client::list() { notify_success(LIST, client_list); }
@@ -307,9 +320,16 @@ void Client::login(string host, string port) {
     }
 
     result = string(data);
-    client_list = result;
-    notify_success(LOGIN, result);
-    logged_in = true;
+    send_to_server(string(PORT) + " " + listen_port);
+    client_list = get_list();
+    if(result == "WELCOME") {
+        notify_success(LOGIN, "");
+        logged_in = true;       
+    } else {
+        notify_error(LOGIN, "");
+        logged_in = false;
+    }
+
 }
 
 void Client::broadcast(string msg) {
@@ -331,13 +351,17 @@ void Client::logout() {
 
 void Client::notify_success(string operation, string results) {
     cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
-    cse4589_print_and_log("%s\n", results.c_str());
+    if(results != "") {
+        cse4589_print_and_log("%s\n", results.c_str());
+    }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
 void Client::notify_error(string operation, string error) {
     cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
-    cse4589_print_and_log("%s\n", error.c_str());
+    if(error != "") {
+        cse4589_print_and_log("%s\n", error.c_str());
+    }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
@@ -371,7 +395,7 @@ void Client::prompt_login() {
 
 void Client::launch(string port) {
     listen_port = port;
-    
+
     prompt_login();
 
     string cmd = "";

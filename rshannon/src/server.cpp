@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-13 14:59:34
+* @Last Modified time: 2016-02-15 00:56:09
 */
 
 #include <vector>
@@ -79,7 +79,7 @@ void Server::process_data(int sockfd, string data) {
     } else if (operation == UNBLOCK) {
         unblock(sockfd, args[1]);
     } else if (operation == PORT) {
-        port(sockfd);
+        port(sockfd, args[1]);
     }
 }
 
@@ -91,15 +91,17 @@ int Server::logout(int fd) {
     return -1;
 }
 
-void Server::port(int fd) {
+void Server::port(int fd, string port) {
     int idx = get_connection(fd);
+    client_connections[idx].port = port;
+    /*int idx = get_connection(fd);
     char buf[MESSAGE_SIZE] = {'\0'};
     for (int i = 0; i < client_connections[idx].port.length(); i++) {
         buf[i] = client_connections[idx].port[i];
     }
     if (idx != -1) {
         send_to_client(fd, buf);
-    }
+    }*/
 }
 
 int Server::ip_to_fd(string ip) {
@@ -562,7 +564,7 @@ int Server::new_connection_handler(int listener) {
             client_connections[i].fd = newfd;
             client_connections[i].active = true;
             client_connections[i].port = string(port);
-            send_client_list(newfd);
+            //send_client_list(newfd);
             usleep(500000);
             send_buffered_messages(newfd);
             return newfd;
@@ -576,7 +578,9 @@ int Server::new_connection_handler(int listener) {
     add_connection(connection);
 
     // Send client list as welcome message
-    send_client_list(newfd);
+    //send_client_list(newfd);
+    char welcome[] = "WELCOME\0";
+    send_to_client(newfd, welcome);
 
     return newfd;
 }

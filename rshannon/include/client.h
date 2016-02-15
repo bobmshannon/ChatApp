@@ -82,6 +82,7 @@ class Client {
      * Get an updated list of currently logged-in clients from the server.
      */
     void refresh();
+    string get_list();
     /**
      * Send message: <msg> to all logged-in clients. <msg> can have a maximum
      * length
