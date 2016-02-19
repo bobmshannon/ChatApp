@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-18 23:13:04
+* @Last Modified time: 2016-02-18 23:22:52
 */
 
 #include <vector>
@@ -506,7 +506,7 @@ void Server::broadcast_to_all(string msg, int senderfd) {
         "[RELAYED:SUCCESS]\nmsg from:%s, to:%s\n[msg]:%s\n[RELAYED:END]\n",
         sender_ip.c_str(), source_ip.c_str(), msg.c_str());
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
-    msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]";
+    msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]\n";
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
