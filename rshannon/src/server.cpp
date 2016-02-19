@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-18 22:11:46
+* @Last Modified time: 2016-02-18 23:13:04
 */
 
 #include <vector>
@@ -404,9 +404,10 @@ int Server::init_socket(string port) {
 }
 
 int Server::relay_to_client(string str, int clientfd, int senderfd) {
-    cse4589_print_and_log("msg from:%s, to:%s\n[msg]:%s\n",
-                          fd_to_ip(senderfd).c_str(),
-                          fd_to_ip(clientfd).c_str(), str.c_str());
+    cse4589_print_and_log(
+        "[RELAYED:SUCCESS]\nmsg from:%s, to:%s\n[msg]:%s\n[RELAYED:END]\n",
+        fd_to_ip(senderfd).c_str(), fd_to_ip(clientfd).c_str(), str.c_str());
+
     char buf[MESSAGE_SIZE];
     string sender_ip, msg;
 
@@ -509,7 +510,7 @@ void Server::broadcast_to_all(string msg, int senderfd) {
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
-        if (client_connections[i].fd != senderfd) {
+        //if (client_connections[i].fd != senderfd) {
             if (client_connections[i].active) {
                 send_to_client(client_connections[i].fd, buf);
                 increment_num_recv(client_connections[i].fd);
@@ -517,7 +518,7 @@ void Server::broadcast_to_all(string msg, int senderfd) {
                 // Buffer message
                 buffer_message(sender_ip, client_connections[i].remote_ip, msg);
             }
-        }
+        //}
     }
 }
 
