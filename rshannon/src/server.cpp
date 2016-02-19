@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 02:31:01
+* @Last Modified time: 2016-02-18 21:48:46
 */
 
 #include <vector>
@@ -502,7 +502,8 @@ void Server::broadcast_to_all(string msg, int senderfd) {
     // string sender_ip = fd_to_ip(senderfd);
     string sender_ip = "255.255.255.255";
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
-    msg = "[RELAYED:SUCCESS]\n" + msg + "[RELAYED:END]\n";
+    cse4589_print_and_log("[RELAYED:SUCCESS]\n%s[RELAYED:END]\n", msg.c_str());
+    msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]";
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
@@ -668,8 +669,8 @@ int Server::launch(string port) {
                         close(i);
                         FD_CLR(i, &master);
                     } else {
-                        printf("received %i bytes from fd %i: %s", nbytes, i,
-                               buf);
+                        //printf("received %i bytes from fd %i: %s", nbytes, i,
+                        //       buf);
                         process_data(i, string(buf));
                     }
                 }

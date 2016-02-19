@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import argparse
 
 parser = argparse.ArgumentParser(description='CSE 489/589 PA1: Verifier')
@@ -32,18 +34,15 @@ if __name__ == "__main__":
 		if not matches: return "No output detected: Check format/syntax of output."
 		return matches.group(1)
 
-	s_or_c = 's'
-	port = 4242
-
-	print "Starting Application as "+s_or_c+" on port:"+str(port)
-
 	#Application Startup
 	print
 	print "Application Startup ...",
 	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
 	command = args.path[0]+" "+s_or_c+" "+str(port)
 	process = subprocess.Popen(command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
-	time.sleep(2)
+	time.sleep(4)
 	status = procStatus(process.pid)
 	if status == 'R' or status == 'S':
 		os.system('kill -9 '+str(process.pid))
@@ -52,12 +51,14 @@ if __name__ == "__main__":
 		print "FAIL"
 		exit()
 
-	logfile_path = os.path.dirname(args.path[0])+"/logs/assignment_log_"+socket.gethostname()
+	logfile_path = os.path.dirname(args.path[0])+"/logs/assignment_log_"+socket.getfqdn().split('.')[0]
 	
 	#AUTHOR
 	print
 	print "AUTHOR ...",
 	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
 	expect_command = "expect -f author.exp "+args.path[0]+" "+s_or_c+" "+str(port)
 	process = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
 	time.sleep(2)
@@ -68,6 +69,8 @@ if __name__ == "__main__":
 	print
 	print "IP ...",
 	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
 	expect_command = "expect -f ip.exp "+args.path[0]+" "+s_or_c+" "+str(port)
 	process = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
 	time.sleep(3)
@@ -78,6 +81,8 @@ if __name__ == "__main__":
 	print
 	print "PORT ...",
 	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
 	expect_command = "expect -f port.exp "+args.path[0]+" "+s_or_c+" "+str(port)
 	process = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
 	time.sleep(3)
@@ -88,6 +93,8 @@ if __name__ == "__main__":
 	print
 	print "LIST ...",
 	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
 	expect_command = "expect -f list_server.exp "+args.path[0]+" "+s_or_c+" "+str(port)
 	server = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
 
@@ -122,3 +129,80 @@ if __name__ == "__main__":
 	os.system('kill -9 '+str(client_2.pid))
 	os.system('kill -9 '+str(client_3.pid))
 	os.system('kill -9 '+str(client_4.pid))
+	
+	#SEND
+	print
+	print "SEND ...",
+	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
+	expect_command = "expect -f send_server.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	server = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+	s_or_c = 'c'
+	port = 1111
+	expect_command = "expect -f send_client.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	client = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+
+	time.sleep(8)
+
+	os.system('kill -9 '+str(client.pid))
+
+	print "I got the following output:"
+	print "-On Server-"
+	print extractOutputSuccess("RELAYED", logfile_path+"_4242")
+	print "-On Client-"
+	print extractOutputSuccess("RECEIVED", logfile_path+"_1111")
+
+	#BROADCAST
+	print
+	print "BROADCAST ...",
+	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
+	expect_command = "expect -f broadcast_server.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	server = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+	s_or_c = 'c'
+	port = 1111
+	expect_command = "expect -f broadcast_client_1.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	client_1 = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+	port = 1212
+	expect_command = "expect -f broadcast_client_2.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	client_2 = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+
+	time.sleep(10)
+
+	os.system('kill -9 '+str(client_1.pid))
+	os.system('kill -9 '+str(client_2.pid))
+
+	print "I got the following output:"
+	print "-On Server-"
+	print extractOutputSuccess("RELAYED", logfile_path+"_4242")
+	print "-On Client 1-"
+	print extractOutputSuccess("RECEIVED", logfile_path+"_1111")
+	print "-On Client 2-"
+	print extractOutputSuccess("RECEIVED", logfile_path+"_1212")
+
+	#STATISTICS
+	print
+	print "STATISTICS ...",
+	sys.stdout.flush()
+	s_or_c = 's'
+	port = 4242
+	expect_command = "expect -f statistics_server.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	server = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+	s_or_c = 'c'
+	port = 1111
+	expect_command = "expect -f statistics_client_1.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	client_1 = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+	port = 1212
+	expect_command = "expect -f statistics_client_2.exp "+args.path[0]+" "+s_or_c+" "+str(port)
+	client_2 = subprocess.Popen(expect_command, shell=True, stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+
+	time.sleep(15)
+
+	os.system('kill -9 '+str(client_1.pid))
+	os.system('kill -9 '+str(client_2.pid))
+
+	print "I got the following output:"
+	print "-On Server-"
+	print extractOutputSuccess("STATISTICS", logfile_path+"_4242")
