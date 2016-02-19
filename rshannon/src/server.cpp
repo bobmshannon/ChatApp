@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-18 21:48:46
+* @Last Modified time: 2016-02-18 22:11:46
 */
 
 #include <vector>
@@ -499,10 +499,12 @@ string Server::get_client_list() {
 
 void Server::broadcast_to_all(string msg, int senderfd) {
     char buf[MESSAGE_SIZE];
-    // string sender_ip = fd_to_ip(senderfd);
-    string sender_ip = "255.255.255.255";
+    string sender_ip = fd_to_ip(senderfd);
+    string source_ip = "255.255.255.255";
+    cse4589_print_and_log(
+        "[RELAYED:SUCCESS]\nmsg from:%s, to:%s\n[msg]:%s\n[RELAYED:END]\n",
+        sender_ip.c_str(), source_ip.c_str(), msg.c_str());
     msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
-    cse4589_print_and_log("[RELAYED:SUCCESS]\n%s[RELAYED:END]\n", msg.c_str());
     msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]";
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
@@ -557,9 +559,9 @@ int Server::new_connection_handler(int listener) {
     char hostname[NI_MAXHOST]; // Hostname
     string client_port;
 
-    char welcome[MESSAGE_SIZE] = { '\0' };
+    char welcome[MESSAGE_SIZE] = {'\0'};
     strcpy(welcome, "WELCOME");
-    
+
     // Handle new connection
     addrlen = sizeof remoteaddr;
     newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
@@ -669,7 +671,7 @@ int Server::launch(string port) {
                         close(i);
                         FD_CLR(i, &master);
                     } else {
-                        //printf("received %i bytes from fd %i: %s", nbytes, i,
+                        // printf("received %i bytes from fd %i: %s", nbytes, i,
                         //       buf);
                         process_data(i, string(buf));
                     }
