@@ -2,7 +2,14 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-15 01:49:03
+* @Last Modified time: 2016-02-18 23:32:45
+*
+* Note that some of the networking code used in this file
+* was directly taken from the infamous Beej Network Programming 
+* Guide: http://beej.us/guide/bgnet/. This includes the example
+* code snippets which demonstrate how to monitor each file descriptor
+* using select(), and setting up a basic client and server model with 
+* sockets.
 */
 
 #include <vector>
