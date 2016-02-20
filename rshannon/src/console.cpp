@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-02 20:13:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-11 21:30:31
+* @Last Modified time: 2016-02-20 13:13:36
 */
 
 #include <signal.h>
@@ -108,10 +108,10 @@ void Console::print(std::string str) {
     wrefresh(chat_window);  // Refresh chat window
     cse4589_print_and_log(str.c_str());
     int nlines = std::count(str.begin(), str.end(), '\n');
-    if(nlines == 0) {
-      chat_curs_y += 1;
+    if (nlines == 0) {
+        chat_curs_y += 1;
     } else {
-      chat_curs_y += nlines;
+        chat_curs_y += nlines;
     }
 }
 

@@ -2,13 +2,13 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-18 23:32:45
+* @Last Modified time: 2016-02-20 13:13:33
 *
 * Note that some of the networking code used in this file
-* was directly taken from the infamous Beej Network Programming 
+* was directly taken from the infamous Beej Network Programming
 * Guide: http://beej.us/guide/bgnet/. This includes the example
 * code snippets which demonstrate how to monitor each file descriptor
-* using select(), and setting up a basic client and server model with 
+* using select(), and setting up a basic client and server model with
 * sockets.
 */
 
@@ -109,6 +109,8 @@ void Client::process_command(string cmd) {
             author();
         } else if (operation == REFRESH) {
             refresh();
+        } else if (operation == IP) {
+            ip();
         } else if (operation == LOGIN) {
             notify_error(operation, "You are already logged in to a server.");
         } else {
@@ -120,10 +122,10 @@ void Client::process_command(string cmd) {
         // Note that EXIT, and AUTHOR are allowed to be
         // processed regardless of whether the client
         // is logged into a server or not.
-        if (operation == IP || operation == LIST || operation == SEND ||
-            operation == BROADCAST || operation == BLOCK ||
-            operation == BLOCKED || operation == UNBLOCK ||
-            operation == LOGOUT || operation == STATISTICS) {
+        if (operation == LIST || operation == SEND || operation == BROADCAST ||
+            operation == BLOCK || operation == BLOCKED ||
+            operation == UNBLOCK || operation == LOGOUT ||
+            operation == STATISTICS) {
             notify_error(
                 operation,
                 "You must be logged into a server to run this command.");
@@ -140,6 +142,8 @@ void Client::process_command(string cmd) {
             } else {
                 notify_error(LOGIN, "Usage: LOGIN <HOST> <PORT>");
             }
+        } else if (operation == IP) {
+            ip();
         } else {
             notify_error(operation, "You entered an invalid command.");
         }
@@ -217,7 +221,29 @@ void Client::unblock_client(string ip) {
     }
 }
 
-void Client::ip() {}
+void Client::ip() {
+    char hostname[MESSAGE_SIZE];
+    char ip[MESSAGE_SIZE];
+    struct hostent* host;
+    struct in_addr** addr_list;
+
+    // Get system hostname
+    if (gethostname(hostname, MESSAGE_SIZE) != 0) {
+        notify_error(IP, "Unable to get system hostname");
+        return;
+    }
+
+    // Resolve system hostname
+    if ((host = gethostbyname(hostname)) == NULL) {
+        notify_error(IP, "Unable to resolve system hostname");
+        return;
+    }
+
+    addr_list = (struct in_addr**)host->h_addr_list;
+    strcpy(ip, inet_ntoa(*addr_list[0]));
+
+    notify_success(IP, "IP:" + string(ip));
+}
 
 void Client::port() {
     notify_success(PORT, "PORT:" + listen_port);

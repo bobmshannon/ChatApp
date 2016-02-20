@@ -2,13 +2,13 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-18 23:32:55
+* @Last Modified time: 2016-02-20 13:13:25
 *
 * Note that some of the networking code used in this file
-* was directly taken from the infamous Beej Network Programming 
+* was directly taken from the infamous Beej Network Programming
 * Guide: http://beej.us/guide/bgnet/. This includes the example
 * code snippets which demonstrate how to monitor each file descriptor
-* using select(), and setting up a basic client and server model with 
+* using select(), and setting up a basic client and server model with
 * sockets.
 */
 
@@ -216,11 +216,37 @@ int Server::process_command() {
         notify_success(LIST, list);
     } else if (operation == PORT) {
         notify_success(PORT, "PORT:" + listen_port);
+    } else if (operation == IP) {
+        ip();
     } else {
         notify_error(operation, "You entered an invalid command.");
     }
 
     return 0;
+}
+
+void Server::ip() {
+    char hostname[MESSAGE_SIZE];
+    char ip[MESSAGE_SIZE];
+    struct hostent* host;
+    struct in_addr** addr_list;
+
+    // Get system hostname
+    if (gethostname(hostname, MESSAGE_SIZE) != 0) {
+        notify_error(IP, "Unable to get system hostname");
+        return;
+    }
+
+    // Resolve system hostname
+    if ((host = gethostbyname(hostname)) == NULL) {
+        notify_error(IP, "Unable to resolve system hostname");
+        return;
+    }
+
+    addr_list = (struct in_addr**)host->h_addr_list;
+    strcpy(ip, inet_ntoa(*addr_list[0]));
+
+    notify_success(IP, "IP:" + string(ip));
 }
 
 void Server::block(int clientfd, string blockedip) {
@@ -517,14 +543,14 @@ void Server::broadcast_to_all(string msg, int senderfd) {
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
-        //if (client_connections[i].fd != senderfd) {
-            if (client_connections[i].active) {
-                send_to_client(client_connections[i].fd, buf);
-                increment_num_recv(client_connections[i].fd);
-            } else {
-                // Buffer message
-                buffer_message(sender_ip, client_connections[i].remote_ip, msg);
-            }
+        // if (client_connections[i].fd != senderfd) {
+        if (client_connections[i].active) {
+            send_to_client(client_connections[i].fd, buf);
+            increment_num_recv(client_connections[i].fd);
+        } else {
+            // Buffer message
+            buffer_message(sender_ip, client_connections[i].remote_ip, msg);
+        }
         //}
     }
 }
