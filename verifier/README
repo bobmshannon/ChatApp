@@ -1,4 +1,4 @@
-Version: 2.0
+Version: 3.1
 ------------
 
 - Application Startup -
@@ -20,8 +20,8 @@ Server executes the 'PORT' command.
 - LIST -
 Launches 1 application instance as server on port 4242.
 Launches 4 application instances as client on ports 1111, 1212, 1313 and 1414.
-Each of the clients execute 'LOGIN 127.0.0.1 4242'.
-Server then executes 'LIST'.
+Each of the clients execute 'LOGIN 127.0.0.1 4242' and 'LIST', in increasing order of their port numbers.
+Server executes 'LIST'.
 
 - SEND -
 Launches 1 application instance as server on port 4242.
@@ -39,4 +39,4 @@ Launches 1 application instance as server on port 4242.
 Launches 2 application instances as client on port 1111 and 1212.
 Client1 and Client2 LOGIN.
 Client1 executes 'BROADCAST Hello1!!', 'BROADCAST Hello2!!' and 'BROADCAST Hello3!!'.
-Server then executes 'STATISTICS'.
+Server executes 'STATISTICS'.

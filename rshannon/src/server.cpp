@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-20 13:13:25
+* @Last Modified time: 2016-02-20 14:35:42
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -521,7 +521,7 @@ string Server::get_client_list() {
     char buf[MESSAGE_SIZE];
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].active) {
-            sprintf(buf, "%-5d%-35s%-20s%-8s\n", i,
+            sprintf(buf, "%-5d%-35s%-20s%-8s\n", i+1,
                     client_connections[i].fqdn.c_str(),
                     client_connections[i].remote_ip.c_str(),
                     client_connections[i].port.c_str());
