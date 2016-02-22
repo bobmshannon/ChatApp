@@ -19,6 +19,7 @@
 #define AUTHOR "AUTHOR"
 
 using std::string;
+using std::vector;
 
 class Client {
   private:
@@ -27,6 +28,7 @@ class Client {
     string client_list; // Most recent list of clients retrieved from server
     fd_set master, read_fds;
     string listen_port; // The port to listen on (passed as a command line
+    vector<string> blocked; // List of clients IP addresses to block messages from
                         // argument)
     void* get_in_addr(struct sockaddr* sa);
     /**
@@ -103,6 +105,7 @@ class Client {
      * @throws DuplicateBanException the provided IP address is already blocked
      */
     void block_client(string ip);
+    int is_blocked(string ip);
     /**
      * Unblock a previously blocked client with IP address: <client-ip>. The
      * client

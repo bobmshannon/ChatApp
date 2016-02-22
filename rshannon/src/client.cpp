@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-21 21:49:07
+* @Last Modified time: 2016-02-21 22:00:04
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -216,7 +216,14 @@ void Client::author() {
 void Client::block_client(string ip) {
     if (is_valid_ip(ip) == -1) {
         notify_error(BLOCK, "That is not a valid IPv4 address");
+    } else if (is_known_ip(ip) == -1) {
+        notify_error(BLOCK,
+                     "Unknown client IP address.");
+    } else if (is_blocked(ip) == 0) {
+        notify_error(BLOCK,
+                     "Client IP is already blocked.");
     } else if (send_to_server(string(BLOCK) + " " + ip) == 0) {
+        blocked.push_back(ip);
         notify_success(BLOCK, ip + " has been blocked.");
     } else {
         notify_error(BLOCK, "");
@@ -226,11 +233,32 @@ void Client::block_client(string ip) {
 void Client::unblock_client(string ip) {
     if (is_valid_ip(ip) == -1) {
         notify_error(UNBLOCK, "That is not a valid IPv4 address");
+    } else if (is_known_ip(ip) == -1) {
+        notify_error(UNBLOCK,
+                     "Unknown client IP address.");
+    } else if (is_blocked(ip) == -1) {
+        notify_error(UNBLOCK,
+                     "Client IP is already unblocked.");
     } else if (send_to_server(string(UNBLOCK) + " " + ip) == 0) {
-        notify_success(UNBLOCK, ip + " has been unblocked.");
+        for(int i = 0; i < blocked.size(); i++) {
+            if(blocked[i] == ip) {
+                blocked.erase(blocked.begin() + i);
+                notify_success(UNBLOCK, ip + " has been unblocked.");
+                break;
+            }
+        }
     } else {
         notify_error(UNBLOCK, "");
     }
+}
+
+int Client::is_blocked(string ip) {
+    for(int i = 0; i < blocked.size(); i++) {
+        if(blocked[i] == ip) {
+            return 0;
+        }
+    }
+    return -1;
 }
 
 void Client::ip() {
