@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-21 22:00:04
+* @Last Modified time: 2016-02-21 22:01:29
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -154,7 +154,7 @@ void Client::process_command(string cmd) {
 int Client::is_known_ip(string ip) {
     string known_clients = client_list;
     int found = known_clients.find(ip);
-    if(found != string::npos) {
+    if (found != string::npos) {
         return 0;
     }
     return -1;
@@ -176,8 +176,7 @@ void Client::send_msg(string ip, string msg) {
         notify_error(SEND,
                      "That IP address seems to not be a valid IPv4 address.");
     } else if (is_known_ip(ip) == -1) {
-        notify_error(SEND,
-                     "Unknown client IP address.");
+        notify_error(SEND, "Unknown client IP address.");
     } else {
         send_to_server(string(SEND) + " " + ip + " " + msg);
         notify_success(SEND, "Message sent.");
@@ -217,11 +216,9 @@ void Client::block_client(string ip) {
     if (is_valid_ip(ip) == -1) {
         notify_error(BLOCK, "That is not a valid IPv4 address");
     } else if (is_known_ip(ip) == -1) {
-        notify_error(BLOCK,
-                     "Unknown client IP address.");
+        notify_error(BLOCK, "Unknown client IP address.");
     } else if (is_blocked(ip) == 0) {
-        notify_error(BLOCK,
-                     "Client IP is already blocked.");
+        notify_error(BLOCK, "Client IP is already blocked.");
     } else if (send_to_server(string(BLOCK) + " " + ip) == 0) {
         blocked.push_back(ip);
         notify_success(BLOCK, ip + " has been blocked.");
@@ -234,14 +231,12 @@ void Client::unblock_client(string ip) {
     if (is_valid_ip(ip) == -1) {
         notify_error(UNBLOCK, "That is not a valid IPv4 address");
     } else if (is_known_ip(ip) == -1) {
-        notify_error(UNBLOCK,
-                     "Unknown client IP address.");
+        notify_error(UNBLOCK, "Unknown client IP address.");
     } else if (is_blocked(ip) == -1) {
-        notify_error(UNBLOCK,
-                     "Client IP is already unblocked.");
+        notify_error(UNBLOCK, "Client IP is already unblocked.");
     } else if (send_to_server(string(UNBLOCK) + " " + ip) == 0) {
-        for(int i = 0; i < blocked.size(); i++) {
-            if(blocked[i] == ip) {
+        for (int i = 0; i < blocked.size(); i++) {
+            if (blocked[i] == ip) {
                 blocked.erase(blocked.begin() + i);
                 notify_success(UNBLOCK, ip + " has been unblocked.");
                 break;
@@ -253,8 +248,8 @@ void Client::unblock_client(string ip) {
 }
 
 int Client::is_blocked(string ip) {
-    for(int i = 0; i < blocked.size(); i++) {
-        if(blocked[i] == ip) {
+    for (int i = 0; i < blocked.size(); i++) {
+        if (blocked[i] == ip) {
             return 0;
         }
     }
@@ -382,7 +377,7 @@ void Client::login(string host, string port) {
     string result;
     sockfd = server_connect(host, port);
 
-    if(stoi(port) > 65535 || stoi(port) < 0) {
+    if (stoi(port) > 65535 || stoi(port) < 0) {
         notify_error(LOGIN, err_to_str(ERR_PORT));
         return;
     }
