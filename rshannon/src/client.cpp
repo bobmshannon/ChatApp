@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-21 21:43:28
+* @Last Modified time: 2016-02-21 21:49:07
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -32,6 +32,7 @@ using std::string;
 using std::istringstream;
 using std::istream_iterator;
 using std::vector;
+using std::find;
 
 Client::Client() {
     logged_in = false;
@@ -150,6 +151,15 @@ void Client::process_command(string cmd) {
     }
 }
 
+int Client::is_known_ip(string ip) {
+    string known_clients = client_list;
+    int found = known_clients.find(ip);
+    if(found != string::npos) {
+        return 0;
+    }
+    return -1;
+}
+
 int Client::is_valid_ip(string ip) {
     struct sockaddr_in sa;
 
@@ -165,8 +175,10 @@ void Client::send_msg(string ip, string msg) {
     if (is_valid_ip(ip) == -1) {
         notify_error(SEND,
                      "That IP address seems to not be a valid IPv4 address.");
+    } else if (is_known_ip(ip) == -1) {
+        notify_error(SEND,
+                     "Unknown client IP address.");
     } else {
-        // TODO: check the IP in client_list, and whether it is valid
         send_to_server(string(SEND) + " " + ip + " " + msg);
         notify_success(SEND, "Message sent.");
     }

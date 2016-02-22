@@ -69,6 +69,7 @@ class Client {
     void list();
 
     int is_valid_ip(string ip);
+    int is_known_ip(string ip);
 
     /**
      * Login to the server located at ip address: <server-ip> listening on port:
