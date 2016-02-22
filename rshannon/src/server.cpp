@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-20 14:35:42
+* @Last Modified time: 2016-02-21 21:32:14
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -322,6 +322,9 @@ void Server::exit_server() {
 void Server::blocked(string clientip) {
     if (!is_valid_ip(clientip)) {
         notify_error(BLOCKED, "That is not a valid IPv4 address.");
+        return;
+    } else if (!is_known_ip(clientip)) {
+        notify_error(BLOCKED, "Unknown client IP address.");
         return;
     }
 
