@@ -16,6 +16,8 @@
 #define ERR_SOCKET_ACCEPT -11
 #define ERR_CONN_CLOSED -12
 #define ERR_SOCKET_READ -13
+#define ERR_PORT -14
+#define ERR_INVALID_SERVER -15
 
 inline std::string err_to_str(int errcode) {
     switch (errcode) {
@@ -41,6 +43,10 @@ inline std::string err_to_str(int errcode) {
         return "ConnectionClosedError";
     case ERR_SOCKET_READ:
         return "SocketReadError";
+    case ERR_PORT:
+        return "InvalidPortError";
+    case ERR_INVALID_SERVER:
+        return "InvalidServerError";
     default:
         return "UnknownError";
     }

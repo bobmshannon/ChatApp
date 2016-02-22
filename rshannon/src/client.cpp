@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-20 13:13:33
+* @Last Modified time: 2016-02-21 21:43:28
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -342,6 +342,11 @@ void Client::login(string host, string port) {
     string result;
     sockfd = server_connect(host, port);
 
+    if(stoi(port) > 65535 || stoi(port) < 0) {
+        notify_error(LOGIN, err_to_str(ERR_PORT));
+        return;
+    }
+
     if (is_err(sockfd)) {
         notify_error(LOGIN, err_to_str(sockfd));
         return;
@@ -353,13 +358,14 @@ void Client::login(string host, string port) {
     }
 
     result = string(data);
-    send_to_server(string(PORT) + " " + listen_port);
-    client_list = get_list();
-    if (result == "WELCOME" && client_list != "") {
-        notify_success(LOGIN, "");
+
+    if (result == "WELCOME") {
         logged_in = true;
+        client_list = get_list();
+        send_to_server(string(PORT) + " " + listen_port);
+        notify_success(LOGIN, "");
     } else {
-        notify_error(LOGIN, "");
+        notify_error(LOGIN, err_to_str(ERR_INVALID_SERVER));
         logged_in = false;
     }
 }
