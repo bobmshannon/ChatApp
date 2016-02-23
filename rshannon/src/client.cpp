@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-21 22:01:29
+* @Last Modified time: 2016-02-23 17:35:34
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -424,7 +424,7 @@ void Client::logout() {
 
 void Client::notify_success(string operation, string results) {
     cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
-    if (results != "") {
+    if (results != "" && (operation == PORT || operation == AUTHOR || operation == IP || operation == LIST)) {
         cse4589_print_and_log("%s\n", results.c_str());
     }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
@@ -432,9 +432,9 @@ void Client::notify_success(string operation, string results) {
 
 void Client::notify_error(string operation, string error) {
     cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
-    if (error != "") {
-        cse4589_print_and_log("%s\n", error.c_str());
-    }
+    //if (error != "") {
+       // cse4589_print_and_log("%s\n", error.c_str());
+    //}
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }
 
