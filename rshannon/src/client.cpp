@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 17:45:42
+* @Last Modified time: 2016-02-23 18:23:43
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -397,7 +397,7 @@ void Client::login(string host, string port) {
     if (result == "WELCOME") {
         logged_in = true;
         client_list = get_list();
-        send_to_server(string(PORT) + " " + listen_port);
+        //send_to_server(string(PORT) + " " + listen_port);
         notify_success(LOGIN, "");
     } else {
         notify_error(LOGIN, err_to_str(ERR_INVALID_SERVER));
