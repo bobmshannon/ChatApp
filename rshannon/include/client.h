@@ -87,6 +87,7 @@ class Client {
      */
     void refresh();
     string get_list();
+    void get_buffered_messages();
     /**
      * Send message: <msg> to all logged-in clients. <msg> can have a maximum
      * length
