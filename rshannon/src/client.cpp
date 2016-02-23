@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 17:35:34
+* @Last Modified time: 2016-02-23 17:45:42
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -264,13 +264,13 @@ void Client::ip() {
 
     // Get system hostname
     if (gethostname(hostname, MESSAGE_SIZE) != 0) {
-        notify_error(IP, "Unable to get system hostname");
+        notify_error(IP, "");
         return;
     }
 
     // Resolve system hostname
     if ((host = gethostbyname(hostname)) == NULL) {
-        notify_error(IP, "Unable to resolve system hostname");
+        notify_error(IP, "");
         return;
     }
 

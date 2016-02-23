@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 17:36:30
+* @Last Modified time: 2016-02-23 17:53:45
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -546,15 +546,15 @@ void Server::broadcast_to_all(string msg, int senderfd) {
     strcpy(buf, msg.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
-        // if (client_connections[i].fd != senderfd) {
-        if (client_connections[i].active) {
-            send_to_client(client_connections[i].fd, buf);
-            increment_num_recv(client_connections[i].fd);
-        } else {
-            // Buffer message
-            buffer_message(sender_ip, client_connections[i].remote_ip, msg);
+        if (client_connections[i].fd != senderfd) {
+            if (client_connections[i].active) {
+                send_to_client(client_connections[i].fd, buf);
+                increment_num_recv(client_connections[i].fd);
+            } else {
+                // Buffer message
+                buffer_message(sender_ip, client_connections[i].remote_ip, msg);
+            }
         }
-        //}
     }
 }
 
