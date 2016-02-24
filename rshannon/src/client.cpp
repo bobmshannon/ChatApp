@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 19:40:32
+* @Last Modified time: 2016-02-23 19:41:08
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -278,9 +278,7 @@ void Client::ip() {
     notify_success(IP, "IP:" + string(ip));
 }
 
-void Client::port() {
-    notify_success(PORT, "PORT:" + listen_port);
-}
+void Client::port() { notify_success(PORT, "PORT:" + listen_port); }
 
 void Client::refresh() {
     char buf[MESSAGE_SIZE];
@@ -396,17 +394,15 @@ void Client::login(string host, string port) {
 void Client::get_buffered_messages() {
     char buf[MESSAGE_SIZE];
     if (send_to_server(GETBUF) != -1) {
-        while(string(buf) != ENDBUF) { 
+        while (string(buf) != ENDBUF) {
             if (recv(sockfd, buf, MESSAGE_SIZE, 0) > 0) {
-                if(string(buf) != ENDBUF) {
+                if (string(buf) != ENDBUF) {
                     cse4589_print_and_log(buf);
                 }
-            }            
+            }
         }
     }
 }
-
-
 
 void Client::broadcast(string msg) {
     send_to_server(string(BROADCAST) + " " + msg);
@@ -427,7 +423,8 @@ void Client::logout() {
 
 void Client::notify_success(string operation, string results) {
     cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
-    if (results != "" && (operation == PORT || operation == AUTHOR || operation == IP || operation == LIST)) {
+    if (results != "" && (operation == PORT || operation == AUTHOR ||
+                          operation == IP || operation == LIST)) {
         cse4589_print_and_log("%s\n", results.c_str());
     }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
@@ -435,8 +432,8 @@ void Client::notify_success(string operation, string results) {
 
 void Client::notify_error(string operation, string error) {
     cse4589_print_and_log("[%s:ERROR]\n", operation.c_str());
-    //if (error != "") {
-       // cse4589_print_and_log("%s\n", error.c_str());
+    // if (error != "") {
+    // cse4589_print_and_log("%s\n", error.c_str());
     //}
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
 }

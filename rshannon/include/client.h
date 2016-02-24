@@ -31,8 +31,9 @@ class Client {
     string external_ip;
     fd_set master, read_fds;
     string listen_port; // The port to listen on (passed as a command line
-    vector<string> blocked; // List of clients IP addresses to block messages from
-                        // argument)
+    vector<string>
+        blocked; // List of clients IP addresses to block messages from
+                 // argument)
     void* get_in_addr(struct sockaddr* sa);
     /**
      * Initialize a socket for communication with specified
