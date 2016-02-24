@@ -17,6 +17,8 @@
 #define EXIT "EXIT"
 #define STATISTICS "STATISTICS"
 #define AUTHOR "AUTHOR"
+#define ENDBUF "ENDBUF"
+#define GETBUF "GETBUF"
 
 using std::string;
 using std::vector;

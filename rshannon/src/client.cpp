@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 18:50:13
+* @Last Modified time: 2016-02-23 19:19:32
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -396,8 +396,8 @@ void Client::login(string host, string port) {
 
     if (result == "WELCOME") {
         logged_in = true;
-        client_list = get_list();
         send_to_server(string(PORT) + " " + listen_port);
+        client_list = get_list();
         notify_success(LOGIN, "");
         get_buffered_messages();
     } else {
@@ -408,10 +408,12 @@ void Client::login(string host, string port) {
 
 void Client::get_buffered_messages() {
     char buf[MESSAGE_SIZE];
-    if (send_to_server("GETBUF") != -1) {
-        while(string(buf) != "ENDBUF") { 
+    if (send_to_server(GETBUF) != -1) {
+        while(string(buf) != ENDBUF) { 
             if (recv(sockfd, buf, MESSAGE_SIZE, 0) > 0) {
-                cse4589_print_and_log(buf);
+                if(string(buf) != ENDBUF) {
+                    cse4589_print_and_log(buf);
+                }
             }            
         }
     }

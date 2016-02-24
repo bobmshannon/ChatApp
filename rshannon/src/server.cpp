@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 18:53:10
+* @Last Modified time: 2016-02-23 19:19:38
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -94,6 +94,8 @@ void Server::process_data(int sockfd, string data) {
         unblock(sockfd, args[1]);
     } else if (operation == PORT) {
         port(sockfd, args[1]);
+    } else if (operation == GETBUF) {
+        send_buffered_messages(sockfd);
     }
 }
 
@@ -172,10 +174,11 @@ int Server::send_buffered_messages(int fd) {
             }
         }
         client_connections[idx].msg_buffer.clear();
-        strcpy(buf, "ENDBUF");
+        strcpy(buf, "ENDBUF\0");
         send_to_client(fd, buf);
         return 0;
     }
+    strcpy(buf, "ENDBUF\0");
     return -1;
 }
 
