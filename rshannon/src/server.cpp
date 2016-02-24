@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 19:41:12
+* @Last Modified time: 2016-02-23 20:36:08
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -73,6 +73,7 @@ void Server::process_data(int sockfd, string data) {
             msg += (args[i] + " ");
         }
         if (!is_online(args[1]) && is_known_ip(args[1])) {
+            increment_num_sent(sockfd);
             buffer_message(fd_to_ip(sockfd), args[1], msg);
         } else if ((clientfd = ip_to_fd(args[1])) != -1) {
             increment_num_sent(sockfd);
