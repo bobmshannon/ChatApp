@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 20:36:08
+* @Last Modified time: 2016-02-23 20:44:46
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -586,7 +586,7 @@ void Server::notify_success(string operation, string results) {
     cse4589_print_and_log("[%s:SUCCESS]\n", operation.c_str());
     if (results != "" &&
         (operation == PORT || operation == AUTHOR || operation == IP ||
-         operation == STATISTICS || operation == LIST)) {
+         operation == STATISTICS || operation == LIST || operation == BLOCKED)) {
         cse4589_print_and_log("%s\n", results.c_str());
     }
     cse4589_print_and_log("[%s:END]\n", operation.c_str());
