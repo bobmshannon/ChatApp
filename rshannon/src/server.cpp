@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:26:31
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 19:19:38
+* @Last Modified time: 2016-02-23 19:34:08
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -541,14 +541,15 @@ string Server::get_client_list() {
 
 void Server::broadcast_to_all(string msg, int senderfd) {
     char buf[MESSAGE_SIZE];
+    string msg_formatted;
     string sender_ip = fd_to_ip(senderfd);
     string source_ip = "255.255.255.255";
     cse4589_print_and_log(
         "[RELAYED:SUCCESS]\nmsg from:%s, to:%s\n[msg]:%s\n[RELAYED:END]\n",
         sender_ip.c_str(), source_ip.c_str(), msg.c_str());
-    msg = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
-    msg = "[RECEIVED:SUCCESS]\n" + msg + "[RECEIVED:END]\n";
-    strcpy(buf, msg.c_str());
+    msg_formatted = "msg from:" + sender_ip + "\n[msg]:" + msg + "\n";
+    msg_formatted = "[RECEIVED:SUCCESS]\n" + msg_formatted + "[RECEIVED:END]\n";
+    strcpy(buf, msg_formatted.c_str());
     increment_num_sent(senderfd);
     for (int i = 0; i < client_connections.size(); i++) {
         if (client_connections[i].fd != senderfd) {
