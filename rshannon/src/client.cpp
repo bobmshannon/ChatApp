@@ -2,7 +2,7 @@
 * @Author: Robert Shannon <rshannon@buffalo.edu>
 * @Date:   2016-02-05 21:41:26
 * @Last Modified by:   Bobby
-* @Last Modified time: 2016-02-23 19:19:32
+* @Last Modified time: 2016-02-23 19:40:32
 *
 * Note that some of the networking code used in this file
 * was directly taken from the infamous Beej Network Programming
@@ -69,9 +69,7 @@ void Client::process_command(string cmd) {
         // Note that EXIT, and AUTHOR are allowed to be
         // processed regardless of whether the client
         // is logged into a server or not.
-        if (operation == IP) {
-            cse4589_print_and_log("%s", operation.c_str());
-        } else if (operation == PORT) {
+        if (operation == PORT) {
             port();
         } else if (operation == LIST) {
             // LIST
@@ -282,17 +280,6 @@ void Client::ip() {
 
 void Client::port() {
     notify_success(PORT, "PORT:" + listen_port);
-    /*
-    char buf[MESSAGE_SIZE];
-    string port;
-    if (send_to_server(PORT) != -1) {
-        if (recv(sockfd, buf, MESSAGE_SIZE, 0) <= 0) {
-            notify_error(PORT, "Unable to get port from server.");
-            return;
-        }
-        port = string(buf);
-    }
-    notify_success(PORT, "PORT:" + port);*/
 }
 
 void Client::refresh() {

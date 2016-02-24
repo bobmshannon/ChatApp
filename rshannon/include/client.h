@@ -28,6 +28,7 @@ class Client {
     int sockfd;         // File descriptor for network socket
     bool logged_in;     // Whether client is logged into a remote server
     string client_list; // Most recent list of clients retrieved from server
+    string external_ip;
     fd_set master, read_fds;
     string listen_port; // The port to listen on (passed as a command line
     vector<string> blocked; // List of clients IP addresses to block messages from
