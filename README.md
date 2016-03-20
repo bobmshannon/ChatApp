@@ -4,7 +4,7 @@ For like, chatting with other people and stuff.
 # Running
 * To run as a **server** listening on port 4322:
   - `./chat_app s 4322` 
-* To run as a client listening on port 4322
+* To run as a **client** listening on port 4322
   - `./chat_app c 4322`
 
 # Available Commands
