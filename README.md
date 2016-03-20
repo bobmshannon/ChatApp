@@ -2,10 +2,10 @@
 For like, chatting with other people and stuff.
 
 # Running
-*To run as a server listening on port 4322
-`./chat_app s 4322` 
-*To run as a client listening on port 4322
-`./chat_app c 4322`
+* To run as a **server** listening on port 4322:
+  - `./chat_app s 4322` 
+* To run as a client listening on port 4322
+  - `./chat_app c 4322`
 
 # Available Commands
 ## IP
@@ -25,7 +25,7 @@ Get an updated list of currently logged-in clients from the server.
 ## SEND `<client-ip>` `<msg>`
 Send message: `<msg>` to client with ip address: `<client-ip>`.
 ## BROADCAST `<msg>`
-Send message: <msg> to all logged-in clients.
+Send message a `<msg>` to all logged-in clients.
 ## BLOCK `<client-ip>`
 Block all incoming messages from the client with IP address: <client-ip>.
 ## UNBLOCK `<client-ip>`
